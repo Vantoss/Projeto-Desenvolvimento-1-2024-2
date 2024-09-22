@@ -1,64 +1,92 @@
 <?php 
     require_once "config.php";
-
-    $query = "SELECT * FROM salas"; // pesquisa sem os filtros 
-
-    if (isset($_POST["filtros"]) ){ // roda caso a array filtros existir
         
-        $filtros = $_POST["filtros"]; 
-        $i = 0;
-        foreach ($filtros as $filtro => $valor) {
-           
-            if (!empty($valor)) { //roda caso existir um valor associado ao filtro da iteracao
-                
-                $query .= $i > 0 ? " AND " : " WHERE "; // versao curta do if e else // concatena " AND " caso " WHERE " ja estiver na pesquisa ($query)
-               
-                // caso o fitro seja de capacidade, o operador de comparacao sera o " >= " caso contrario sera o " = "
-                $query .= $filtro == "capacidade" ? "$filtro >= '$valor'"  :"$filtro = '$valor'"; 
+        $filtros = $_POST["filtros"];
+        
+        $sql = []; //guarda os parametros da pesquisa sql
+        
+        // filtro sala
+        if($filtros["sala"]) $sql[] = " s.id_sala = '{$filtros["sala"]}'"; 
+        // filtro data inicio
+        if($filtros["data-inicio"]) $sql[] = " DATE(data) >= '{$filtros["data-inicio"]}'"; 
+        // filtro data fim
+        if($filtros["data-fim"]) $sql[] = " DATE(data) <= '{$filtros["data-fim"]}'"; 
+        // filtro turno
+        if($filtros["turno"]) $sql[] = " d.turno = '{$filtros["turno"]}'"; 
+        // filtro diciplina
+        if($filtros["diciplina"]) $sql[] = " d.nome = '{$filtros["diciplina"]}'";
+        // filtro docente
+        if($filtros["docente"]) $sql[] = " d.docente = '{$filtros["docente"]}'";
+        
+        // pesquisa base
+        $query = "SELECT s.id_sala as 'sala', 
+                         r.data as 'data' , 
+                         d.nome as 'diciplina', 
+                         d.docente as 'docente', 
+                         d.turno as 'turno', 
+                         CONCAT(d.participantes_qtd,'/',s.capacidade) as 'lotacao' 
+                 FROM reservas as r
+                 INNER JOIN disciplinas as d 
+                 ON r.id_disciplina = d.id_disciplina
+                 INNER JOIN salas as s
+                 ON r.id_sala = s.id_sala";
+        
+        // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
+        if($sql) $query .= ' WHERE ' .implode(' AND ',$sql); 
+        
 
-                $i++; // conta a quantidade de iteracoes a fim de determinar se o " WHERE " ja esta na pesquisa
-            }
-            
-        }
-
-        echo  $query . "<hr>"; // mostra a pesquisa para fins de teste 
-
-        }
-
-        mysql: $result = mysqli_query($conn,$query); // gera a pesquisa no banco de dados
-        $count = mysqli_num_rows($result);
-    
-?>
+        // limita a quatidade de registros que o banco de dados ira retornar
+        if ($filtros["registros"]) $query .= " LIMIT {$filtros["registros"]}";
+        
+        echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+        
+        // prepara a pesquisa para ser executada
+        $stmt = $conn->prepare($query);
+        // executa a pesquisa 
+        $stmt->execute();
+        // o resultado da pesquisa e convertido em uma array associativa
+        $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        ?>
 
 <table class="table">
-
+    
     <?php
-    if ($count){?>
+    // roda caso exista registros na pesquisa
+    if ($arr){?> 
 
-    <thead>
-            <tr>
-                <th scope="col">id</th>
-                <th scope="col">sala</th>
-                <th scope="col">tipo</th>
-                <th scope="col">capacidade</th>
-            </tr>
-
-        <?php } else {
-            echo "Nenhum resultado encontrado";
-        }
-        ?>
+<thead>
+    <tr>
+        <th scope="col">Sala</th>
+        <th scope="col">Data</th>
+        <th scope="col">Disciplina</th>
+        <th scope="col">Docente</th>
+        <th scope="col">Turno</th>
+        <th scope="col">Lotação</th>
+    </tr>
+    
+    <?php } else { // roda caso nao exista registros na pesquisa
+        echo "Nenhum resultado encontrado";
+    }
+    ?>
     </thead>
     <tbody>
         <?php 
-        while ($row = mysqli_fetch_assoc($result)){?>
+        
+        foreach ($arr as $_ => $row ){?>
             <tr>
-                <td><?php echo $row["id"]; ?></td>
                 <td><?php echo $row["sala"]; ?></td>
-                <td><?php echo $row["tipo"]; ?></td>
-                <td><?php echo $row["capacidade"]; ?></td> 
+                <td>
+                    <!-- converte a data de formato Y-m-d para "dia da semana" - d/m/Y -->
+                <?php echo date_format(date_create($row["data"])," l - d/m/Y");?>
+                </td>
+                <td><?php echo $row["diciplina"]; ?></td>
+                <td><?php echo $row["docente"]; ?></td> 
+                <td><?php echo $row["turno"]; ?></td> 
+                <td><?php echo $row["lotacao"]; ?></td> 
             </tr>
             <?php }?>
-
-    </tbody>
-</table>
             
+        </tbody>
+    </table>
+    
