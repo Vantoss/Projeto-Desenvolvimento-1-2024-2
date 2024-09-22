@@ -1,0 +1,4 @@
+Para inicializar o banco de dados basta criar uma database no phpMyAdmin com o nome "senac" e entrar nela.
+ Depois disso clique na opção "import" do menu superior e selecionar o arquivo "senac_db" 
+ ou copiar o codigo dentro desse arquivo e colocar na SQL query (menu superior).
+  

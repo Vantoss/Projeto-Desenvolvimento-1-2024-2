@@ -14,13 +14,13 @@
         // filtro turno
         if($filtros["turno"]) $sql[] = " d.turno = '{$filtros["turno"]}'"; 
         // filtro diciplina
-        if($filtros["diciplina"]) $sql[] = " d.nome = '{$filtros["diciplina"]}'";
+        if($filtros["diciplina"]) $sql[] = " d.nome LIKE '{$filtros["diciplina"]}%'";
         // filtro docente
-        if($filtros["docente"]) $sql[] = " d.docente = '{$filtros["docente"]}'";
+        if($filtros["docente"]) $sql[] = " d.docente LIKE '{$filtros["docente"]}%'";
         
         // pesquisa base
         $query = "SELECT s.id_sala as 'sala', 
-                         r.data as 'data' , 
+                         r.data as 'data', 
                          d.nome as 'diciplina', 
                          d.docente as 'docente', 
                          d.turno as 'turno', 
