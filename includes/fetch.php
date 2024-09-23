@@ -1,25 +1,30 @@
 <?php 
-    require_once "config.php";
-        
-        $filtros = $_POST["filtros"];
-        
-        $sql = []; //guarda os parametros da pesquisa sql
-        
-        // filtro sala
-        if($filtros["sala"]) $sql[] = " s.id_sala = '{$filtros["sala"]}'"; 
-        // filtro data inicio
-        if($filtros["data-inicio"]) $sql[] = " DATE(data) >= '{$filtros["data-inicio"]}'"; 
-        // filtro data fim
-        if($filtros["data-fim"]) $sql[] = " DATE(data) <= '{$filtros["data-fim"]}'"; 
-        // filtro turno
-        if($filtros["turno"]) $sql[] = " d.turno = '{$filtros["turno"]}'"; 
-        // filtro diciplina
-        if($filtros["diciplina"]) $sql[] = " d.nome LIKE '{$filtros["diciplina"]}%'";
-        // filtro docente
-        if($filtros["docente"]) $sql[] = " d.docente LIKE '{$filtros["docente"]}%'";
-        
-        // pesquisa base
-        $query = "SELECT s.id_sala as 'sala', 
+
+
+    require_once "../db/conn.php";
+
+
+    if(isset($_POST["filtros"])){
+
+            $filtros = $_POST["filtros"];
+            
+            $sql = []; //guarda os parametros da pesquisa sql
+            
+            // filtro sala
+            if($filtros["sala"]) $sql[] = " s.id_sala = '{$filtros["sala"]}'"; 
+            // filtro data inicio
+            if($filtros["data-inicio"]) $sql[] = " DATE(data) >= '{$filtros["data-inicio"]}'"; 
+            // filtro data fim
+            if($filtros["data-fim"]) $sql[] = " DATE(data) <= '{$filtros["data-fim"]}'"; 
+            // filtro turno
+            if($filtros["turno"]) $sql[] = " d.turno = '{$filtros["turno"]}'"; 
+            // filtro diciplina
+            if($filtros["diciplina"]) $sql[] = " d.nome LIKE '{$filtros["diciplina"]}%'";
+            // filtro docente
+            if($filtros["docente"]) $sql[] = " d.docente LIKE '{$filtros["docente"]}%'";
+            
+            // pesquisa base
+            $query = "SELECT s.id_sala as 'sala', 
                          r.data as 'data', 
                          d.nome as 'diciplina', 
                          d.docente as 'docente', 
@@ -34,7 +39,7 @@
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
         if($sql) $query .= ' WHERE ' .implode(' AND ',$sql); 
         
-
+        
         // limita a quatidade de registros que o banco de dados ira retornar
         if ($filtros["registros"]) $query .= " LIMIT {$filtros["registros"]}";
         
@@ -49,7 +54,7 @@
         
         ?>
 
-<table class="table">
+<table class="table table-striped">
     
     <?php
     // roda caso exista registros na pesquisa
@@ -72,13 +77,12 @@
     </thead>
     <tbody>
         <?php 
-        
         foreach ($arr as $_ => $row ){?>
             <tr>
                 <td><?php echo $row["sala"]; ?></td>
                 <td>
                     <!-- converte a data de formato Y-m-d para "dia da semana" - d/m/Y -->
-                <?php echo date_format(date_create($row["data"])," l - d/m/Y");?>
+                    <?php echo date_format(date_create($row["data"])," l - d/m/Y");?>
                 </td>
                 <td><?php echo $row["diciplina"]; ?></td>
                 <td><?php echo $row["docente"]; ?></td> 
@@ -86,7 +90,11 @@
                 <td><?php echo $row["lotacao"]; ?></td> 
             </tr>
             <?php }?>
-            
         </tbody>
     </table>
+
+    
+    <?php } ?>
+    
+    
     

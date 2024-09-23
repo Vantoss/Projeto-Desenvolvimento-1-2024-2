@@ -14,5 +14,3 @@ try {
 } catch(PDOException $e) {
   echo "Connection failed: " . $e->getMessage();
 }
-
-// $conn = mysqli_connect("localhost","root","","senac");
