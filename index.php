@@ -6,7 +6,6 @@
 ?>
 <body>
 
-<?php echo basename($_SERVER['REQUEST_URI'], ".php");?>
     <h1>Pagina inical</h1>
 </body>
 </html>

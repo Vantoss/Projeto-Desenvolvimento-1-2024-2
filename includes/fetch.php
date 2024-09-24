@@ -1,8 +1,11 @@
 <?php 
 
-
+    // conexão do banco de dados
     require_once "../db/conn.php";
 
+function gerar_consulta($conn){
+
+}
 
     if(isset($_POST["filtros"])){
 
@@ -54,7 +57,7 @@
         
         ?>
 
-<table class="table table-striped">
+<table class="table table-striped tabela-consulta">
     
     <?php
     // roda caso exista registros na pesquisa
@@ -68,6 +71,7 @@
         <th scope="col">Docente</th>
         <th scope="col">Turno</th>
         <th scope="col">Lotação</th>
+        <th scope="col">Ação</th>
     </tr>
     
     <?php } else { // roda caso nao exista registros na pesquisa
@@ -87,7 +91,9 @@
                 <td><?php echo $row["diciplina"]; ?></td>
                 <td><?php echo $row["docente"]; ?></td> 
                 <td><?php echo $row["turno"]; ?></td> 
-                <td><?php echo $row["lotacao"]; ?></td> 
+                <td><?php echo $row["lotacao"]; ?></td>
+                <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar-reserva-modal">Editar</button></td>
+                <td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletar-reserva-modal">Deletar</button></td> 
             </tr>
             <?php }?>
         </tbody>

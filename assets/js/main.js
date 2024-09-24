@@ -15,11 +15,19 @@ $(Document).ready(function(){
             type:"POST",
             data: {filtros : filtros},
             beforeSend:function(){
-                $("#tabela-consulta").html("<span>Procurando...</span>");
+                $("#container-tabela").html("<span>Procurando...</span>");
             },
             success:function(data){
-                $("#tabela-consulta").html(data); // em caso de sucesso os dados sao carregados no container
+                $("#container-tabela").html(data); // em caso de sucesso os dados sao carregados no container
             }
         });
     });
 });
+
+
+const myModal = document.getElementById('myModal')
+const myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})

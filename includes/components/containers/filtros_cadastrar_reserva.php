@@ -2,7 +2,7 @@
 
 <div class="row g-3">
 
-    <h2>Consultar Reservas</h2>
+    <h2>Cadastrar Reservas</h2>
 
   <!-- FILTRO DICIPLINA -->
   <div class="col-md-6">
@@ -59,6 +59,6 @@
   </div>
 
   <div class="col-12">
-    <button type="submit" class="btn btn-primary" id="btn-buscar">Buscar</button>
+    <button type="button" class="btn btn-primary btn-lg" id="btn-buscar">Buscar</button>
   </div>
 </div>
