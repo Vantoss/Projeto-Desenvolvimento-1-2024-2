@@ -46,10 +46,10 @@
           <a class="nav-link <?php activeTab("index")?>" aria-current="page" href="<?php echo ROOT_DIR ?>">Pagina Inicial</a>
         </li>
         <li class="nav-item" >
-          <a class="nav-link <?php activeTab("consultar_reserva")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/consultar_reserva.php'?>>Consultar Reserva</a>
+          <a class="nav-link <?php activeTab("consultar_reserva")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/page_consultar_reserva.php'?>>Consultar Reserva</a>
         </li>
         <li class="nav-item" >
-          <a class="nav-link <?php activeTab("cadastrar_reserva")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/cadastrar_reserva.php'?>>Cadastrar Reserva</a>
+          <a class="nav-link <?php activeTab("cadastrar_reserva")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/page_cadastrar_reserva.php'?>>Cadastrar Reserva</a>
         </li>
       </ul>
       <form class="d-flex">

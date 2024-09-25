@@ -9,14 +9,18 @@
     function customPageHeader(){?>
         <!-- CSS DA PAGINA -->
         <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/cadastrar_reserva.css'?>">
+        <!-- JS DA PAGINA -->
+        <script src="../assets/js/cadastrar_reservas.js" defer></script>
     <?php } ?>
  
 <body>
-    <!-- BOX FILTROS -->
-    <?php require_once ROOT_DIR.'includes/components/containers/filtros_cadastrar_reserva.php'; ?>
+    
+    <?php 
+    // BOX FILTROS CADASTRAR RESERVA
+    require_once ROOT_DIR.'includes/components/forms/form_consultar_salas_disponiveis.php'; ?>
     
     
-    <div class="container" id="cadastrar-reserva-tabela"></div>
+    <div class="container" id="container-tabela"></div>
     
 </body>
 </html>

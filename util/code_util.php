@@ -4,7 +4,7 @@
 
 <?php
 $startdate=strtotime("Saturday");
-$enddate=strtotime("+6 weeks", $startdate);
+$enddate=strtotime("+20 weeks", $startdate);
 
 while ($startdate < $enddate) {
   echo date("M d", $startdate) . "<br>";

@@ -13,10 +13,9 @@
 
 <body>
     
-    
     <?php
     // BOX FILTROS 
-    require_once ROOT_DIR.'includes/components/containers/filtros_consultar_reserva.php';
+    require_once ROOT_DIR.'includes/components/forms/form_consultar_reservas.php';
     
     // MODAL EDITAR RESERVA
     require_once ROOT_DIR.'includes/components/modals/modal_editar_reserva.php';

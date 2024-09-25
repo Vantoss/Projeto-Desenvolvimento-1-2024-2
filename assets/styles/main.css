@@ -7,7 +7,22 @@
 
 /* ----------------BOX DE FILTROS-------------- */
 
-.g-3, .table{ 
+.g-3, #container-tabela{
+
+    background-color: rgba(var(--bs-light-rgb), 1);
+}
+
+#container-tabela{
+    display: none;
+}
+
+.table{
+    vertical-align: baseline;
+}
+
+
+
+.g-3, #container-tabela{ 
     margin-top: 50px !important;
     width: 90%;
     margin: auto;
