@@ -18,14 +18,13 @@ $days = "";
 
 
 while ($startdate < $enddate) {
-   $days .=  date("'Y-m-d',", $startdate);
+   $days .=  date("'Y-m-d', ", $startdate);
 
   
 $startdate = strtotime("+2 days", $startdate);
 }
 
-$days .= ")";
-$days = str_replace(",)","",$days);
+$days = substr_replace($days,"",-2);
 
 // IN ('Germany', 'France', 'UK')
 

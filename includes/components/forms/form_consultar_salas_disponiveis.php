@@ -1,29 +1,28 @@
 <!-- BOX FILTROS -->
 
-<form id="form-consultar-salas-disponiveis" class="row g-3">
+<form class="row g-3" id="form-consultar-salas-disponiveis"  method="post">
 
     <h2>Cadastrar Reservas</h2>
   
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="input-data-inicio" name="data-inicio" required>
+    <input type="date" class="form-control" id="data-inicio" name="data-inicio" required>
   </div>
   
   
   <!-- FILTRO DATA FINAL -->
   <div class="col-md-3">
     <label for="data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control" id="input-data-fim" disabled name="data-fim" >
+    <input type="date" class="form-control" id="data-fim" name="data-fim" disabled required>
   </div>
   
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">
     <label for="reserva-tipo" class="form-label">Tipo de reserva</label>
-    <select id="reserva-tipo" class="form-select" name="reserva-tipo" required>
-      <option selected="" value=""></option>
-      <option  value="unica">Única</option>
-      <option value="diaria">Diária</option>
+    <select id="reserva-tipo" class="form-select" name="reserva-tipo" onchange="disableData_fim(this)">
+      <option value="única">Única</option>
+      <option value="diária">Diária</option>
       <option value="semanal" >Semanal</option>
     </select>
   </div>
@@ -86,4 +85,4 @@
   <div class="col-12">
     <button type="submit" class="btn btn-primary btn-lg" id="btn-buscar-sala-disponivel">Buscar</button>
   </div>
-      </form>
+</form>

@@ -34,6 +34,7 @@ $(Document).ready(function(){
             data: $(this).serialize(),
             beforeSend:function(){
                 $("#container-tabela").html("<span>Procurando...</span>")
+                $("#container-tabela").css("display","block")
             },
             success:function(data){
                 $("#container-tabela").html(data) // em caso de sucesso os dados sao carregados no container

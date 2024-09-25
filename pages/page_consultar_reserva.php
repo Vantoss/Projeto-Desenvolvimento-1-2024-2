@@ -26,7 +26,7 @@
 
     
     
-    <div class=".container" id="container-tabela"></div>
+    <div class="container-fluid" id="container-tabela"></div>
     
 </body>
 </html>

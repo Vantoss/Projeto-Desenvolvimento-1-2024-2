@@ -20,7 +20,7 @@
     require_once ROOT_DIR.'includes/components/forms/form_consultar_salas_disponiveis.php'; ?>
     
     
-    <div class="container" id="container-tabela"></div>
+    <div class="container-fluid" id="container-tabela"></div>
     
 </body>
 </html>
