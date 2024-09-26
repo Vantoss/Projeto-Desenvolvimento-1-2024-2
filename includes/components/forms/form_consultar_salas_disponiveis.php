@@ -31,7 +31,6 @@
   <div class="col-md-3">
     <label for="turno" class="form-label">Turno</label>
     <select id="turno" class="form-select" name="turno">
-      <option value="" selected="">Qualquer</option>
       <option value="Manhã" >Manhã</option>
       <option value="Tarde" >Tarde</option>
       <option value="Noite" >Noite</option>
@@ -44,6 +43,7 @@
     <select id="sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
       <?php
+      require_once "../data/salas.php";
       foreach ($salas as $sala) {?>
           <option value="<?php echo $sala?>" ><?php echo $sala ?></option>
       <?php } ?>
@@ -74,6 +74,14 @@
     <label for="maquinas-qtd" class="form-label" >N.&#xba; de maquinas</label>
     <input type="number" id="maquinas-qtd" class="form-control" min="1" placeholder="Qualquer" name="maquinas-qtd">
   </div>
+  
+  <!-- FILTRO MAQUINA TIPO -->
+  <div class="col-md-3">
+    <label for="maquinas-tipo" class="form-label" >Tipo de maquinas</label>
+    <input type="text" id="maquinas-tipo" class="form-control" placeholder="Qualquer" name="maquinas-tipo">
+  </div>
+
+  
 
   <!-- FILTRO REGISTROS -->
   <div class="col-md-3">

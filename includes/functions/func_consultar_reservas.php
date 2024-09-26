@@ -2,45 +2,36 @@
 
     //  =========================== CONSULTAR RESERVA ======================================
 
-    // conexão do banco de dados
-    // require_once "./includes/conn.php";
+    define('__ROOT__', dirname(dirname(__FILE__,2)));
+    
+    require __ROOT__ . '/db/config.php';
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "senac";
-
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=$database", $username, $password);
-  // set the PDO error mode to exception
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//   echo "Connected successfully";
-} catch(PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
-}
             
         $sql = [];
             
-            // filtro diciplina
-        if($_POST["diciplina"]) $sql[] = " d.nome LIKE '{$_POST["diciplina"]}%'";
+        // filtro turma
+        if($_POST["turma"]) $sql[] = " t.nome LIKE '{$_POST["turma"]}%'";
 
-            // filtro docente
-        if($_POST["docente"]) $sql[] = " d.docente LIKE '{$_POST["docente"]}%'";
+        // filtro docente
+        if($_POST["docente"]) $sql[] = " t.docente LIKE '{$_POST["docente"]}%'";
 
-            // filtro sala 
-            if($_POST["sala"]) $sql[] = " s.id_sala = '{$_POST["sala"]}'";
+        //filtro curso
+        if($_POST["curso"]) $sql[] = " t.curso LIKE '{$_POST["curso"]}%'";
 
-            // filtro turno
-            if($_POST["turno"]) $sql[] = " d.turno = '{$_POST["turno"]}'";
+        // filtro sala 
+        if($_POST["sala"]) $sql[] = " s.id_sala = '{$_POST["sala"]}'";
 
-            // filtro reserva tipo
-            if($_POST["reserva-tipo"]) $sql[] = " r.reserva_tipo = '{$_POST["reserva-tipo"]}'"; 
+        // filtro turno
+        if($_POST["turno"]) $sql[] = " t.turno = '{$_POST["turno"]}'";
 
-                // filtro data inicio
-            if($_POST["data-inicio"]) $sql[] = " DATE(data) >= '{$_POST["data-inicio"]}'"; 
+        // filtro reserva tipo
+        if($_POST["reserva-tipo"]) $sql[] = " r.reserva_tipo = '{$_POST["reserva-tipo"]}'"; 
 
-                // filtro data fim
-            if($_POST["data-fim"]) $sql[] = " DATE(data) <= '{$_POST["data-fim"]}'"; 
+        // filtro data inicio
+        if($_POST["data-inicio"]) $sql[] = " DATE(data) >= '{$_POST["data-inicio"]}'"; 
+
+        // filtro data fim
+        if($_POST["data-fim"]) $sql[] = " DATE(data) <= '{$_POST["data-fim"]}'"; 
 
                 
                 // PESQUISA BASE CONSULTAR RESERVAS
@@ -48,13 +39,13 @@ try {
                          s.tipo_sala as 'sala-tipo', 
                          r.data as 'data',
                          r.reserva_tipo as 'reserva', 
-                         d.nome as 'diciplina', 
-                         d.docente as 'docente', 
-                         d.turno as 'turno', 
-                         CONCAT(d.participantes_qtd, '/', s.lugares_qtd) as 'lugares' 
+                         t.nome as 'turma', 
+                         t.docente as 'docente', 
+                         t.turno as 'turno', 
+                         CONCAT(t.participantes_qtd, '/', s.lugares_qtd) as 'lugares' 
                  FROM reservas as r
-                 INNER JOIN disciplinas as d 
-                 ON r.id_disciplina = d.id_disciplina
+                 INNER JOIN turmas as t 
+                 ON r.id_turma = t.id_turma
                  INNER JOIN salas as s
                  ON r.id_sala = s.id_sala";
             

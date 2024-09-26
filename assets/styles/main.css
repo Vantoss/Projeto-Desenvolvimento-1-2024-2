@@ -13,14 +13,14 @@
 }
 
 #container-tabela{
+    text-align: center;
     display: none;
 }
 
 .table{
     vertical-align: baseline;
+    text-align: center;
 }
-
-
 
 .g-3, #container-tabela{ 
     margin-top: 50px !important;

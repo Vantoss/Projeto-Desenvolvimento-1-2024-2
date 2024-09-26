@@ -27,13 +27,12 @@ SET time_zone = "+00:00";
 -- Table structure for table `disciplinas`
 --
 
-CREATE TABLE `disciplinas` (
-  `id_disciplina` int(11) NOT NULL,
+CREATE TABLE `turmas` (
+  `id_turma` int(11) NOT NULL,
   `nome` varchar(80) DEFAULT NULL,
   `curso` varchar(80) DEFAULT NULL,
   `docente` varchar(50) DEFAULT NULL,
   `turno` varchar(10) DEFAULT NULL,
-  `turma` varchar(2) DEFAULT NULL,
   `codigo` varchar(60) DEFAULT NULL,
   `participantes_qtd` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -42,23 +41,23 @@ CREATE TABLE `disciplinas` (
 -- Dumping data for table `disciplinas`
 --
 
-INSERT INTO `disciplinas` (`id_disciplina`, `nome`, `curso`, `docente`, `turno`, `turma`, `codigo`, `participantes_qtd`) VALUES
-(1, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Manhã', NULL, 'RS-20231-FSPOA-DlW-PRE-SPI1M24-1A', 20),
-(2, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Noite', NULL, 'RS-20231-FSPOA-DlW-PRE-SPI1N24-1A', 25),
-(3, 'Desenvolvimento Interface Web', 'SPI', 'Rafael', 'Manhã', NULL, 'RS-20231-FSPOA-DlW-PRE-SPI1M24-1A', 24),
-(4, 'Desenvolvimento Interface Web', 'SPI', 'Rafael', 'Noite', NULL, 'RS-20231-FSPOA-DlW-PRE-SPI1N24-1A', 22),
-(5, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Manhã', NULL, 'RS-20242-FSPOA-DGR-PRE-PM1M24-2', 18),
-(6, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Noite', NULL, 'RS-20242-FSPOA-DGR-PRE-PM1N24-2', 25),
-(7, 'Desenvolvimento Gráfico', 'PM', 'Pedro', 'Manhã', NULL, 'RS-20242-FSPOA-DGR-PRE-PM1M24-2', 28),
-(8, 'Desenvolvimento Gráfico', 'PM', 'Pedro', 'Noite', NULL, 'RS-20242-FSPOA-DGR-PRE-PM1N24-2', 12),
-(9, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Manhã', NULL, 'RS-20232-FSPOA-ALG1-PRE-ADS3M24-2', 27),
-(10, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Noite', NULL, 'RS-20232-FSPOA-ALG1-PRE-ADS3N24-2', 22),
-(11, 'Algoritmos Estruturas de Dados I', 'ADS', 'Mario', 'Manhã', NULL, 'RS-20232-FSPOA-ALG1-PRE-ADS3M24-2', 31),
-(12, 'Algoritmos Estruturas de Dados I', 'ADS', 'Mario', 'Noite', NULL, 'RS-20232-FSPOA-ALG1-PRE-ADS3N24-2', 20),
-(13, 'Fundamentos Computacionais', 'ADS', 'Reinaldo', 'Manhã', NULL, 'RS-20222-FSPOA-FUND-PRE-ADS1M24-2', 19),
-(14, 'Fundamentos Computacionais', 'ADS', 'Reinaldo', 'Noite', NULL, 'RS-20222-FSPOA-FUND-PRE-ADS1N24-2', 24),
-(15, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Manhã', NULL, 'RS-20222-FSPOA-FUND-PRE-ADS1M24-2', 22),
-(16, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Noite', NULL, 'RS-20222-FSPOA-FUND-PRE-ADS1N24-2', 26);
+INSERT INTO `turmas` (`id_turma`, `nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) VALUES
+(1, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Manhã', 'RS-20231-FSPOA-DlW-PRE-SPI1M24-1A', 20),
+(2, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Noite', 'RS-20231-FSPOA-DlW-PRE-SPI1N24-1A', 25),
+(3, 'Desenvolvimento Interface Web', 'SPI', 'Rafael', 'Manhã', 'RS-20231-FSPOA-DlW-PRE-SPI1M24-1A', 24),
+(4, 'Desenvolvimento Interface Web', 'SPI', 'Rafael', 'Noite', 'RS-20231-FSPOA-DlW-PRE-SPI1N24-1A', 22),
+(5, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Manhã', 'RS-20242-FSPOA-DGR-PRE-PM1M24-2', 18),
+(6, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Noite', 'RS-20242-FSPOA-DGR-PRE-PM1N24-2', 25),
+(7, 'Desenvolvimento Gráfico', 'PM', 'Pedro', 'Manhã', 'RS-20242-FSPOA-DGR-PRE-PM1M24-2', 28),
+(8, 'Desenvolvimento Gráfico', 'PM', 'Pedro', 'Noite', 'RS-20242-FSPOA-DGR-PRE-PM1N24-2', 12),
+(9, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Manhã', 'RS-20232-FSPOA-ALG1-PRE-ADS3M24-2', 27),
+(10, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Noite', 'RS-20232-FSPOA-ALG1-PRE-ADS3N24-2', 22),
+(11, 'Algoritmos Estruturas de Dados I', 'ADS', 'Mario', 'Manhã', 'RS-20232-FSPOA-ALG1-PRE-ADS3M24-2', 31),
+(12, 'Algoritmos Estruturas de Dados I', 'ADS', 'Mario', 'Noite', 'RS-20232-FSPOA-ALG1-PRE-ADS3N24-2', 20),
+(13, 'Fundamentos Computacionais', 'ADS', 'Reinaldo', 'Manhã', 'RS-20222-FSPOA-FUND-PRE-ADS1M24-2', 19),
+(14, 'Fundamentos Computacionais', 'ADS', 'Reinaldo', 'Noite', 'RS-20222-FSPOA-FUND-PRE-ADS1N24-2', 24),
+(15, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Manhã', 'RS-20222-FSPOA-FUND-PRE-ADS1M24-2', 22),
+(16, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Noite', 'RS-20222-FSPOA-FUND-PRE-ADS1N24-2', 26);
 
 -- --------------------------------------------------------
 
@@ -71,14 +70,14 @@ CREATE TABLE `reservas` (
   `data` date NOT NULL,
   `reserva_tipo` varchar(30) DEFAULT NULL,
   `id_sala` int(11) NOT NULL,
-  `id_disciplina` int(11) NOT NULL
+  `id_turma` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reservas`
 --
 
-INSERT INTO `reservas` (`id_reservas`, `data`, `reserva_tipo`, `id_sala`, `id_disciplina`) VALUES
+INSERT INTO `reservas` (`id_reservas`, `data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES
 (1, '2024-03-04', 'Semanal', 504, 9),
 (2, '2024-03-11', 'Semanal', 504, 9),
 (3, '2024-03-18', 'Semanal', 504, 9),
@@ -269,8 +268,8 @@ INSERT INTO `salas` (`id_sala`, `tipo_sala`, `lugares_qtd`, `maquinas_qtd`, `maq
 --
 -- Indexes for table `disciplinas`
 --
-ALTER TABLE `disciplinas`
-  ADD PRIMARY KEY (`id_disciplina`);
+ALTER TABLE `turmas`
+  ADD PRIMARY KEY (`id_turma`);
 
 --
 -- Indexes for table `reservas`
@@ -278,7 +277,7 @@ ALTER TABLE `disciplinas`
 ALTER TABLE `reservas`
   ADD PRIMARY KEY (`id_reservas`),
   ADD KEY `id_sala` (`id_sala`),
-  ADD KEY `id_disciplina` (`id_disciplina`);
+  ADD KEY `id_turma` (`id_turma`);
 
 --
 -- Indexes for table `salas`
@@ -286,15 +285,10 @@ ALTER TABLE `reservas`
 ALTER TABLE `salas`
   ADD PRIMARY KEY (`id_sala`);
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
--- AUTO_INCREMENT for table `disciplinas`
---
-ALTER TABLE `disciplinas`
-  MODIFY `id_disciplina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+ALTER TABLE `turmas`
+  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `reservas`
@@ -311,7 +305,7 @@ ALTER TABLE `reservas`
 --
 ALTER TABLE `reservas`
   ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id_sala`),
-  ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`id_disciplina`) REFERENCES `disciplinas` (`id_disciplina`);
+  ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`id_turma`) REFERENCES `turmas` (`id_turma`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

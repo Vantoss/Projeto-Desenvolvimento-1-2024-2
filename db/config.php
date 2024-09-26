@@ -1,5 +1,4 @@
 <?php  
-
 // configuracao do banco de dados
 $servername = "localhost";
 $username = "root";
@@ -13,4 +12,7 @@ try {
 //   echo "Connected successfully";
 } catch(PDOException $e) {
   echo "Connection failed: " . $e->getMessage();
+
 }
+
+?>

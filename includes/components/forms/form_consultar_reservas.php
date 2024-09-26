@@ -1,19 +1,27 @@
+<?php define(ROOT_DIR, "./") ?>
+
 <!-- BOX FILTROS -->
 
 <form class="row g-3" id="form-consulta" method="post">
   
     <h2>Consultar Reservas</h2>
 
-  <!-- FILTRO DICIPLINA -->
+  <!-- FILTRO turma -->
   <div class="col-md-6">
-    <label for="diciplina" class="form-label">Diciplina</label>
-    <input type="text" class="form-control" id="diciplina" name="diciplina">
+    <label for="turma" class="form-label">Turma</label>
+    <input type="text" class="form-control" id="turma" name="turma">
   </div>
 
   <!-- FILTRO DOCENTE -->
   <div class="col-md-6">
     <label for="docente" class="form-label">Docente</label>
     <input type="text" class="form-control" id="docente" name="docente">
+  </div>
+
+  <!-- FILTRO CURSO -->
+  <div class="col-md-3">
+    <label for="curso" class="form-label">Curso</label>
+    <input type="text" class="form-control" id="curso" name="curso">
   </div>
   
   <!-- FILTRO DATA INICIO -->
@@ -30,11 +38,11 @@
 
   <!-- FILTRO SALA -->
   <div class="col-md-3">
-    <label for="sala" class="form-label">Sala</label>
+    <label for="sala" class="form-label"> N.&#xba; da sala</label>
     <select id="sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
       <?php
-      require_once "../data/salas.php";
+      require_once ROOT_DIR . "data/salas.php";
       foreach ($salas as $sala) {?>
           <option value="<?php echo $sala?>" ><?php echo $sala?></option>
       <?php } ?>
@@ -65,7 +73,7 @@
   
   <!-- FILTRO REGISTROS -->
   <div class="col-md-3">
-    <label for="registros" class="form-label" >Registros</label>
+    <label for="registros" class="form-label" >N.&#xba; de registros</label>
     <input type="number" id="registros" class="form-control" min="1" placeholder="Todos" name="registros">
   </div>
 

@@ -30,7 +30,7 @@
                     <?php echo date_format(date_create($row["data"])," l - d/m/Y");?>
                 </td>
                 <td><?php echo $row["reserva"]; ?></td>
-                <td><?php echo $row["diciplina"]; ?></td>
+                <td><?php echo $row["turma"]; ?></td>
                 <td><?php echo $row["docente"]; ?></td> 
                 <td><?php echo $row["turno"]; ?></td> 
                 <td><?php echo $row["lugares"]; ?></td>
