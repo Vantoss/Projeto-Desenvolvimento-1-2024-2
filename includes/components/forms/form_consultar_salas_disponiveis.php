@@ -1,6 +1,6 @@
 <!-- BOX FILTROS -->
 
-<form class="row g-3" id="form-consultar-salas-disponiveis"  method="post">
+<form class="row g-3 form-consulta" id="form-consultar-salas"  method="post">
 
     <h2>Cadastrar Reservas</h2>
   

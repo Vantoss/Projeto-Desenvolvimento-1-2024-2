@@ -66,7 +66,7 @@ INSERT INTO `turmas` (`id_turma`, `nome`, `curso`, `docente`, `turno`, `codigo`,
 --
 
 CREATE TABLE `reservas` (
-  `id_reservas` int(11) NOT NULL,
+  `id_reserva` int(11) NOT NULL,
   `data` date NOT NULL,
   `reserva_tipo` varchar(30) DEFAULT NULL,
   `id_sala` int(11) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE `reservas` (
 -- Dumping data for table `reservas`
 --
 
-INSERT INTO `reservas` (`id_reservas`, `data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES
+INSERT INTO `reservas` (`id_reserva`, `data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES
 (1, '2024-03-04', 'Semanal', 504, 9),
 (2, '2024-03-11', 'Semanal', 504, 9),
 (3, '2024-03-18', 'Semanal', 504, 9),
@@ -275,7 +275,7 @@ ALTER TABLE `turmas`
 -- Indexes for table `reservas`
 --
 ALTER TABLE `reservas`
-  ADD PRIMARY KEY (`id_reservas`),
+  ADD PRIMARY KEY (`id_reserva`),
   ADD KEY `id_sala` (`id_sala`),
   ADD KEY `id_turma` (`id_turma`);
 
@@ -294,7 +294,7 @@ ALTER TABLE `turmas`
 -- AUTO_INCREMENT for table `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reservas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- Constraints for dumped tables

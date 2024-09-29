@@ -2,7 +2,7 @@
 
 <!-- BOX FILTROS -->
 
-<form class="row g-3" id="form-consulta" method="post">
+<form class="row g-3 form-consulta" id="form-consultar-reservas" method="post">
   
     <h2>Consultar Reservas</h2>
 

@@ -1,17 +1,19 @@
-
-<?php
-
-echo "<h4>Turno: " . $_POST["turno"] . "</h4>";        
-?>
 <table class="table table-striped tabela-consulta">
     <?php
 
     // roda caso exista registros na pesquisa
-    if ($arr){
-     
+    if ($arr){?>
+        
 
-?> 
-    
+            <button id="data-tag" class="btn btn-primary"><?php echo $_POST["turno"];?></button>
+            <?php foreach ($datas as $data) {?>
+                <button id="data-tag" class="btn btn-primary ">
+                    <?php echo date_format(date_create($data),"d/m/Y"); ?>
+                    
+                </button>
+                
+                <?php } ?>   
+        
 <thead>
     <tr>
         <th scope="col">Sala</th>
@@ -38,7 +40,7 @@ echo "<h4>Turno: " . $_POST["turno"] . "</h4>";
                 <td><?php echo $row["maquinas-qtd"]?></td>
                 <td><?php echo $row["maquinas-tipo"]?></td>
                 <td>
-                    <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#editar-reserva-modal">Reservar</button>   
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editar-reserva-modal">Reservar</button>   
                 </td> 
             </tr>
             <?php }?>
