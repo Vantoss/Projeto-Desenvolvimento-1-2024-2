@@ -195,18 +195,9 @@
                 $stm = $conn->prepare($query);
                 
                 if($stm->execute()){
-                    
-                    echo json_encode([
-                        "statusCode" => 200,
-                        "message" => "Reserva deletada com sucesso"
-                    ]);
-                    
+                        echo "reserva deletado com sucesso";
                 } else {
-                    
-                    echo json_encode([
-                        "statusCode" => 200,
-                        "message" => "Erro ao tentar deletar a reserva"
-                    ]); 
+                    echo "Erro ao tentar deletar a reserva";
                 }
 
             } else {
@@ -229,25 +220,13 @@
                 
                 if($_POST["del-reservas"] == "apartir"){
 
-                    $query .= " AND DATE(date) >= '{$arr["data"]}";
+                    $query .= " AND DATE(data) >= '{$arr["data"]}'";
                 }
                 
                 
                 $stm = $conn->prepare($query);
 
-                if($stm->execute()){
-                    
-                    echo json_encode([
-                        "statusCode" => 200,
-                        "message" => "{$stm->rowCount()}" . " reservas deletadas com sucesso"
-                    ]);
-                    
-                } else {
-                    echo json_encode([
-                        "statusCode" => 200,
-                        "message" => "Erro ao tentar deletar as reservas"
-                    ]);
-                }
+                echo $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso" : "Erro ao tentar deletar as reservas";
 
             }
                 

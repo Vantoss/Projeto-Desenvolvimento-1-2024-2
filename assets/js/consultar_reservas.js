@@ -28,6 +28,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         var form = new FormData(this)
+        
             
         $.ajax({ 
             
@@ -37,8 +38,9 @@ $(document).ready(function () {
             contentType: false,
             data: form,
             success:function(response){
-
+                $("#btn-buscar").click()
                 alert(response)
+
             }
             
             
