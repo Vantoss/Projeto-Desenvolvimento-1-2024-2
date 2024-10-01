@@ -47,7 +47,7 @@
                          s.tipo_sala as 'sala-tipo', 
                          r.data as 'data',
                          r.reserva_tipo as 'reserva',
-                         r.id_reservas as 'id-reserva', 
+                         r.id_reserva as 'id-reserva', 
                          t.nome as 'turma', 
                          t.docente as 'docente', 
                          t.turno as 'turno', 

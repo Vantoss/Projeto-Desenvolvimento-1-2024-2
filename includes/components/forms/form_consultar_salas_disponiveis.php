@@ -76,11 +76,22 @@
   </div>
   
   <!-- FILTRO MAQUINA TIPO -->
-  <div class="col-md-3">
+  <!--HTML original caso seja revertido. Caso contrário, apagar. -->
+  <!--<div class="col-md-3">
     <label for="maquinas-tipo" class="form-label" >Tipo de maquinas</label>
     <input type="text" id="maquinas-tipo" class="form-control" placeholder="Qualquer" name="maquinas-tipo">
+  </div> -->
+  <div class="col-md-3">
+    <label for="maquinas-tipo" class="form-label">Tipo de maquinas</label>
+    <select id="maquinas-tipo" class="form-select" name="maquinas-tipo">
+      <option value="" selected="">Qualquer</option>
+      <?php
+      require_once "../data/salas.php";
+      foreach ($maquinas_tipos as $maquina) {?>
+          <option value="<?php echo $maquina?>" ><?php echo ucfirst(mb_strtolower($maquina))?></option>
+      <?php } ?>
+    </select>
   </div>
-
   
 
   <!-- FILTRO REGISTROS -->
