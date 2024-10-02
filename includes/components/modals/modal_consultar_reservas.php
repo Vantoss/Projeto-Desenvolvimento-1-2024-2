@@ -27,21 +27,23 @@
       </div>
       <form method="post" id="form-del-reserva">
         <div class="modal-body">
-          <input type="hidden" id="id-reserva" name="id-reserva" value="">
+
+          <input type="hidden" id="id-reserva" name="id_reserva" value="">
+
           <div class="form-check">
-            <input class="form-check-input" id="radio-del-atual" type="radio" name="del-reservas" value="atual" checked>
+            <input class="form-check-input" id="radio-del-atual" type="radio" name="del_reservas" value="atual" checked>
             <label class="form-check-label" for="flexRadioDefault1">
               Deletar registro atual
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" id="radio-del-todos" type="radio" name="del-reservas" value="todos" >
+            <input class="form-check-input" id="radio-del-todos" type="radio" name="del_reservas" value="todos" >
             <label class="form-check-label" for="flexRadioDefault2">
               Deletar todos os registros
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" id="radio-del-apartir" type="radio" name="del-reservas" value="apartir"  >
+            <input class="form-check-input" id="radio-del-apartir" type="radio" name="del_reservas" value="apartir"  >
             <label class="form-check-label" for="flexRadioDefault2">
               Deletar os registros a partir do atual
             </label>

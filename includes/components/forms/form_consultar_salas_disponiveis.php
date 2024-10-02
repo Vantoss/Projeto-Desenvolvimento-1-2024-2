@@ -71,7 +71,7 @@
   <!-- FILTRO QUANTIDADE MAQUINAS -->
   <div class="col-md-3">
     <label for="maquinas-qtd" class="form-label" >N.&#xba; de maquinas</label>
-    <input type="number" id="maquinas-qtd" class="form-control" min="1" placeholder="Qualquer" name="maquinas_qtd">
+    <input type="number" id="maquinas-qtd" class="form-control" min="0" placeholder="Qualquer" name="maquinas_qtd">
   </div>
   
   <!-- FILTRO MAQUINA TIPO -->
@@ -80,9 +80,10 @@
     <label for="maquinas-tipo" class="form-label" >Tipo de maquinas</label>
     <input type="text" id="maquinas-tipo" class="form-control" placeholder="Qualquer" name="maquinas-tipo">
   </div> -->
+
   <div class="col-md-3">
     <label for="maquinas-tipo" class="form-label">Tipo de maquinas</label>
-    <select id="maquinas-tipo" class="form-select" name="maquinas-tipo">
+    <select id="maquinas-tipo" class="form-select" name="maquinas_tipo">
       <option value="" selected="">Qualquer</option>
       <?php
       require_once "../data/salas.php";

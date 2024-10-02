@@ -101,7 +101,11 @@
             if($_GET["sala_tipo"]) $sql[] = " s.tipo_sala = '{$_GET["sala_tipo"]}'";
             
             // filtro maquinas quantidade
-            if($_GET["maquinas_qtd"]) $sql[] = " s.maquinas_qtd = '{$_GET["maquinas_qtd"]}'";
+            if($_GET["maquinas_qtd"] >= 0) {
+                
+                $maquinas_qtd = intval($_GET["maquinas_qtd"]);
+
+                $sql[] = " s.maquinas_qtd >= '$maquinas_qtd'";}
             
             // filtro maquinas_tipo
             if($_GET["maquinas_tipo"]) $sql[] = " s.maquinas_tipo LIKE '{$_GET["maquinas_tipo"]}%'";
@@ -154,6 +158,7 @@
             }
             
             
+
             // filtro turno
             $query .= $_GET["turno"] ? "AND t.turno = '{$_GET["turno"]}')": ")";
             
@@ -188,12 +193,13 @@
         // DELETAR RESERVA =====================================================================================================
         // =====================================================================================================================
 
-    if(isset($_GET["del_reservas"] )){
         
-        if($_GET["del_reservas"] == "atual"){
+    if(isset($_POST["del_reservas"] )){
+        
+        if($_POST["del_reservas"] == "atual"){
             
             
-            $id_reserva = $_GET["id_reserva"];
+            $id_reserva = $_POST["id_reserva"];
             $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva' ";
             
             $stm = $conn->prepare($query);
@@ -206,7 +212,7 @@
 
         } else {
 
-            $id_reserva = $_GET["id_reserva"];
+            $id_reserva = $_POST["id_reserva"];
             $query = "SELECT r.id_turma AS 'turma',
                                 r.data AS 'data'    
                         FROM reservas AS r 
@@ -222,7 +228,7 @@
             
             $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
             
-            if($_GET["del_reservas"] == "apartir"){
+            if($_POST["del_reservas"] == "apartir"){
                 
                 $query .= " AND DATE(data) >= '{$arr["data"]}'";
             }
