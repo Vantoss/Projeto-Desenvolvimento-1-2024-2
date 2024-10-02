@@ -14,3 +14,7 @@ $sala_tipos = array(
     "SETOR DE COMUNICAÇÃO"
 );
 
+$maquinas_tipos = array(
+    "INTEL-I5-7", "INTEL-I3-7", "RIZEN-5", "INTEL-I9-12", 
+    "MAC", "INTEL-I5-6", "INTEL-I7-10"
+);
