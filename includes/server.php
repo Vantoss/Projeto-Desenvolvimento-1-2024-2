@@ -7,47 +7,52 @@
     require __ROOT__ . '/db/config.php';
 
     
+    echo print_r($_GET);
+    echo print_r($_POST);
 
+    // =====================================================================================================================
+    // CONSULTAR RESERVA ===================================================================================================
+    // =====================================================================================================================
 
-    if(isset($_POST["consultar"])){
+    if(isset($_GET["consultar"])){
         
         
         // SERVER REQUEST CONSULTAR RESERVAS
-        if($_POST["consultar"] == "reservas"){
+        if($_GET["consultar"] == "reservas"){
             
             $sql = [];
             
             // filtro turma
-            if($_POST["turma"]) $sql[] = " t.nome LIKE '{$_POST["turma"]}%'";
+            if($_GET["turma"]) $sql[] = " t.nome LIKE '{$_GET["turma"]}%'";
             
             // filtro docente
-            if($_POST["docente"]) $sql[] = " t.docente LIKE '{$_POST["docente"]}%'";
+            if($_GET["docente"]) $sql[] = " t.docente LIKE '{$_GET["docente"]}%'";
             
             //filtro curso
-            if($_POST["curso"]) $sql[] = " t.curso LIKE '{$_POST["curso"]}%'";
+            if($_GET["curso"]) $sql[] = " t.curso LIKE '{$_GET["curso"]}%'";
             
             // filtro sala 
-            if($_POST["sala"]) $sql[] = " s.id_sala = '{$_POST["sala"]}'";
+            if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'";
             
             // filtro turno
-            if($_POST["turno"]) $sql[] = " t.turno = '{$_POST["turno"]}'";
+            if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
             
-            // filtro reserva tipo
-            if($_POST["reserva-tipo"]) $sql[] = " r.reserva_tipo = '{$_POST["reserva-tipo"]}'"; 
+            // filtro reserva_tipo
+            if($_GET["reserva_tipo"]) $sql[] = " r.reserva_tipo = '{$_GET["reserva_tipo"]}'"; 
             
             // filtro data inicio
-            if($_POST["data-inicio"]) $sql[] = " DATE(data) >= '{$_POST["data-inicio"]}'"; 
+            if($_GET["data_inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'"; 
             
             // filtro data fim
-            if($_POST["data-fim"]) $sql[] = " DATE(data) <= '{$_POST["data-fim"]}'"; 
+            if($_GET["data_fim"]) $sql[] = " DATE(data) <= '{$_GET["data_fim"]}'"; 
             
             
             // PESQUISA BASE CONSULTAR RESERVAS
             $query = "SELECT s.id_sala as 'sala',
-                         s.tipo_sala as 'sala-tipo', 
+                         s.tipo_sala as 'sala_tipo', 
                          r.data as 'data',
                          r.reserva_tipo as 'reserva',
-                         r.id_reservas as 'id-reserva', 
+                         r.id_reserva as 'id_reserva', 
                          t.nome as 'turma', 
                          t.docente as 'docente', 
                          t.turno as 'turno', 
@@ -64,7 +69,7 @@
             
             
             // limita a quatidade de registros que o banco de dados ira retornar
-            if ($_POST["registros"]) $query .= " LIMIT {$_POST["registros"]}";
+            if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
             
             echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
@@ -80,34 +85,37 @@
         }
         
         
-        // SERVER REQUEST CONSULTAR SALAS DISPONIVEIS
+
+
+
+        // SERVER REQUEST CONSULTAR SALAS DISPONIVEIS ========================================================================================
         
-        if($_POST["consultar"] == "salas-disponiveis"){
+        if($_GET["consultar"] == "salas_disponiveis"){
             $sql = []; //guarda os parametros da pesquisa sql
             
             // filtro sala 
-            if($_POST["sala"]) $sql[] = " s.id_sala = '{$_POST["sala"]}'"; 
+            if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'"; 
             
             // filtro lugares quantidade
             
-            if($_POST["sala-tipo"]) $sql[] = " s.tipo_sala = '{$_POST["sala-tipo"]}'";
+            if($_GET["sala_tipo"]) $sql[] = " s.tipo_sala = '{$_GET["sala_tipo"]}'";
             
             // filtro maquinas quantidade
-            if($_POST["maquinas-qtd"]) $sql[] = " s.maquinas_qtd = '{$_POST["maquinas-qtd"]}'";
+            if($_GET["maquinas_qtd"]) $sql[] = " s.maquinas_qtd = '{$_GET["maquinas_qtd"]}'";
             
-            // filtro maquinas tipo
-            if($_POST["maquinas-tipo"]) $sql[] = " s.maquinas_tipo LIKE '{$_POST["maquinas-tipo"]}%'";
+            // filtro maquinas_tipo
+            if($_GET["maquinas_tipo"]) $sql[] = " s.maquinas_tipo LIKE '{$_GET["maquinas_tipo"]}%'";
             
             // filtro lugares quantidade
-            if($_POST["lugares-qtd"]) $sql[] = " s.lugares_qtd = '{$_POST["lugares-qtd"]}'";
+            if($_GET["lugares_qtd"]) $sql[] = " s.lugares_qtd = '{$_GET["lugares_qtd"]}'";
             
             
             
             $query = "SELECT s.id_sala as 'sala',
-                             s.tipo_sala as 'sala-tipo',
+                             s.tipo_sala as 'sala_tipo',
                              s.lugares_qtd as 'lugares',
-                             s.maquinas_qtd as 'maquinas-qtd',
-                             s.maquinas_tipo as 'maquinas-tipo'
+                             s.maquinas_qtd as 'maquinas_qtd',
+                             s.maquinas_tipo as 'maquinas_tipo'
                       FROM salas as s";
             
             $sql[] = " s.id_sala NOT IN (SELECT s.id_sala from salas as s 
@@ -120,18 +128,18 @@
             if($sql) $query .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
             
             
-            if($_POST["reserva-tipo"] == "única"){
+            if($_GET["reserva_tipo"] == "única"){
                 
-                $query .= " DATE(data) = '{$_POST["data-inicio"]}'";
+                $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
                 
-                $days = $_POST["data-inicio"];
+                $days = $_GET["data_inicio"];
             } 
-            else if ($_POST["reserva-tipo"] == "semanal"){  
+            else {  
                 
                 $days = "";
                 
-                $data_inicial=strtotime("{$_POST['data-inicio']}");
-                $data_final=strtotime("{$_POST['data-fim']}", $data_inicial);
+                $data_inicial=strtotime("{$_GET['data_inicio']}");
+                $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
                 
                 while ($data_inicial < $data_final) {
                     
@@ -143,22 +151,15 @@
                 $days = substr_replace($days,"",-2);    
                 
                 $query .= "DATE(data) in ($days)";
-                
-            } else {
-                
-                $query .= " DATE(data) >= '{$_POST["data-inicio"]}'";
-                
-                $days = $_POST["data-inicio"];
             }
             
             
-            
             // filtro turno
-            $query .= $_POST["turno"] ? "AND t.turno = '{$_POST["turno"]}')": ")";
+            $query .= $_GET["turno"] ? "AND t.turno = '{$_GET["turno"]}')": ")";
             
             
             // limita a quatidade de registros que o banco de dados ira retornar
-            if ($_POST["registros"]) $query .= " LIMIT {$_POST["registros"]}";
+            if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
             
             echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
@@ -169,6 +170,8 @@
             $stmt->execute();
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
                 $datas = explode(",",$datas);
@@ -178,59 +181,160 @@
                 
             }
             
-        }
+    }
 
         
-        // func deletar reservas 
-        if(isset($_POST["del-reservas"] )){
+        // =====================================================================================================================
+        // DELETAR RESERVA =====================================================================================================
+        // =====================================================================================================================
 
+    if(isset($_GET["del_reservas"] )){
+        
+        if($_GET["del_reservas"] == "atual"){
             
             
-            if($_POST["del-reservas"] == "atual"){
+            $id_reserva = $_GET["id_reserva"];
+            $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva' ";
+            
+            $stm = $conn->prepare($query);
+            
+            if($stm->execute()){
+                    echo "reserva deletado com sucesso";
+            } else {
+                echo "Erro ao tentar deletar a reserva";
+            }
+
+        } else {
+
+            $id_reserva = $_GET["id_reserva"];
+            $query = "SELECT r.id_turma AS 'turma',
+                                r.data AS 'data'    
+                        FROM reservas AS r 
+                        WHERE id_reserva = '$id_reserva'";
+        
+        
+            $stm = $conn->prepare($query);
+
+            $stm->execute();
+
+            $arr = $stm->fetch(PDO::FETCH_ASSOC);
+            
+            
+            $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
+            
+            if($_GET["del_reservas"] == "apartir"){
                 
+                $query .= " AND DATE(data) >= '{$arr["data"]}'";
+            }
+            
+            
+            $stm = $conn->prepare($query);
+            
+            echo $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso" : "Erro ao tentar deletar as reservas";
+            
+        }
+    }
+
+        // =====================================================================================================================
+        // CADASTRAR RESERVA ===================================================================================================
+        // =====================================================================================================================
+
+        if(isset($_POST["cadastrar-reserva"])){
+
+
+            // DADOS DA RESERVA
+            $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
+            // INPUT ID SALA 
+            $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA TIPO' ESTA VAZIO");
+            // INPUT TURNO
+            $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
+            // INPUT DATA INICIO
+            $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
+            
+            if($_POST["cadastro-turma"] == "nova"){
+
+                // DADOS DA TURMA
+                $nome = $_POST["turma"] ? $_POST["turma"]: exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
+
+                $codigo = $_POST["codigo"] ? $_POST["codigo"]: exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
+
+                $curso = $_POST["curso"] ? $_POST["curso"]: exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
+
+                $docente = $_POST["docente"] ? $_POST["docente"]: exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
+
+                $participantes = $_POST["participantes"] ? $_POST["participantes"]: exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
+
                 
-                $id_reserva = $_POST["id-reserva"];
-                $query = "DELETE FROM reservas WHERE id_reservas = '$id_reserva' ";
+                $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
+                VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
+                
                 
                 $stm = $conn->prepare($query);
-                
-                if($stm->execute()){
-                        echo "reserva deletado com sucesso";
-                } else {
-                    echo "Erro ao tentar deletar a reserva";
+                if(!$stm->execute()){
+
+                    exit("erro ao cadastrar a turma");
+
+                } else{
+
+                    $id_turma = $conn->lastInsertId();
+
                 }
 
             } else {
-
-                $id_reserva = $_POST["id-reserva"];
-                $query = "SELECT r.id_turma AS 'turma',
-                                 r.data AS 'data'    
-                            FROM reservas AS r 
-                            WHERE id_reservas = '$id_reserva'";
+                // ID TURMA
+                $id_turma = $_POST["id_turma"];
+            }
             
-            
-                $stm = $conn->prepare($query);
+            // $id_turma = 5;
+                if($reserva_tipo == "semanal"){
 
-                $stm->execute();
+                    $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
 
-                $arr = $stm->fetch(PDO::FETCH_ASSOC);
-                
+                    // INPUT DATA FIM
+                    $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
 
-                $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
-                
-                if($_POST["del-reservas"] == "apartir"){
+                    $data_inicial = strtotime($data_inicio);
+                    $data_final = strtotime( $data_fim);
+                    
+                    while ($data_inicial < $data_final) {
+                        
+                        $data =  date("Y-m-d", $data_inicial);         
+                        
+                        $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
 
-                    $query .= " AND DATE(data) >= '{$arr["data"]}'";
+                        $data_inicial = strtotime("+1 week", $data_inicial);
+
+                    }
+
+                    $query = substr_replace($query,"",-1);
+
+                    echo $query;
+
+                    $stm = $conn->prepare($query);
+                    if(!$stm->execute()){
+                        echo "ERRO AO TENTAR INSERIR AS RESERVAS";
+                    } else {
+                        echo "RESERVAS INSERIDAS COM SUCESSO";
+                    }
+
+
+                } else {
+
+                    $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
+                    VALUES ('$data_inicio','$reserva_tipo',$id_sala,$id_turma)";
+
+                    $stm = $conn->prepare($query);
+                    if(!$stm->execute()){
+                        echo "ERRO AO TENTAR INSERIR A RESERVA";
+                    } else {
+                        echo "RESERVA INSERIDA COM SUCESSO";
+                    }
                 }
                 
-                
-                $stm = $conn->prepare($query);
 
-                echo $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso" : "Erro ao tentar deletar as reservas";
-
-            }
-                
+                    
         }
+                
             
             
             

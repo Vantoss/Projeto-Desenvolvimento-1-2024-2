@@ -2,7 +2,7 @@
 
 <!-- BOX FILTROS -->
 
-<form class="row g-3 form-consulta" id="form-consultar-reservas" method="post">
+<form class="row g-3 form-consulta" id="form-consultar-reservas" method="get">
   
     <h2>Consultar Reservas</h2>
 
@@ -27,13 +27,13 @@
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="data-inicio" name="data-inicio">
+    <input type="date" class="form-control" id="data-inicio" name="data_inicio">
   </div>
   
   <!-- FILTRO DATA FIM -->
   <div class="col-md-3">
     <label for="data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control" id="data-fim" name="data-fim">
+    <input type="date" class="form-control" id="data-fim" name="data_fim">
   </div>
 
   <!-- FILTRO SALA -->
@@ -63,7 +63,7 @@
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">
     <label for="sala-tipo" class="form-label">Tipo de reserva</label>
-    <select id="sala-tipo" class="form-select" name="reserva-tipo">
+    <select id="sala-tipo" class="form-select" name="reserva_tipo">
       <option value="" selected="">Qualquer</option>
       <option value="unica">Única</option>
       <option value="semanal" >Semanal</option>
