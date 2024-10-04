@@ -1,18 +1,20 @@
 <?php 
 
-    //  =========================== CONSULTAR RESERVA ======================================
+//  =========================== CONSULTAR RESERVA ======================================
 
-    define('__ROOT__', dirname(dirname(__FILE__,1)));
-    
-    require __ROOT__ . '/db/config.php';
+define('__ROOT__', dirname(dirname(__FILE__,1)));
 
-    
-    echo print_r($_GET);
-    echo print_r($_POST);
+require __ROOT__ . '/db/config.php';
 
-    // =====================================================================================================================
-    // CONSULTAR RESERVA ===================================================================================================
-    // =====================================================================================================================
+
+echo print_r($_GET);
+echo print_r($_POST);
+
+
+// =====================================================================================================================
+// CONSULTAR RESERVA ===================================================================================================
+// =====================================================================================================================
+
 
     if(isset($_GET["consultar"])){
         
@@ -85,11 +87,11 @@
         }
         
         
+        // ===================================================================================================================================
+        // CONSULTAR SALAS DISPONIVEIS =======================================================================================================
+        // ===================================================================================================================================
 
 
-
-        // SERVER REQUEST CONSULTAR SALAS DISPONIVEIS ========================================================================================
-        
         if($_GET["consultar"] == "salas_disponiveis"){
             $sql = []; //guarda os parametros da pesquisa sql
             
@@ -157,11 +159,8 @@
                 $query .= "DATE(data) in ($days)";
             }
             
-            
-
             // filtro turno
-            $query .= $_GET["turno"] ? "AND t.turno = '{$_GET["turno"]}')": ")";
-            
+            $query .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
             
             // limita a quatidade de registros que o banco de dados ira retornar
             if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
@@ -176,13 +175,11 @@
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
                 $datas = explode(",",$datas);
                 // tabela cadastrar reservas
                 require_once "./layout/table_cadastrar_reservas.php";
-                
                 
             }
             
@@ -198,18 +195,13 @@
         
         if($_POST["del_reservas"] == "atual"){
             
-            
             $id_reserva = $_POST["id_reserva"];
             $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva' ";
             
             $stm = $conn->prepare($query);
             
-            if($stm->execute()){
-                    echo "reserva deletado com sucesso";
-            } else {
-                echo "Erro ao tentar deletar a reserva";
-            }
-
+            echo $stm->execute() ? "reserva deletado com sucesso" : "Erro ao tentar deletar a reserva";
+            
         } else {
 
             $id_reserva = $_POST["id_reserva"];
@@ -221,18 +213,21 @@
         
             $stm = $conn->prepare($query);
 
-            $stm->execute();
+            if(!$stm->execute()){
 
-            $arr = $stm->fetch(PDO::FETCH_ASSOC);
-            
-            
-            $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
-            
-            if($_POST["del_reservas"] == "apartir"){
-                
-                $query .= " AND DATE(data) >= '{$arr["data"]}'";
+                exit("ERRO AO BUSCAR OS DADOS DA RESERVA");
+
+            } else {
+
+                $arr = $stm->fetch(PDO::FETCH_ASSOC);
             }
+
             
+
+            $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
+
+            
+            if($_POST["del_reservas"] == "apartir") $query .= " AND DATE(data) >= '{$arr["data"]}'";
             
             $stm = $conn->prepare($query);
             
@@ -241,12 +236,16 @@
         }
     }
 
+
         // =====================================================================================================================
         // CADASTRAR RESERVA ===================================================================================================
         // =====================================================================================================================
 
+
         if(isset($_POST["cadastrar-reserva"])){
 
+            // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
+            if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
 
             // DADOS DA RESERVA
             $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
@@ -256,19 +255,20 @@
             $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
             // INPUT DATA INICIO
             $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
-            
+
+            // RODA CASO FOR UM NOVO CADASTRO 
             if($_POST["cadastro-turma"] == "nova"){
 
-                // DADOS DA TURMA
-                $nome = $_POST["turma"] ? $_POST["turma"]: exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
+                // DADOS DA TURMA NOVA 
+                $nome = $_POST["turma"] ? $_POST["turma"] : exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
 
-                $codigo = $_POST["codigo"] ? $_POST["codigo"]: exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
+                $codigo = $_POST["codigo"] ? $_POST["codigo"] : exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
 
-                $curso = $_POST["curso"] ? $_POST["curso"]: exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
+                $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
 
-                $docente = $_POST["docente"] ? $_POST["docente"]: exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
+                $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
 
-                $participantes = $_POST["participantes"] ? $_POST["participantes"]: exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
+                $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
 
                 
                 $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
@@ -276,69 +276,58 @@
                 
                 
                 $stm = $conn->prepare($query);
+
                 if(!$stm->execute()){
 
                     exit("erro ao cadastrar a turma");
 
                 } else{
-
+                    // ARMAZENA O ID DA TURMA QUE FOI CRIADA NO CODIGO ACIMA
                     $id_turma = $conn->lastInsertId();
+                }
+
+            } 
+            
+            //  RODA CASO FOR UMA RESERVA SEMANAL
+            if($reserva_tipo == "semanal"){
+
+                $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
+
+                // INPUT DATA FIM
+                $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
+
+                $data_inicial = strtotime($data_inicio);
+                $data_final = strtotime( $data_fim);
+                
+                while ($data_inicial < $data_final) {
+                    
+                    $data =  date("Y-m-d", $data_inicial);         
+                    
+                    $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
+
+                    $data_inicial = strtotime("+1 week", $data_inicial);
 
                 }
 
-            } else {
-                // ID TURMA
-                $id_turma = $_POST["id_turma"];
-            }
-            
-            // $id_turma = 5;
-                if($reserva_tipo == "semanal"){
+                $query = substr_replace($query,"",-1);
 
-                    $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
+                $stm = $conn->prepare($query);
 
-                    // INPUT DATA FIM
-                    $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
-
-                    $data_inicial = strtotime($data_inicio);
-                    $data_final = strtotime( $data_fim);
+                echo !$stm->execute()? "ERRO AO TENTAR INSERIR AS RESERVAS" : "RESERVAS INSERIDAS COM SUCESSO";
+                
                     
-                    while ($data_inicial < $data_final) {
-                        
-                        $data =  date("Y-m-d", $data_inicial);         
-                        
-                        $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
-
-                        $data_inicial = strtotime("+1 week", $data_inicial);
-
-                    }
-
-                    $query = substr_replace($query,"",-1);
-
-                    echo $query;
-
-                    $stm = $conn->prepare($query);
-                    if(!$stm->execute()){
-                        echo "ERRO AO TENTAR INSERIR AS RESERVAS";
-                    } else {
-                        echo "RESERVAS INSERIDAS COM SUCESSO";
-                    }
-
-
+                // RODA CASO A RESERVA FOR UNICA
                 } else {
 
                     $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
-                    VALUES ('$data_inicio','$reserva_tipo',$id_sala,$id_turma)";
+                    VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
 
                     $stm = $conn->prepare($query);
-                    if(!$stm->execute()){
-                        echo "ERRO AO TENTAR INSERIR A RESERVA";
-                    } else {
-                        echo "RESERVA INSERIDA COM SUCESSO";
-                    }
-                }
-                
 
-                    
+                    echo !$stm->execute() ? "ERRO AO TENTAR INSERIR A RESERVA" : "RESERVA INSERIDA COM SUCESSO";
+                        
+                }
+
         }
                 
             

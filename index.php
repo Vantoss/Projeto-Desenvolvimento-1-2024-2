@@ -1,12 +1,17 @@
-<?php 
+<?php
+    // CAMINHO RELATIVO DA PAGINA
     define('ROOT_DIR', '');
 
-    $page_title = "Pagina inicial";
+    $pagina_titulo = "Pagina inicial";
+
+    // HEADER
     require_once ROOT_DIR. 'includes/layout/header.php';
+    gerarHistorico($conn)
 ?>
 <body>
 
-    <h1>Pagina inical</h1>
+    <h1>Pagina inicial</h1>
 
 </body>
+
 </html>

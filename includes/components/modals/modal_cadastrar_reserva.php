@@ -34,7 +34,7 @@
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
                     <input type="radio" class="btn-check" onchange="disable_input_turma(this)" id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
-                    <label class="btn btn-primary" for="btn-cadastro-turma">Cadatrar Turma</label>
+                    <label class="btn btn-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
                   </div>
                 </div>
                 
@@ -58,13 +58,13 @@
                 <!-- INPUT CODIGO TURMA -->
                 <div class="form-floating ">
                   <input type="text" class="form-control input-cadastrar-turma" id="codigo" placeholder="Codigo" name="codigo" autocomplete="off" required>
-                  <label for="codigo" class="form-label">Codigo</label>
+                  <label for="codigo" class="form-label">Código</label>
                 </div>
                 
                 <!-- INPUT QUANTIDADE PARTICIPANTES -->
                 <div class="form-floating ">
                   <input type="number" class="form-control input-cadastrar-turma" id="participantes"  placeholder="N participantes" name="participantes" min="1" required>
-                  <label for="participantes" class="form-label">N participantes</label>
+                  <label for="participantes" class="form-label"> Participantes</label>
                 </div>
               </div>
               
