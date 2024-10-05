@@ -1,5 +1,3 @@
-<?php define(ROOT_DIR, "./") ?>
-
 <!-- BOX FILTROS -->
 
 <form class="row g-3 form-consulta" id="form-consultar-reservas" method="get">

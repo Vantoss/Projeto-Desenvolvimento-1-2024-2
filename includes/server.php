@@ -2,7 +2,6 @@
 
 //  =========================== CONSULTAR RESERVA ======================================
 
-// define('__ROOT__', dirname(dirname(__FILE__,1)));
 define('ROOT_DIR', '../');
 
 require_once ROOT_DIR. 'includes/functions.php';
@@ -15,7 +14,8 @@ require_once ROOT_DIR. 'includes/functions.php';
 // =====================================================================================================================
 // CONSULTAR RESERVA ===================================================================================================
 // =====================================================================================================================
-
+    
+    $conn = initDB();
 
     if(isset($_GET["consultar"])){
         
@@ -74,27 +74,23 @@ require_once ROOT_DIR. 'includes/functions.php';
             // limita a quatidade de registros que o banco de dados ira retornar
             if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
             
-            echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+            // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
             //estabelece conexao com o banco de dados
-            $conn = initDB();
-            // prepara a pesquisa para ser executada
+    
             $stmt = $conn->prepare($query);
             // executa a pesquisa 
             $stmt->execute();
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // fecha a conexao com o banco de dados
-            $conn = null;
-            
             
             require_once "./layout/table_consultar_reservas.php";
         }
         
         
-        // ===================================================================================================================================
-        // CONSULTAR SALAS DISPONIVEIS =======================================================================================================
-        // ===================================================================================================================================
+// ===================================================================================================================================
+// CONSULTAR SALAS DISPONIVEIS =======================================================================================================
+// ===================================================================================================================================
 
 
         if($_GET["consultar"] == "salas_disponiveis"){
@@ -175,7 +171,7 @@ require_once ROOT_DIR. 'includes/functions.php';
             
             // EXECUTA PESQUISA SQL 
 
-            $conn = initDB();
+           
             // prepara a pesquisa para ser executada
             $stmt = $conn->prepare($query);
             // executa a pesquisa 
@@ -183,7 +179,7 @@ require_once ROOT_DIR. 'includes/functions.php';
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
             // fecha a conexao com o banco de dados
-            $conn = null;
+           
 
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
@@ -206,7 +202,7 @@ require_once ROOT_DIR. 'includes/functions.php';
         
         $id_reserva = $_POST["id_reserva"];
 
-        $conn = initDB();
+        
 
         if($_POST["del_reservas"] == "atual"){
             
@@ -221,8 +217,6 @@ require_once ROOT_DIR. 'includes/functions.php';
             
             $resposta["registros_deletados"] =  array($id_reserva);
             
-            // fecha conexao db
-            $conn = null;
             
         } else {
             // busca os dados id_turma e data para executar o delete de multiplas reservas 
@@ -262,7 +256,6 @@ require_once ROOT_DIR. 'includes/functions.php';
                 $stm = $conn->prepare($delete);
                 $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
                 
-                $conn = null;
             }
              
         }
@@ -310,7 +303,6 @@ require_once ROOT_DIR. 'includes/functions.php';
                 $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
                 VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
                 
-                $conn = initDB();
                 
                 $stm = $conn->prepare($query);
 
@@ -350,20 +342,22 @@ require_once ROOT_DIR. 'includes/functions.php';
 
                 $stm = $conn->prepare($query);
 
-                echo !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
+                $resposta = !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
                 
                     
-                // RODA CASO A RESERVA FOR UNICA
-                } else {
+            // RODA CASO A RESERVA FOR UNICA
+            } else {
 
-                    $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
-                    VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
+                $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
+                VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
 
-                    $stm = $conn->prepare($query);
+                $stm = $conn->prepare($query);
 
-                    echo !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
-                        
-                }
+                $resposta = !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
+                    
+            }
+
+            echo $resposta;
 
         }
                 

@@ -1,12 +1,4 @@
-
 <?php 
-
-// define('__ROOT__', dirname(dirname(__FILE__,1)));
-// define('ROOT_DIR', './');
-
-// require __ROOT__ . '/db/config.php';
-
-
 // MOVE AS RESERVAS PARA A TABELA "reservas_historico"
 function gerarHistorico(){
     $conn = initDB();
@@ -33,7 +25,6 @@ function gerarHistorico(){
         echo $reservas ." reservas deletadas da tabela reservas";
 
     }
-    $conn = null;
 }
 function activeTab($requestUri){
     $current_file_name = basename($_SERVER['REQUEST_URI'], ".php");
@@ -62,7 +53,6 @@ function salasOptions($opcao){
         $stm = $conn->prepare($select);
         $stm->execute();
         $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
-        $conn = null;
 
         
         foreach ($salas as $sala) {
@@ -98,7 +88,6 @@ function getConfig(){
     return parse_ini_file(ROOT_DIR.'conf/config.ini');
 }
     
-
 
 function initDB(){
 
