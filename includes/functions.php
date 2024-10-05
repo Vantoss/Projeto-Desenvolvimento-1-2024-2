@@ -53,6 +53,22 @@ function customPageHeader($pagina_titulo){
     }
 }
 
+function salasOpcoes(){
+
+      include ROOT_DIR. "data/salas.php";
+      foreach ($salas as $sala) {?>
+          <option value="<?php echo $sala?>" ><?php echo $sala ?></option>
+      <?php } 
+}
+
+function salasTiposOpcoes(){
+
+      include ROOT_DIR. "data/salas.php";
+      foreach ($sala_tipos as $sala) {?>
+          <option value="<?php echo $sala?>" ><?php echo ucfirst(mb_strtolower($sala))?></option>
+      <?php } 
+}
+
 ?>
 
 

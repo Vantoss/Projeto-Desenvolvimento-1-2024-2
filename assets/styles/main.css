@@ -35,11 +35,11 @@
 
 #data-tag{
     margin: 20px 10px;
-    font-weight: bold;
 }
 
+/* BOTOES =========================================== */
 .btn{ 
-    border: none;
+    /* border: none; */
     transition: all 300ms;
 }
 
@@ -51,9 +51,22 @@
     color: #dc3545;
 }
 
+.btn-secondary:hover{
+    color: black;
+}
+
 .btn:hover,.btn-danger:hover{
     background: transparent;
 }
 
+
+
+
+/* MODAL ALERTA ================================= */
+
+#modal-alerta-msg{
+    margin: 10;
+    font-size: 1.2rem;
+}
 
 

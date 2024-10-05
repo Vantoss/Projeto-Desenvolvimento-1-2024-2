@@ -41,11 +41,7 @@
     <label for="sala" class="form-label">N.&#xba; da sala</label>
     <select id="sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
-      <?php
-      require_once "../data/salas.php";
-      foreach ($salas as $sala) {?>
-          <option value="<?php echo $sala?>" ><?php echo $sala ?></option>
-      <?php } ?>
+      <?php salasOpcoes()?>
     </select>
   </div>
 
@@ -54,11 +50,7 @@
     <label for="sala-tipo" class="form-label">Tipo de sala</label>
     <select id="sala-tipo" class="form-select" name="sala_tipo">
       <option value="" selected="">Qualquer</option>
-      <?php
-      require_once "../data/salas.php";
-      foreach ($sala_tipos as $sala) {?>
-          <option value="<?php echo $sala?>" ><?php echo ucfirst(mb_strtolower($sala))?></option>
-      <?php } ?>
+      <?php salasTiposOpcoes()?>
     </select>
   </div>
 
@@ -74,12 +66,7 @@
     <input type="number" id="maquinas-qtd" class="form-control" min="0" placeholder="Qualquer" name="maquinas_qtd">
   </div>
   
-  <!-- FILTRO MAQUINA TIPO -->
-  <!--HTML original caso seja revertido. Caso contrário, apagar. -->
-  <!--<div class="col-md-3">
-    <label for="maquinas-tipo" class="form-label" >Tipo de maquinas</label>
-    <input type="text" id="maquinas-tipo" class="form-control" placeholder="Qualquer" name="maquinas-tipo">
-  </div> -->
+  <!-- FILTRO MAQUINA TIPO --> 
 
   <div class="col-md-3">
     <label for="maquinas-tipo" class="form-label">Tipo de maquinas</label>
@@ -102,6 +89,6 @@
 
   <!-- BOTAO BUSCAR -->
   <div class="col-12">
-    <button type="submit" class="btn btn-primary btn-lg" id="btn-buscar-sala-disponivel" >Buscar</button>
+    <button type="submit" class="btn btn-primary " id="btn-buscar-sala-disponivel" >Buscar</button>
   </div>
 </form>

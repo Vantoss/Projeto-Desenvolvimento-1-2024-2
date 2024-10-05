@@ -15,7 +15,11 @@
     require_once ROOT_DIR.'includes/components/forms/form_consultar_reservas.php';
     
     // MODAIS EDITAR E DELETAR RESERVA
-    require_once ROOT_DIR.'includes/components/modals/modal_consultar_reservas.php'; 
+    require_once ROOT_DIR.'includes/components/modals/modal_consultar_reservas.php';
+    
+    // MODAL ALERTA 
+    require_once ROOT_DIR.'includes/components/modals/modal_alerta.php';
+
 ?>
 
 

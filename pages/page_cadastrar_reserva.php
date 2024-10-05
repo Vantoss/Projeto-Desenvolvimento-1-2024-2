@@ -13,9 +13,10 @@
 <?php 
     // BOX FILTROS CADASTRAR RESERVA
     require_once ROOT_DIR.'includes/components/forms/form_consultar_salas_disponiveis.php';
+
+    // MODAL ALERTA 
+    require_once ROOT_DIR.'includes/components/modals/modal_alerta.php';
 ?>
-
-
     <div class="container-fluid" id="container-tabela"></div>
     
     

@@ -7,8 +7,8 @@ define('__ROOT__', dirname(dirname(__FILE__,1)));
 require __ROOT__ . '/db/config.php';
 
 
-echo print_r($_GET);
-echo print_r($_POST);
+// echo print_r($_GET);
+// echo print_r($_POST);
 
 
 // =====================================================================================================================
@@ -192,48 +192,67 @@ echo print_r($_POST);
 
         
     if(isset($_POST["del_reservas"] )){
+
+        $id_reserva = $_POST["id_reserva"];
         
         if($_POST["del_reservas"] == "atual"){
             
-            $id_reserva = $_POST["id_reserva"];
-            $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva' ";
+
+            $ids = array($id_reserva);
+            
+            $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
+            
             
             $stm = $conn->prepare($query);
-            
-            echo $stm->execute() ? "reserva deletado com sucesso" : "Erro ao tentar deletar a reserva";
+
+            $msg = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
+
             
         } else {
 
-            $id_reserva = $_POST["id_reserva"];
             $query = "SELECT r.id_turma AS 'turma',
                                 r.data AS 'data'    
                         FROM reservas AS r 
                         WHERE id_reserva = '$id_reserva'";
         
-        
             $stm = $conn->prepare($query);
 
             if(!$stm->execute()){
 
-                exit("ERRO AO BUSCAR OS DADOS DA RESERVA");
+                exit("Erro ao tentar buscar os dados da reserva");
 
             } else {
 
                 $arr = $stm->fetch(PDO::FETCH_ASSOC);
             }
+            
+            $turma = $arr["turma"];
+            $data = $arr["data"];
 
-            
+            $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
+            $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
 
-            $query = "DELETE FROM reservas WHERE id_turma = '{$arr["turma"]}'";
 
-            
-            if($_POST["del_reservas"] == "apartir") $query .= " AND DATE(data) >= '{$arr["data"]}'";
-            
-            $stm = $conn->prepare($query);
-            
-            echo $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso" : "Erro ao tentar deletar as reservas";
-            
+            if($_POST["del_reservas"] == "apartir"){
+                $delete .= " AND DATE(data) >= '$data'";
+                $select .= " AND DATE(data) >= '$data'";   
+            }
+
+            $stm = $conn->prepare($select);
+            $stm->execute();
+            $ids = $stm->fetchAll(PDO::FETCH_NUM);
+
+
+            $stm = $conn->prepare($delete);
+            $msg = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
+
         }
+
+        echo json_encode([
+            'msg' => $msg,
+            'registros_deletados' => $ids
+        ]);
+        
     }
 
 
@@ -313,7 +332,7 @@ echo print_r($_POST);
 
                 $stm = $conn->prepare($query);
 
-                echo !$stm->execute()? "ERRO AO TENTAR INSERIR AS RESERVAS" : "RESERVAS INSERIDAS COM SUCESSO";
+                echo !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
                 
                     
                 // RODA CASO A RESERVA FOR UNICA
@@ -324,7 +343,7 @@ echo print_r($_POST);
 
                     $stm = $conn->prepare($query);
 
-                    echo !$stm->execute() ? "ERRO AO TENTAR INSERIR A RESERVA" : "RESERVA INSERIDA COM SUCESSO";
+                    echo !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
                         
                 }
 

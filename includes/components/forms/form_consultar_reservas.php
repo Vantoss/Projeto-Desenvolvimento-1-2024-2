@@ -76,8 +76,8 @@
     <label for="registros" class="form-label" >N.&#xba; de registros</label>
     <input type="number" id="registros" class="form-control" min="1" placeholder="Todos" name="registros">
   </div>
-
+  <!-- BOTAO BUSCAR -->
   <div class="col-12">
-    <button type="submit" class="btn btn-primary btn-lg" value="consultar-reservas" id="btn-buscar">Buscar</button>
+    <button type="submit" class="btn btn-primary" value="consultar-reservas" id="btn-buscar">Buscar</button>
   </div>
 </form>

@@ -40,7 +40,6 @@ $(document).ready(function () {
 
         var form = new FormData(this)
         
-            
         $.ajax({ 
             
             url:"../includes/server.php",
@@ -48,13 +47,27 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             data: form,
-            success:function(response){
-                $("#btn-buscar").click()
-                alert(response)
+            success:function(resposta){
+
+                var resposta = JSON.parse(resposta)
+                
+                // esconde o modal cadastrar
+                $("#deletar-reserva-modal").modal('hide')
+                
+                // mostra a mesagem de alerta (resultado do cadastro)
+                $("#modal-alerta-msg").text(resposta.msg)
+                
+                // mostra o modal alerta
+                $("#modal-alerta").modal('show')
+                
+                
+                var arr = resposta.registros_deletados
+
+                for (let i = 0; i < arr.length; i++) {
+                    $("#id" + arr[i]).remove()
+                }  
 
             }
-            
-            
             
         })
     })

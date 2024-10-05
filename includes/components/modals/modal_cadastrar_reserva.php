@@ -2,30 +2,21 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">
+        <h1 class="modal-title fs-5">
           <?php $data = $_GET["data_inicio"];
           echo date_format(date_create($data)," l - d/m/Y") ." - ". $_GET["turno"] . " - " . $_GET["reserva_tipo"]; ?>
-        </h1>
-        
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>  
+        </h1> 
       </div>
       
       <div class="modal-body">
         
         <div id="sala-dados">
-          
-          
           <h4 id="sala-id">704 - Laboratorio</h4>
           <h5 id="sala-">40 lugares </h5>
           <h5 id="sala-maquinas"> 30 maquinas</h5>
           <h5 id="sala-lugares"></h5>
-          
         </div>
-        <!-- HIDDEN INPUTS -->
 
-        <p id="dados-cad"></p>
-        
-        
         <form method="post" id="cadastrar-reserva" >
           <div class="div-cadastrar-turma">
             <div class="row text-center">
@@ -63,8 +54,8 @@
                 
                 <!-- INPUT QUANTIDADE PARTICIPANTES -->
                 <div class="form-floating ">
-                  <input type="number" class="form-control input-cadastrar-turma" id="participantes"  placeholder="N participantes" name="participantes" min="1" required>
-                  <label for="participantes" class="form-label"> Participantes</label>
+                  <input type="number" class="form-control input-cadastrar-turma" id="participantes"  placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
+                  <label for="participantes" class="form-label">N.&#xba; de participantes</label>
                 </div>
               </div>
               

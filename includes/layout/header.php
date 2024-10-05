@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <title> <?php echo isset($page_title) ? $page_title : "Default Title"; ?> </title>  
+    <title> <?php echo isset($pagina_titulo) ? $pagina_titulo : "Default Title"; ?> </title>  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     

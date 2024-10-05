@@ -24,7 +24,7 @@
     <tbody>
         <?php 
         foreach ($arr as $_ => $row){?>
-            <tr>
+            <tr id="<?php echo "id" . $row["id_reserva"]; ?>">
                 <td><?php echo $row['id_reserva']; ?></td> 
                 <td><?php echo $row["sala"] . " - " . $row["sala_tipo"]; ?></td>
                 <td>

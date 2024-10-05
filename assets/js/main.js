@@ -3,6 +3,7 @@ $(Document).ready(function(){
     // PESQUISA
     $(document).on('submit','.form-consulta',function (e) {
         e.preventDefault()
+        
 
         var form = $(this).serialize()
         
@@ -23,12 +24,14 @@ $(Document).ready(function(){
             success:function(data){
                 $("#container-tabela").html(data)
             }
+            
         })
-
+        
+        
         $(document).on('click', '#btn-reservar', function () {
             
             var id_sala = $(this).val()
-
+            
             // FORM CADASTRO DA RESERVA
             $(document).on('submit','#cadastrar-reserva', function (e) {
                 e.preventDefault()
@@ -42,9 +45,21 @@ $(Document).ready(function(){
                     url:"../includes/server.php",
                     type:"POST",
                     data: formData,
-                    success:function(data){
-                        $("#dados-cad").text(data)
+                    success:function(resposta){
+
+                        // apaga os inputs do modal cadastrar
                         $("#cadastrar-reserva")[0].reset()
+                        
+                        // esconde o modal cadastrar
+                        $("#cadastrar-reserva-modal").modal('hide')
+                        
+                        // mostra a mesagem de alerta (resultado do cadastro)
+                        $("#modal-alerta-msg").text(resposta)
+
+                        // mostra o modal alerta
+                        $("#modal-alerta").modal('show')
+                        
+
                     }
                 })
             })
@@ -53,8 +68,7 @@ $(Document).ready(function(){
         
     })
 
-//     const myModal = new bootstrap.Modal(document.getElementById('myModal'), options)
-// // or
-//     const myModalAlternative = new bootstrap.Modal('#myModal', options)
    
+// // or
+    
 })
