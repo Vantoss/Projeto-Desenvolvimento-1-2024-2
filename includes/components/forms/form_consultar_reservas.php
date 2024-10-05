@@ -41,11 +41,7 @@
     <label for="sala" class="form-label"> N.&#xba; da sala</label>
     <select id="sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
-      <?php
-      require_once ROOT_DIR . "data/salas.php";
-      foreach ($salas as $sala) {?>
-          <option value="<?php echo $sala?>" ><?php echo $sala?></option>
-      <?php } ?>
+      <?php salasOptions("id_sala") ?>
     </select>
   </div>
   

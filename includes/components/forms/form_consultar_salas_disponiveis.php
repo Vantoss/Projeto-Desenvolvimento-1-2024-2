@@ -41,7 +41,7 @@
     <label for="sala" class="form-label">N.&#xba; da sala</label>
     <select id="sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
-      <?php salasOpcoes()?>
+      <?php salasOptions("id_sala")?>
     </select>
   </div>
 
@@ -50,7 +50,7 @@
     <label for="sala-tipo" class="form-label">Tipo de sala</label>
     <select id="sala-tipo" class="form-select" name="sala_tipo">
       <option value="" selected="">Qualquer</option>
-      <?php salasTiposOpcoes()?>
+      <?php salasOptions("tipo_sala")?>
     </select>
   </div>
 
@@ -72,11 +72,7 @@
     <label for="maquinas-tipo" class="form-label">Tipo de maquinas</label>
     <select id="maquinas-tipo" class="form-select" name="maquinas_tipo">
       <option value="" selected="">Qualquer</option>
-      <?php
-      require_once "../data/salas.php";
-      foreach ($maquinas_tipos as $maquina) {?>
-          <option value="<?php echo $maquina?>" ><?php echo ucfirst(mb_strtolower($maquina))?></option>
-      <?php } ?>
+      <?php salasOptions("maquinas_tipo")?>
     </select>
   </div>
   

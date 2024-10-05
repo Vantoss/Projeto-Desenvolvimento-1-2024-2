@@ -1,13 +1,15 @@
 
 <?php 
 
-define('__ROOT__', dirname(dirname(__FILE__,1)));
+// define('__ROOT__', dirname(dirname(__FILE__,1)));
+// define('ROOT_DIR', './');
 
-require __ROOT__ . '/db/config.php';
+// require __ROOT__ . '/db/config.php';
 
 
 // MOVE AS RESERVAS PARA A TABELA "reservas_historico"
-function gerarHistorico($conn){
+function gerarHistorico(){
+    $conn = initDB();
     $data = date('Y-m-d');
 
     // verifica se as reservas ja foram movidas
@@ -31,7 +33,7 @@ function gerarHistorico($conn){
         echo $reservas ." reservas deletadas da tabela reservas";
 
     }
-
+    $conn = null;
 }
 function activeTab($requestUri){
     $current_file_name = basename($_SERVER['REQUEST_URI'], ".php");
@@ -53,20 +55,65 @@ function customPageHeader($pagina_titulo){
     }
 }
 
-function salasOpcoes(){
+function salasOptions($opcao){
 
-      include ROOT_DIR. "data/salas.php";
-      foreach ($salas as $sala) {?>
-          <option value="<?php echo $sala?>" ><?php echo $sala ?></option>
-      <?php } 
+        $conn = initDB();
+        $select = "SELECT  id_sala as 'id' , tipo_sala as 'tipo', maquinas_tipo as 'maquinas' FROM salas";
+        $stm = $conn->prepare($select);
+        $stm->execute();
+        $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
+        $conn = null;
+
+        
+        foreach ($salas as $sala) {
+            $salas_tipos[] = $sala["tipo"];
+            $maquinas_tipos[] = $sala["maquinas"]; 
+            }
+
+    if($opcao == "id_sala"){
+
+        foreach ($salas as $sala) {?>
+          <option value="<?php echo $sala["id"]?>" ><?php echo $sala["id"] ?></option>
+          <?php }
+    } 
+    else if ($opcao == "tipo_sala") {
+
+        foreach (array_unique($salas_tipos) as $sala) {?>
+          <option value="<?php echo $sala?>" ><?php echo ucfirst(mb_strtolower($sala))?></option>
+          <?php } 
+
+    } else {
+        
+        foreach (array_unique($maquinas_tipos) as $maquina) {
+            
+            if($maquina){?>
+            <option value="<?php echo $maquina?>" ><?php echo ucfirst(mb_strtolower($maquina))?></option>
+            <?php }}
+
+    }
 }
 
-function salasTiposOpcoes(){
 
-      include ROOT_DIR. "data/salas.php";
-      foreach ($sala_tipos as $sala) {?>
-          <option value="<?php echo $sala?>" ><?php echo ucfirst(mb_strtolower($sala))?></option>
-      <?php } 
+function getConfig(){
+    return parse_ini_file(ROOT_DIR.'conf/config.ini');
+}
+    
+
+
+function initDB(){
+
+    $config = getConfig();
+
+    try {
+        $conn = new PDO("mysql:host={$config['host']};dbname={$config['dbname']}", $config['user'], $config["password"]);
+        // set the PDO error mode to exception
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      //   echo "Connected successfully";
+      } catch(PDOException $e) {
+        echo "Connection failed: " . $e->getMessage();
+      }
+
+      return $conn;
 }
 
 ?>

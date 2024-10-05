@@ -59,10 +59,9 @@ $(document).ready(function () {
                 
                 // mostra o modal alerta
                 $("#modal-alerta").modal('show')
-                
-                
-                var arr = resposta.registros_deletados
 
+                var arr = resposta.registros_deletados
+                // remove da tabela as reservas deletadas
                 for (let i = 0; i < arr.length; i++) {
                     $("#id" + arr[i]).remove()
                 }  

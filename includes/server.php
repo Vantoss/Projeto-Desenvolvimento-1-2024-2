@@ -2,9 +2,10 @@
 
 //  =========================== CONSULTAR RESERVA ======================================
 
-define('__ROOT__', dirname(dirname(__FILE__,1)));
+// define('__ROOT__', dirname(dirname(__FILE__,1)));
+define('ROOT_DIR', '../');
 
-require __ROOT__ . '/db/config.php';
+require_once ROOT_DIR. 'includes/functions.php';
 
 
 // echo print_r($_GET);
@@ -75,12 +76,16 @@ require __ROOT__ . '/db/config.php';
             
             echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
+            //estabelece conexao com o banco de dados
+            $conn = initDB();
             // prepara a pesquisa para ser executada
             $stmt = $conn->prepare($query);
             // executa a pesquisa 
             $stmt->execute();
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // fecha a conexao com o banco de dados
+            $conn = null;
             
             
             require_once "./layout/table_consultar_reservas.php";
@@ -165,19 +170,25 @@ require __ROOT__ . '/db/config.php';
             // limita a quatidade de registros que o banco de dados ira retornar
             if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
             
-            echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
+            // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+            
+            // EXECUTA PESQUISA SQL 
+
+            $conn = initDB();
             // prepara a pesquisa para ser executada
-            
             $stmt = $conn->prepare($query);
             // executa a pesquisa 
             $stmt->execute();
             // o resultado da pesquisa e convertido em uma array associativa
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // fecha a conexao com o banco de dados
+            $conn = null;
 
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
                 $datas = explode(",",$datas);
+
                 // tabela cadastrar reservas
                 require_once "./layout/table_cadastrar_reservas.php";
                 
@@ -186,86 +197,92 @@ require __ROOT__ . '/db/config.php';
     }
 
         
-        // =====================================================================================================================
-        // DELETAR RESERVA =====================================================================================================
-        // =====================================================================================================================
+// =====================================================================================================================
+// DELETAR RESERVA =====================================================================================================
+// =====================================================================================================================
 
         
     if(isset($_POST["del_reservas"] )){
-
-        $id_reserva = $_POST["id_reserva"];
         
+        $id_reserva = $_POST["id_reserva"];
+
+        $conn = initDB();
+
         if($_POST["del_reservas"] == "atual"){
             
-
-            $ids = array($id_reserva);
+            // define o id_reserva a ser retirado da tabela
             
+            // deleta uma unica reserva
             $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
-            
-            
             $stm = $conn->prepare($query);
-
-            $msg = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
-
+            
+            
+            $resposta["msg"] = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
+            
+            $resposta["registros_deletados"] =  array($id_reserva);
+            
+            // fecha conexao db
+            $conn = null;
             
         } else {
-
+            // busca os dados id_turma e data para executar o delete de multiplas reservas 
             $query = "SELECT r.id_turma AS 'turma',
                                 r.data AS 'data'    
                         FROM reservas AS r 
                         WHERE id_reserva = '$id_reserva'";
-        
-            $stm = $conn->prepare($query);
 
+
+            // executa a busca
+            $stm = $conn->prepare($query);
             if(!$stm->execute()){
 
-                exit("Erro ao tentar buscar os dados da reserva");
+                $resposta["msg"] = "Erro ao tentar buscar os dados da reserva";
 
             } else {
-
                 $arr = $stm->fetch(PDO::FETCH_ASSOC);
+                
+                $turma = $arr["turma"];
+                
+                $data = $arr["data"];
+                
+                $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
+                $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
+                
+                
+                if($_POST["del_reservas"] == "apartir"){
+                    $delete .= " AND DATE(data) >= '$data'";
+                    $select .= " AND DATE(data) >= '$data'";   
+                }
+                
+                $stm = $conn->prepare($select);
+                $stm->execute();
+                $resposta["registros_deletados"] = $stm->fetchAll(PDO::FETCH_NUM);
+
+
+                $stm = $conn->prepare($delete);
+                $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
+                
+                $conn = null;
             }
-            
-            $turma = $arr["turma"];
-            $data = $arr["data"];
-
-            $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
-            $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
-
-
-            if($_POST["del_reservas"] == "apartir"){
-                $delete .= " AND DATE(data) >= '$data'";
-                $select .= " AND DATE(data) >= '$data'";   
-            }
-
-            $stm = $conn->prepare($select);
-            $stm->execute();
-            $ids = $stm->fetchAll(PDO::FETCH_NUM);
-
-
-            $stm = $conn->prepare($delete);
-            $msg = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
-
+             
         }
-
-        echo json_encode([
-            'msg' => $msg,
-            'registros_deletados' => $ids
-        ]);
+        
+        echo json_encode($resposta);
         
     }
 
 
-        // =====================================================================================================================
-        // CADASTRAR RESERVA ===================================================================================================
-        // =====================================================================================================================
+// =====================================================================================================================
+// CADASTRAR RESERVA ===================================================================================================
+// =====================================================================================================================
 
 
         if(isset($_POST["cadastrar-reserva"])){
 
+            
             // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
             if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
-
+            
             // DADOS DA RESERVA
             $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
             // INPUT ID SALA 
@@ -274,25 +291,26 @@ require __ROOT__ . '/db/config.php';
             $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
             // INPUT DATA INICIO
             $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
-
+            
             // RODA CASO FOR UM NOVO CADASTRO 
             if($_POST["cadastro-turma"] == "nova"){
-
+                
                 // DADOS DA TURMA NOVA 
                 $nome = $_POST["turma"] ? $_POST["turma"] : exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
-
+                
                 $codigo = $_POST["codigo"] ? $_POST["codigo"] : exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
-
+                
                 $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
-
+                
                 $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
-
+                
                 $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
-
+                
                 
                 $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
                 VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
                 
+                $conn = initDB();
                 
                 $stm = $conn->prepare($query);
 

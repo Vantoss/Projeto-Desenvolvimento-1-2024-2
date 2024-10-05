@@ -1,9 +1,7 @@
 <?php
 
-    define('ROOT_DIR', '../');
     // roda caso exista registros na pesquisa
 if ($arr){
-
 
     require_once ROOT_DIR. 'includes/components/modals/modal_cadastrar_reserva.php';
     

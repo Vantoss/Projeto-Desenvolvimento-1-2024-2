@@ -6,7 +6,7 @@
 
     // HEADER
     require_once ROOT_DIR. 'includes/layout/header.php';
-    gerarHistorico($conn)
+    gerarHistorico()
 ?>
 <body>
 
