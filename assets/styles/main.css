@@ -7,24 +7,20 @@
 
 /* ----------------BOX DE FILTROS-------------- */
 
-.g-3, #container-tabela{
-
-    background-color: rgba(var(--bs-light-rgb), 1);
-}
 
 #container-tabela{
-    padding-top: 0px !important;
-    /* text-align: center; */
-    display: none;
+    visibility: hidden;
+    min-height: 960px;
 }
 
 .table{
     vertical-align: middle;
     text-align: center;
+    --bs-table-bg: none;
 }
 
-
 .g-3, #container-tabela{ 
+    background-color: rgba(var(--bs-light-rgb), 1);
     margin-top: 50px !important;
     width: 90%;
     margin: auto;

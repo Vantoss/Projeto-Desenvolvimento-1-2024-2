@@ -16,15 +16,7 @@
 
     <h1>Pagina teste</h1>
 
-    <?php 
-
-        $resposta["msg"] = array("valor");
-        $resposta["registros"] = "reg";
-
-        print_r(json_encode($resposta));
-
     
-    ?>
     
     <!-- <?php
     // $datas = "'2024-03-04', '2024-03-06', '2024-03-08', '2024-03-10'";
@@ -39,6 +31,56 @@
         <button id="btn-dia" class="btn btn-light"><?php echo date_format(date_create($data),"d/m/Y"); ?></button>
         
     <?php } ?> -->
+
+
+        <?php 
+
+
+        $conn = initDB();
+
+        $select = "SELECT id_sala, tipo_sala FROM  salas";
+
+        $stm = $conn->prepare($select);
+
+        $stm->execute();
+
+        $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+        $reg_qtd = $stm->rowCount();
+
+
+        $reg_pag = 20;
+
+        $pag = 4; 
+
+        $end = $reg_pag * $pag;
+        
+        $i = $end - $reg_pag;
+
+        $pages = ceil($reg_qtd / $reg_pag);
+        
+        for ($i; $i < $end; $i++) { 
+            
+            if ($i == $reg_qtd){
+                break;
+            }
+                echo $arr[$i]["id_sala"] . "<br>";
+
+        }
+
+        echo $pag . "<hr>";
+
+        echo $pages . "<br>";
+        for ($e = 1; $e < $pages + 1; $e++) { 
+            echo $e . " ";
+        }
+
+
+
+
+        
+        ?>
+
 </body>
 </html>
 

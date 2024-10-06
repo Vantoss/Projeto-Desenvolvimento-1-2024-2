@@ -10,3 +10,17 @@
 .row-btn-check{
     margin-bottom: 20px;
 }
+
+#turma-dados{
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+    margin-top: 10px;
+    padding: 10px;
+    height: 66%;
+    background-color: #e9ecef;
+}
+
+#turma-dados p{
+    margin: 0;
+    text-align: left;
+}

@@ -7,12 +7,7 @@ if ($arr){
     
     ?>
 
-    
-
-
 <table class="table table-striped tabela-consulta">
-
-        
 
     <button id="data-tag" class="btn btn-primary btn-sm"><?php echo $_GET["reserva_tipo"];?></button>
             <button id="data-tag" class="btn btn-primary btn-sm"><?php echo $_GET["turno"];?></button>
@@ -35,7 +30,7 @@ if ($arr){
     </tr>
     
     <?php } else { // roda caso nao exista registros na pesquisa
-        echo "Nenhum resultado encontrado";
+        echo "<span>Nenhum resultado encontrado</span>";
     }
     ?>
     </thead>

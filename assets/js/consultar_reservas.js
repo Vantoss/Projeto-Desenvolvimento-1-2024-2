@@ -1,7 +1,5 @@
 $(document).ready(function () {
     
-
-
     $(document).on('click','.btn-editar-reserva', function () {
         
         var id_reserva = $(this).val()
@@ -33,7 +31,6 @@ $(document).ready(function () {
         $("#id-reserva").val('')
         
     });
-
 
     $(document).on('submit', '#form-del-reserva', function (e) { 
         e.preventDefault();
@@ -71,6 +68,7 @@ $(document).ready(function () {
         })
     })
 
+    
 
     
 });

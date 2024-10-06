@@ -60,6 +60,7 @@
               </div>
               
               <div class="col">
+                
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
                     <input type="radio" class="btn-check" id="btn-buscar-turma" onchange="disable_input_turma(this)" name="cadastro-turma" value="cadastrada" autocomplete="off" required >
@@ -68,15 +69,17 @@
                 </div>
                 
                 <div class="form-floating">
-                  <select id="turma-cadastrada" class="form-select" disabled="" name="turma_cadastrada" aria-label="Floating label select example" required>
-                    <option  selected="">Qualquer</option>
-                    <option value="Manhã">Manhã</option>
-                    <option value="Tarde">Tarde</option>
-                    <option value="Noite">Noite</option>
+                  <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
+                    <option value="" selected="">Selecione uma turma</option>
+                    <?php turmasOptions($_GET["turno"] )?>
                   </select>
                   <label for="turma-cadastrada">Turma</label>
                 </div>
+
+                <div  id="turma-dados" > </div>
+
               </div>
+
             </div>
           </div>
         </form>

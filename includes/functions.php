@@ -46,6 +46,24 @@ function customPageHeader($pagina_titulo){
     }
 }
 
+function turmasOptions($turno){
+
+    $conn = initDB();
+    $select = "SELECT id_turma as id, nome, codigo, turno FROM turmas WHERE turno = '$turno'";
+
+    $stm = $conn->prepare($select);
+    $stm->execute();
+
+    $turmas = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($turmas as $turma){ ?>
+
+    <option value="<?php echo $turma["id"]?>" ><?php echo $turma["nome"] . " - " . $turma["turno"];?></option>
+
+    <?php }
+
+}
+
 function salasOptions($opcao){
 
         $conn = initDB();
@@ -104,6 +122,8 @@ function initDB(){
 
       return $conn;
 }
+
+// function gerarTabel
 
 ?>
 

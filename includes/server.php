@@ -14,7 +14,7 @@ require_once ROOT_DIR. 'includes/functions.php';
 // =====================================================================================================================
 // CONSULTAR RESERVA ===================================================================================================
 // =====================================================================================================================
-    
+
     $conn = initDB();
 
     if(isset($_GET["consultar"])){
@@ -173,13 +173,14 @@ require_once ROOT_DIR. 'includes/functions.php';
 
            
             // prepara a pesquisa para ser executada
-            $stmt = $conn->prepare($query);
+            $stm = $conn->prepare($query);
             // executa a pesquisa 
-            $stmt->execute();
+            $stm->execute();
             // o resultado da pesquisa e convertido em uma array associativa
-            $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // fecha a conexao com o banco de dados
-           
+            $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
+             // quatidade total de registros
+            
+
 
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
@@ -270,61 +271,65 @@ require_once ROOT_DIR. 'includes/functions.php';
 // =====================================================================================================================
 
 
-        if(isset($_POST["cadastrar-reserva"])){
-
-            
-            // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
-            if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
-            
-            // DADOS DA RESERVA
-            $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
-            // INPUT ID SALA 
-            $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA TIPO' ESTA VAZIO");
-            // INPUT TURNO
-            $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
-            // INPUT DATA INICIO
-            $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
-            
-            // RODA CASO FOR UM NOVO CADASTRO 
-            if($_POST["cadastro-turma"] == "nova"){
-                
-                // DADOS DA TURMA NOVA 
-                $nome = $_POST["turma"] ? $_POST["turma"] : exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
-                
-                $codigo = $_POST["codigo"] ? $_POST["codigo"] : exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
-                
-                $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
-                
-                $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
-                
-                $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
-                
-                
-                $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
+if(isset($_POST["cadastrar-reserva"])){
+    
+    
+    // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
+    if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
+    
+    // DADOS DA RESERVA
+    $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
+    // INPUT ID SALA 
+    $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA TIPO' ESTA VAZIO");
+    // INPUT TURNO
+    $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
+    // INPUT DATA INICIO
+    $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
+    
+    // RODA CASO FOR UM NOVO CADASTRO 
+    if($_POST["cadastro-turma"] == "nova"){
+        
+        // DADOS DA TURMA NOVA 
+        $nome = $_POST["turma"] ? $_POST["turma"] : exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
+        
+        $codigo = $_POST["codigo"] ? $_POST["codigo"] : exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
+        
+        $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
+        
+        $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
+        
+        $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
+        
+        
+        $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
                 VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
                 
                 
                 $stm = $conn->prepare($query);
-
+                
                 if(!$stm->execute()){
-
+                    
                     exit("erro ao cadastrar a turma");
-
+                    
                 } else{
                     // ARMAZENA O ID DA TURMA QUE FOI CRIADA NO CODIGO ACIMA
                     $id_turma = $conn->lastInsertId();
                 }
-
-            } 
+                
+            } else {
+                
+                
+            }
+            
             
             //  RODA CASO FOR UMA RESERVA SEMANAL
             if($reserva_tipo == "semanal"){
-
+                
                 $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
-
+                
                 // INPUT DATA FIM
                 $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
-
+                
                 $data_inicial = strtotime($data_inicio);
                 $data_final = strtotime( $data_fim);
                 
@@ -333,40 +338,53 @@ require_once ROOT_DIR. 'includes/functions.php';
                     $data =  date("Y-m-d", $data_inicial);         
                     
                     $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
-
+                    
                     $data_inicial = strtotime("+1 week", $data_inicial);
-
+                    
                 }
-
+                
                 $query = substr_replace($query,"",-1);
-
+                
                 $stm = $conn->prepare($query);
-
+                
                 $resposta = !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
                 
-                    
-            // RODA CASO A RESERVA FOR UNICA
+                
+                // RODA CASO A RESERVA FOR UNICA
             } else {
-
+                
                 $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
                 VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
 
-                $stm = $conn->prepare($query);
+$stm = $conn->prepare($query);
 
-                $resposta = !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
-                    
-            }
+$resposta = !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
 
-            echo $resposta;
+}
 
-        }
-                
+echo $resposta;
+
+}
+
+// =====================================================================================================================
+// CONSULTAR TURMAS ===================================================================================================
+// =====================================================================================================================
+
+if(isset($_GET["dados_turma"])){
+     
+    $id_turma = $_GET["dados_turma"];
+    $select = "SELECT * FROM turmas WHERE id_turma = '$id_turma'";
+    
+    $stm = $conn->prepare($select);
+    $stm->execute();
+    $resposta = $stm->fetch(PDO::FETCH_ASSOC);
+
+    echo json_encode($resposta);
+}
+
+
+
             
-            
-            
-            
-            
-            
-                ?>
+?>
     
     
