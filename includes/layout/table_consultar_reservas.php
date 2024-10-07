@@ -18,8 +18,7 @@
     </thead>
     <tbody>
         <?php
-        $pag = isset($_GET["pagina"])? $_GET["pagina"] : 1;
-        // $pag = 1; // pagina atual
+        $pag = isset($_GET["pagina"])? $_GET["pagina"] : 1; // pagina atual
         $reg_qtd = count($arr); // quantidade total de registros
         $reg_pag = 20; //quantidade de registros por pagina
         $end = $reg_pag * $pag; // ultimo registro da pagina

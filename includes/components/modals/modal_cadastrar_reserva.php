@@ -24,7 +24,7 @@
               <div class="col">
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
-                    <input type="radio" class="btn-check" onchange="disable_input_turma(this)" id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
+                    <input type="radio" class="btn-check"  id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
                     <label class="btn btn-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
                   </div>
                 </div>
@@ -54,7 +54,7 @@
                 
                 <!-- INPUT QUANTIDADE PARTICIPANTES -->
                 <div class="form-floating ">
-                  <input type="number" class="form-control input-cadastrar-turma" id="participantes"  placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
+                  <input type="number" class="form-control input-cadastrar-turma" id="participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
                   <label for="participantes" class="form-label">N.&#xba; de participantes</label>
                 </div>
               </div>
@@ -63,7 +63,7 @@
                 
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
-                    <input type="radio" class="btn-check" id="btn-buscar-turma" onchange="disable_input_turma(this)" name="cadastro-turma" value="cadastrada" autocomplete="off" required >
+                    <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" required >
                     <label class="btn btn-primary" for="btn-buscar-turma">Buscar Turma</label>
                   </div>
                 </div>

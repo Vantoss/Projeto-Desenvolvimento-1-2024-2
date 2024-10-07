@@ -29,37 +29,23 @@ $(document).on('change','#turma-cadastrada', function(e){
 })
 
 
+$(document).on("click",".btn-check", function(){
 
-function disable_input_turma(btn_radio){
-    if(btn_radio.id == "btn-cadastro-turma"){
-        
-        document.getElementById("turma-cadastrada").setAttribute("disabled","")
+    if(this.id == "btn-cadastro-turma"){
+        $("#turma-cadastrada").prop("disabled",true)
         $("#turma-dados").css("background-color","#e9ecef");
         $("#turma-dados").css("color","");
-        
-        
-        
-        inp = document.getElementsByClassName("input-cadastrar-turma");
-        for (i = 0; i <= 4; i++){
-            inp[i].removeAttribute("disabled")
-        }
-        
+        $(".input-cadastrar-turma").prop("disabled",false)
         
     } else {
-        
-        document.getElementById("turma-cadastrada").removeAttribute("disabled")
-        inp = document.getElementsByClassName("input-cadastrar-turma");
+        $("#turma-cadastrada").prop("disabled",false)
+        $(".input-cadastrar-turma").prop("disabled",true)
         $("#turma-dados").css("background-color","#fff");
-        $("#turma-dados").css("color","var(--bs-body-color)");
-
-        for (i = 0; i <= 4; i++){
-            inp[i].setAttribute("disabled","")
-        }
-        
-        
+        $("#turma-dados").css("color","#e9ecef");
     }
 
-}
+})
+
 
 
 function disableData_fim(select_tipo){

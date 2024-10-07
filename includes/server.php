@@ -167,21 +167,16 @@ require_once ROOT_DIR. 'includes/functions.php';
             if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
             
             
-            // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+                // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
             
-            // EXECUTA PESQUISA SQL 
-
            
-            // prepara a pesquisa para ser executada
-            $stm = $conn->prepare($query);
-            // executa a pesquisa 
-            $stm->execute();
-            // o resultado da pesquisa e convertido em uma array associativa
-            $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
-             // quatidade total de registros
+                // prepara a pesquisa para ser executada
+                $stm = $conn->prepare($query);
+                // executa a pesquisa 
+                $stm->execute();
+                // o resultado da pesquisa e convertido em uma array associativa
+                $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
             
-
-
                 // gerar as datas para mostrar na tabela
                 $datas = str_replace(array("'"),array(""),$days);
                 $datas = explode(",",$datas);
@@ -203,8 +198,7 @@ require_once ROOT_DIR. 'includes/functions.php';
         
         $id_reserva = $_POST["id_reserva"];
 
-        
-
+    
         if($_POST["del_reservas"] == "atual"){
             
             // define o id_reserva a ser retirado da tabela
@@ -212,7 +206,6 @@ require_once ROOT_DIR. 'includes/functions.php';
             // deleta uma unica reserva
             $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
             $stm = $conn->prepare($query);
-            
             
             $resposta["msg"] = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
             
