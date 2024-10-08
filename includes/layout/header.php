@@ -22,7 +22,7 @@
     <script type="text/JavaScript" src="<?php echo ROOT_DIR. 'assets/js/main.js'?>" defer ></script>
     
     <!-- global Style -->
-    <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/main.css'?>" >
+    <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/main.css'?>" > 
     
     <?php customPageHeader($pagina_titulo);?>
 

@@ -15,77 +15,93 @@ require_once ROOT_DIR. 'includes/functions.php';
 // CONSULTAR RESERVA ===================================================================================================
 // =====================================================================================================================
 
-    $conn = initDB();
+$conn = initDB();
 
-    if(isset($_GET["consultar"])){
-        
-        
-        // SERVER REQUEST CONSULTAR RESERVAS
-        if($_GET["consultar"] == "reservas"){
-            
-            $sql = [];
-            
-            // filtro turma
-            if($_GET["turma"]) $sql[] = " t.nome LIKE '{$_GET["turma"]}%'";
-            
-            // filtro docente
-            if($_GET["docente"]) $sql[] = " t.docente LIKE '{$_GET["docente"]}%'";
-            
-            //filtro curso
-            if($_GET["curso"]) $sql[] = " t.curso LIKE '{$_GET["curso"]}%'";
-            
-            // filtro sala 
-            if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'";
-            
-            // filtro turno
-            if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
-            
-            // filtro reserva_tipo
-            if($_GET["reserva_tipo"]) $sql[] = " r.reserva_tipo = '{$_GET["reserva_tipo"]}'"; 
-            
-            // filtro data inicio
-            if($_GET["data_inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'"; 
-            
-            // filtro data fim
-            if($_GET["data_fim"]) $sql[] = " DATE(data) <= '{$_GET["data_fim"]}'"; 
-            
-            
-            // PESQUISA BASE CONSULTAR RESERVAS
-            $query = "SELECT s.id_sala as 'sala',
-                         s.tipo_sala as 'sala_tipo', 
-                         r.data as 'data',
-                         r.reserva_tipo as 'reserva',
-                         r.id_reserva as 'id_reserva', 
-                         t.nome as 'turma', 
-                         t.docente as 'docente', 
-                         t.turno as 'turno', 
-                         CONCAT(t.participantes_qtd, '/', s.lugares_qtd) as 'lugares' 
-                 FROM reservas as r
-                 INNER JOIN turmas as t 
-                 ON r.id_turma = t.id_turma
-                 INNER JOIN salas as s
-                 ON r.id_sala = s.id_sala";
-            
-            
-            // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
-            if($sql) $query .= ' WHERE ' .implode(' AND ',$sql); 
-            
-            
-            // limita a quatidade de registros que o banco de dados ira retornar
-            if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
-            
-            // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
-            
-            //estabelece conexao com o banco de dados
+if(isset($_GET["consultar"])){
     
-            $stmt = $conn->prepare($query);
-            // executa a pesquisa 
-            $stmt->execute();
-            // o resultado da pesquisa e convertido em uma array associativa
+    
+    // SERVER REQUEST CONSULTAR RESERVAS
+    if($_GET["consultar"] == "reservas"){
+        
+        $sql = [];
+        
+        // filtro turma
+        if($_GET["turma"]) $sql[] = " t.nome LIKE '{$_GET["turma"]}%'";
+        
+        // filtro docente
+        if($_GET["docente"]) $sql[] = " t.docente LIKE '{$_GET["docente"]}%'";
+        
+        //filtro curso
+        if($_GET["curso"]) $sql[] = " t.curso LIKE '{$_GET["curso"]}%'";
+        
+        // filtro sala 
+        if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'";
+        
+        // filtro turno
+        if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
+        
+        // filtro reserva_tipo
+        if($_GET["reserva_tipo"]) $sql[] = " r.reserva_tipo = '{$_GET["reserva_tipo"]}'"; 
+        
+        // filtro data inicio
+        if($_GET["data_inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'"; 
+        
+        // filtro data fim
+        if($_GET["data_fim"]) $sql[] = " DATE(data) <= '{$_GET["data_fim"]}'"; 
+        
+        
+        // PESQUISA BASE CONSULTAR RESERVAS
+        $query = "SELECT s.id_sala as 'sala',
+                        s.tipo_sala as 'sala_tipo', 
+                        r.data as 'data',
+                        r.reserva_tipo as 'reserva',
+                        r.id_reserva as 'id_reserva', 
+                        t.nome as 'turma', 
+                        t.docente as 'docente', 
+                        t.turno as 'turno', 
+                        CONCAT(t.participantes_qtd, '/', s.lugares_qtd) as 'lugares' 
+                FROM reservas as r
+                INNER JOIN turmas as t 
+                ON r.id_turma = t.id_turma
+                INNER JOIN salas as s
+                ON r.id_sala = s.id_sala";
+        
+        
+        // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
+        if($sql) $query .= ' WHERE ' .implode(' AND ',$sql); 
+        
+        
+        // limita a quatidade de registros que o banco de dados ira retornar
+        if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
+        
+        // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+        
+        //estabelece conexao com o banco de dados
+
+        $stmt = $conn->prepare($query);
+
+        if($stmt->execute()){
+
             $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            require_once "./layout/table_consultar_reservas.php";
+            if($arr){
+                file_put_contents('myJSON.json', json_encode($arr));
+                $resposta["status"] = 200;
+                $resposta["msg"] = "Dados tranferidos para o arquivo json";
+            } else {
+                $resposta["status"] = 204;
+                $resposta["msg"] = "Nenhum resultado encontrado";
+            }
+        } else {
+            $resposta["status"] = 400;
+            $resposta["msg"] = "Erro ao bucar os dados no banco";
         }
+        
+        echo json_encode($resposta);
+    }
+            
+    
+    
         
         
 // ===================================================================================================================================
@@ -93,100 +109,100 @@ require_once ROOT_DIR. 'includes/functions.php';
 // ===================================================================================================================================
 
 
-        if($_GET["consultar"] == "salas_disponiveis"){
-            $sql = []; //guarda os parametros da pesquisa sql
+    if($_GET["consultar"] == "salas_disponiveis"){
+        $sql = []; //guarda os parametros da pesquisa sql
+        
+        // filtro sala 
+        if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'"; 
+        
+        // filtro lugares quantidade
+        
+        if($_GET["sala_tipo"]) $sql[] = " s.tipo_sala = '{$_GET["sala_tipo"]}'";
+        
+        // filtro maquinas quantidade
+        if($_GET["maquinas_qtd"] >= 0) {
             
-            // filtro sala 
-            if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'"; 
-            
-            // filtro lugares quantidade
-            
-            if($_GET["sala_tipo"]) $sql[] = " s.tipo_sala = '{$_GET["sala_tipo"]}'";
-            
-            // filtro maquinas quantidade
-            if($_GET["maquinas_qtd"] >= 0) {
-                
-                $maquinas_qtd = intval($_GET["maquinas_qtd"]);
+            $maquinas_qtd = intval($_GET["maquinas_qtd"]);
 
-                $sql[] = " s.maquinas_qtd >= '$maquinas_qtd'";}
+            $sql[] = " s.maquinas_qtd >= '$maquinas_qtd'";}
+        
+        // filtro maquinas_tipo
+        if($_GET["maquinas_tipo"]) $sql[] = " s.maquinas_tipo LIKE '{$_GET["maquinas_tipo"]}%'";
+        
+        // filtro lugares quantidade
+        if($_GET["lugares_qtd"]) $sql[] = " s.lugares_qtd = '{$_GET["lugares_qtd"]}'";
+        
+        
+        
+        $query = "SELECT s.id_sala as 'sala',
+                            s.tipo_sala as 'sala_tipo',
+                            s.lugares_qtd as 'lugares',
+                            s.maquinas_qtd as 'maquinas_qtd',
+                            s.maquinas_tipo as 'maquinas_tipo'
+                    FROM salas as s";
+        
+        $sql[] = " s.id_sala NOT IN (SELECT s.id_sala from salas as s 
+        INNER JOIN reservas as r 
+        ON s.id_sala = r.id_sala 
+        INNER JOIN turmas as t 
+        ON r.id_turma = t.id_turma";
+        
+        // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
+        if($sql) $query .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
+        
+        
+        if($_GET["reserva_tipo"] == "única"){
             
-            // filtro maquinas_tipo
-            if($_GET["maquinas_tipo"]) $sql[] = " s.maquinas_tipo LIKE '{$_GET["maquinas_tipo"]}%'";
+            $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
             
-            // filtro lugares quantidade
-            if($_GET["lugares_qtd"]) $sql[] = " s.lugares_qtd = '{$_GET["lugares_qtd"]}'";
+            $days = $_GET["data_inicio"];
+        } 
+        else {  
             
+            $days = "";
             
+            $data_inicial=strtotime("{$_GET['data_inicio']}");
+            $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
             
-            $query = "SELECT s.id_sala as 'sala',
-                             s.tipo_sala as 'sala_tipo',
-                             s.lugares_qtd as 'lugares',
-                             s.maquinas_qtd as 'maquinas_qtd',
-                             s.maquinas_tipo as 'maquinas_tipo'
-                      FROM salas as s";
-            
-            $sql[] = " s.id_sala NOT IN (SELECT s.id_sala from salas as s 
-            INNER JOIN reservas as r 
-            ON s.id_sala = r.id_sala 
-            INNER JOIN turmas as t 
-            ON r.id_turma = t.id_turma";
-            
-            // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
-            if($sql) $query .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
-            
-            
-            if($_GET["reserva_tipo"] == "única"){
+            while ($data_inicial < $data_final) {
                 
-                $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
+                $days .=  date("'Y-m-d', ", $data_inicial);         
                 
-                $days = $_GET["data_inicio"];
-            } 
-            else {  
-                
-                $days = "";
-                
-                $data_inicial=strtotime("{$_GET['data_inicio']}");
-                $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
-                
-                while ($data_inicial < $data_final) {
-                    
-                    $days .=  date("'Y-m-d', ", $data_inicial);         
-                    
-                    $data_inicial = strtotime("+1 week", $data_inicial);
-                }
-                
-                $days = substr_replace($days,"",-2);    
-                
-                $query .= "DATE(data) in ($days)";
+                $data_inicial = strtotime("+1 week", $data_inicial);
             }
             
-            // filtro turno
-            $query .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
+            $days = substr_replace($days,"",-2);    
             
-            // limita a quatidade de registros que o banco de dados ira retornar
-            if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
-            
-            
-                // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
-            
-           
-                // prepara a pesquisa para ser executada
-                $stm = $conn->prepare($query);
-                // executa a pesquisa 
-                $stm->execute();
-                // o resultado da pesquisa e convertido em uma array associativa
-                $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
-            
-                // gerar as datas para mostrar na tabela
-                $datas = str_replace(array("'"),array(""),$days);
-                $datas = explode(",",$datas);
+            $query .= "DATE(data) in ($days)";
+        }
+        
+        // filtro turno
+        $query .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
+        
+        // limita a quatidade de registros que o banco de dados ira retornar
+        if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
+        
+        
+            // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+        
+        
+            // prepara a pesquisa para ser executada
+            $stm = $conn->prepare($query);
+            // executa a pesquisa 
+            $stm->execute();
+            // o resultado da pesquisa e convertido em uma array associativa
+            $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
+        
+            // gerar as datas para mostrar na tabela
+            $datas = str_replace(array("'"),array(""),$days);
+            $datas = explode(",",$datas);
 
-                // tabela cadastrar reservas
-                require_once "./layout/table_cadastrar_reservas.php";
-                
-            }
+            // tabela cadastrar reservas
+            require_once "./layout/table_cadastrar_reservas.php";
             
-    }
+        }
+        
+}
 
         
 // =====================================================================================================================
@@ -194,69 +210,69 @@ require_once ROOT_DIR. 'includes/functions.php';
 // =====================================================================================================================
 
         
-    if(isset($_POST["del_reservas"] )){
-        
-        $id_reserva = $_POST["id_reserva"];
-
+if(isset($_POST["del_reservas"] )){
     
-        if($_POST["del_reservas"] == "atual"){
-            
-            // define o id_reserva a ser retirado da tabela
-            
-            // deleta uma unica reserva
-            $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
-            $stm = $conn->prepare($query);
-            
-            $resposta["msg"] = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
-            
-            $resposta["registros_deletados"] =  array($id_reserva);
-            
-            
+    $id_reserva = $_POST["id_reserva"];
+
+
+    if($_POST["del_reservas"] == "atual"){
+        
+        // define o id_reserva a ser retirado da tabela
+        
+        // deleta uma unica reserva
+        $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
+        $stm = $conn->prepare($query);
+        
+        $resposta["msg"] = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
+        
+        $resposta["registros_deletados"] =  array($id_reserva);
+        
+        
+    } else {
+        // busca os dados id_turma e data para executar o delete de multiplas reservas 
+        $query = "SELECT r.id_turma AS 'turma',
+                            r.data AS 'data'    
+                    FROM reservas AS r 
+                    WHERE id_reserva = '$id_reserva'";
+
+
+        // executa a busca
+        $stm = $conn->prepare($query);
+        if(!$stm->execute()){
+
+            $resposta["msg"] = "Erro ao tentar buscar os dados da reserva";
+
         } else {
-            // busca os dados id_turma e data para executar o delete de multiplas reservas 
-            $query = "SELECT r.id_turma AS 'turma',
-                                r.data AS 'data'    
-                        FROM reservas AS r 
-                        WHERE id_reserva = '$id_reserva'";
-
-
-            // executa a busca
-            $stm = $conn->prepare($query);
-            if(!$stm->execute()){
-
-                $resposta["msg"] = "Erro ao tentar buscar os dados da reserva";
-
-            } else {
-                $arr = $stm->fetch(PDO::FETCH_ASSOC);
-                
-                $turma = $arr["turma"];
-                
-                $data = $arr["data"];
-                
-                $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
-                $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
-                
-                
-                if($_POST["del_reservas"] == "apartir"){
-                    $delete .= " AND DATE(data) >= '$data'";
-                    $select .= " AND DATE(data) >= '$data'";   
-                }
-                
-                $stm = $conn->prepare($select);
-                $stm->execute();
-                $resposta["registros_deletados"] = $stm->fetchAll(PDO::FETCH_NUM);
-
-
-                $stm = $conn->prepare($delete);
-                $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
-                
+            $arr = $stm->fetch(PDO::FETCH_ASSOC);
+            
+            $turma = $arr["turma"];
+            
+            $data = $arr["data"];
+            
+            $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
+            $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
+            
+            
+            if($_POST["del_reservas"] == "apartir"){
+                $delete .= " AND DATE(data) >= '$data'";
+                $select .= " AND DATE(data) >= '$data'";   
             }
-             
+            
+            $stm = $conn->prepare($select);
+            $stm->execute();
+            $resposta["registros_deletados"] = $stm->fetchAll(PDO::FETCH_NUM);
+
+
+            $stm = $conn->prepare($delete);
+            $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
+            
         }
-        
-        echo json_encode($resposta);
-        
+            
     }
+    
+    echo json_encode($resposta);
+    
+}
 
 
 // =====================================================================================================================
