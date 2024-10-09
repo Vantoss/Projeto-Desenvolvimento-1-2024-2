@@ -56,8 +56,12 @@ function turmasOptions($turno){
 
     $turmas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
+    if(!($turmas)){
+        
+        file_put_contents('dados_turmas.json', json_encode(" "));    
+    }
     file_put_contents('dados_turmas.json', json_encode($turmas));    
-
+    
 
 }
 
