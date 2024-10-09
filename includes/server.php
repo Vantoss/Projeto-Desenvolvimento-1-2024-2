@@ -78,14 +78,14 @@ if(isset($_GET["consultar"])){
         
         //estabelece conexao com o banco de dados
 
-        $stmt = $conn->prepare($query);
+        $stm = $conn->prepare($query);
 
-        if($stmt->execute()){
+        if($stm->execute()){
 
-            $arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $reserva = $stm->fetchAll(PDO::FETCH_ASSOC);
             
-            if($arr){
-                file_put_contents('myJSON.json', json_encode($arr));
+            if($reserva){
+                file_put_contents('dados_tabela_reservas.json', json_encode($reserva));
                 $resposta["status"] = 200;
                 $resposta["msg"] = "Dados tranferidos para o arquivo json";
             } else {
@@ -101,9 +101,6 @@ if(isset($_GET["consultar"])){
     }
             
     
-    
-        
-        
 // ===================================================================================================================================
 // CONSULTAR SALAS DISPONIVEIS =======================================================================================================
 // ===================================================================================================================================
@@ -155,25 +152,25 @@ if(isset($_GET["consultar"])){
             
             $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
             
-            $days = $_GET["data_inicio"];
+            $dias = $_GET["data_inicio"];
         } 
         else {  
             
-            $days = "";
+            $dias = "";
             
             $data_inicial=strtotime("{$_GET['data_inicio']}");
             $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
             
             while ($data_inicial < $data_final) {
                 
-                $days .=  date("'Y-m-d', ", $data_inicial);         
+                $dias .=  date("'Y-m-d', ", $data_inicial);         
                 
                 $data_inicial = strtotime("+1 week", $data_inicial);
             }
             
-            $days = substr_replace($days,"",-2);    
+            $dias = substr_replace($dias,"",-2);    
             
-            $query .= "DATE(data) in ($days)";
+            $query .= "DATE(data) in ($dias)";
         }
         
         // filtro turno
@@ -181,26 +178,47 @@ if(isset($_GET["consultar"])){
         
         // limita a quatidade de registros que o banco de dados ira retornar
         if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
+
+
+            turmasOptions($_GET["turno"]);
         
         
             // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
-        
             // prepara a pesquisa para ser executada
             $stm = $conn->prepare($query);
-            // executa a pesquisa 
-            $stm->execute();
-            // o resultado da pesquisa e convertido em uma array associativa
-            $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
         
-            // gerar as datas para mostrar na tabela
-            $datas = str_replace(array("'"),array(""),$days);
-            $datas = explode(",",$datas);
+            if($stm->execute()){
 
-            // tabela cadastrar reservas
-            require_once "./layout/table_cadastrar_reservas.php";
+                $datas = str_replace(array("'"),array(""),$dias);
+                $datas = explode(",",$datas);
+                
+                $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+                $dados_tabela = [
+                    "datas" => $datas,
+                    "turno" => $_GET["turno"],
+                    "reserva_tipo" => $_GET["reserva_tipo"],
+                    "salas" => $salas
+                ];
+
+                if($salas){
+                    file_put_contents('dados_tabela_salas.json', json_encode($dados_tabela));
+                    $resposta["status"] = 200;
+                    $resposta["msg"] = "Dados tranferidos para o arquivo json";
+                } else {
+                    $resposta["status"] = 204;
+                    $resposta["msg"] = "Nenhum resultado encontrado";
+                }
+            } else {
+                $resposta["status"] = 400;
+                $resposta["msg"] = "Erro ao bucar os dados no banco";
+            }
             
-        }
+            echo json_encode($resposta);
+
+            
+    }
         
 }
 
@@ -216,25 +234,15 @@ if(isset($_POST["del_reservas"] )){
 
 
     if($_POST["del_reservas"] == "atual"){
-        
-        // define o id_reserva a ser retirado da tabela
-        
-        // deleta uma unica reserva
-        $query = "DELETE FROM reservas WHERE id_reserva = '$id_reserva'";
-        $stm = $conn->prepare($query);
+
+        // deleta uma unica reserva    
+        $stm = $conn->prepare("DELETE FROM reservas WHERE id_reserva = '$id_reserva'");
         
         $resposta["msg"] = $stm->execute() ? "Reserva deletada com sucesso!" : "Erro ao tentar deletar reserva";
         
-        $resposta["registros_deletados"] =  array($id_reserva);
-        
-        
     } else {
         // busca os dados id_turma e data para executar o delete de multiplas reservas 
-        $query = "SELECT r.id_turma AS 'turma',
-                            r.data AS 'data'    
-                    FROM reservas AS r 
-                    WHERE id_reserva = '$id_reserva'";
-
+        $query = "SELECT r.id_turma AS 'turma', r.data AS 'data' FROM reservas AS r WHERE id_reserva = '$id_reserva' LIMIT 1";
 
         // executa a busca
         $stm = $conn->prepare($query);
@@ -243,35 +251,24 @@ if(isset($_POST["del_reservas"] )){
             $resposta["msg"] = "Erro ao tentar buscar os dados da reserva";
 
         } else {
-            $arr = $stm->fetch(PDO::FETCH_ASSOC);
+
+            $reserva = $stm->fetch(PDO::FETCH_ASSOC);
+            $turma = $reserva["turma"];
+            $data = $reserva["data"];
             
-            $turma = $arr["turma"];
-            
-            $data = $arr["data"];
-            
-            $select = "SELECT id_reserva FROM reservas WHERE id_turma = '$turma'";
             $delete = "DELETE FROM reservas WHERE id_turma = '$turma'";
             
-            
             if($_POST["del_reservas"] == "apartir"){
-                $delete .= " AND DATE(data) >= '$data'";
-                $select .= " AND DATE(data) >= '$data'";   
+                $delete .= " AND DATE(data) >= '$data'";   
             }
             
-            $stm = $conn->prepare($select);
-            $stm->execute();
-            $resposta["registros_deletados"] = $stm->fetchAll(PDO::FETCH_NUM);
-
-
             $stm = $conn->prepare($delete);
             $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
             
         }
-            
     }
     
     echo json_encode($resposta);
-    
 }
 
 
@@ -281,7 +278,6 @@ if(isset($_POST["del_reservas"] )){
 
 
 if(isset($_POST["cadastrar-reserva"])){
-    
     
     // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
     if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
@@ -314,66 +310,55 @@ if(isset($_POST["cadastrar-reserva"])){
                 VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
                 
                 
-                $stm = $conn->prepare($query);
-                
-                if(!$stm->execute()){
-                    
-                    exit("erro ao cadastrar a turma");
-                    
-                } else{
-                    // ARMAZENA O ID DA TURMA QUE FOI CRIADA NO CODIGO ACIMA
-                    $id_turma = $conn->lastInsertId();
-                }
-                
-            } else {
-                
-                
-            }
+        $stm = $conn->prepare($query);
+        
+        if(!$stm->execute()){
             
+            exit("erro ao cadastrar a turma");
             
-            //  RODA CASO FOR UMA RESERVA SEMANAL
-            if($reserva_tipo == "semanal"){
-                
-                $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
-                
-                // INPUT DATA FIM
-                $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
-                
-                $data_inicial = strtotime($data_inicio);
-                $data_final = strtotime( $data_fim);
-                
-                while ($data_inicial < $data_final) {
-                    
-                    $data =  date("Y-m-d", $data_inicial);         
-                    
-                    $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
-                    
-                    $data_inicial = strtotime("+1 week", $data_inicial);
-                    
-                }
-                
-                $query = substr_replace($query,"",-1);
-                
-                $stm = $conn->prepare($query);
-                
-                $resposta = !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
-                
-                
-                // RODA CASO A RESERVA FOR UNICA
-            } else {
-                
-                $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
-                VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
+        } else{
+            // ARMAZENA O ID DA TURMA QUE FOI CRIADA NO CODIGO ACIMA
+            $id_turma = $conn->lastInsertId();
+        }
+        
+    } 
 
-$stm = $conn->prepare($query);
+    //  RODA CASO FOR UMA RESERVA SEMANAL
+    if($reserva_tipo == "semanal"){
+        
+        $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
+        
+        // INPUT DATA FIM
+        $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
+        
+        $data_inicial = strtotime($data_inicio);
+        $data_final = strtotime( $data_fim);
+        
+        while ($data_inicial < $data_final) {
+            $data =  date("Y-m-d", $data_inicial);         
+            $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
+            $data_inicial = strtotime("+1 week", $data_inicial);   
+        }
+        
+        $query = substr_replace($query,"",-1);
+        $stm = $conn->prepare($query);
+        $resposta = !$stm->execute()? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
+        
+        // RODA CASO A RESERVA FOR UNICA
+    } else {
+        
+        $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
+        VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
 
-$resposta = !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
+        $stm = $conn->prepare($query);
 
-}
+        $resposta = !$stm->execute() ? "Erro ao tentar cadastrar as reservas" : "Reservas cadastradas com sucesso!";
 
-echo $resposta;
+        }
 
-}
+        echo $resposta;
+
+        }
 
 // =====================================================================================================================
 // CONSULTAR TURMAS ===================================================================================================

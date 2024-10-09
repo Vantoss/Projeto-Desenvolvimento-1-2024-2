@@ -12,21 +12,15 @@
 
           <div class="form-check">
             <input class="form-check-input" id="radio-del-atual" type="radio" name="del_reservas" value="atual" checked>
-            <label class="form-check-label" for="flexRadioDefault1">
-              Deletar registro atual
-            </label>
+            <label class="form-check-label" for="flexRadioDefault1">Deletar registro atual</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" id="radio-del-todos" type="radio" name="del_reservas" value="todos" >
-            <label class="form-check-label" for="flexRadioDefault2">
-              Deletar todos os registros
-            </label>
+            <label class="form-check-label" for="flexRadioDefault2">Deletar todos os registros</label>
           </div>
           <div class="form-check">
             <input class="form-check-input" id="radio-del-apartir" type="radio" name="del_reservas" value="apartir"  >
-            <label class="form-check-label" for="flexRadioDefault2">
-              Deletar os registros a partir do atual
-            </label>
+            <label class="form-check-label" for="flexRadioDefault2">Deletar os registros a partir do atual</label>
           </div>
         </div>
         <div class="modal-footer">

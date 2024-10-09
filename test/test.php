@@ -44,7 +44,7 @@
 
         $stm->execute();
 
-        $arr = $stm->fetchAll(PDO::FETCH_ASSOC);
+        $reserva = $stm->fetchAll(PDO::FETCH_ASSOC);
 
         $reg_qtd = $stm->rowCount();
 
@@ -64,7 +64,7 @@
             if ($i == $reg_qtd){
                 break;
             }
-                echo $arr[$i]["id_sala"] . "<br>";
+                echo $reserva[$i]["id_sala"] . "<br>";
 
         }
 

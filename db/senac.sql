@@ -21,6 +21,20 @@ SET time_zone = "+00:00";
 -- Database: `senac`
 --
 
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deletar_reservas_passadas` ()   DELETE FROM reservas WHERE data < CURRENT_DATE$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_reservas_histórico` ()   INSERT INTO reservas_historico (id, data, docente, participantes, id_turma, id_sala)
+SELECT r.id_reserva,r.data,t.docente,t.participantes_qtd,r.id_turma,r.id_sala
+FROM reservas as r
+INNER JOIN turmas as t
+ON r.id_turma = t.id_turma
+WHERE r.data < CURRENT_DATE$$
+
+DELIMITER ;
 -- --------------------------------------------------------
 
 --
@@ -260,6 +274,21 @@ INSERT INTO `salas` (`id_sala`, `tipo_sala`, `lugares_qtd`, `maquinas_qtd`, `maq
 (801, 'Auditório', 100, 1, 'Intel-i7-10', NULL),
 (802, 'Auditório', 80, 1, 'Intel-i7-10', NULL),
 (803, 'Auditório', 150, 1, 'Intel-i7-10', NULL);
+
+
+--
+-- Table structure for table `reservas_historico`
+--
+
+CREATE TABLE `reservas_historico` (
+  `id` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `docente` varchar(80) NOT NULL,
+  `participantes` int(11) NOT NULL,
+  `id_turma` int(11) NOT NULL,
+  `id_sala` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 
 --
 -- Indexes for dumped tables

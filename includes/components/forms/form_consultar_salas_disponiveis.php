@@ -19,7 +19,7 @@
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">
     <label for="reserva-tipo" class="form-label">Tipo de reserva</label>
-    <select id="reserva-tipo" class="form-select" name="reserva_tipo" onchange="disableData_fim(this)">
+    <select id="reserva-tipo" class="form-select" name="reserva_tipo">
       <option value="única">Única</option>
       <option value="semanal" >Semanal</option>
     </select>

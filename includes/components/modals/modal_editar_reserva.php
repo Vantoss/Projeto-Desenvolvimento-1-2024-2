@@ -1,8 +1,11 @@
-<div class="modal fade" id="cadastrar-reserva-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editar-reserva-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header" id="modal-header-cadastrar">
-
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <!-- <?php $data = $_GET["data_inicio"];
+          echo date_format(date_create($data)," l - d/m/Y") ." - ". $_GET["turno"] . " - " . $_GET["reserva_tipo"]; ?> -->
+        </h1> 
       </div>
       
       <div class="modal-body">
@@ -22,7 +25,7 @@
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
                     <input type="radio" class="btn-check"  id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
-                    <label class="btn btn-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
+                    <label class="btn btn-primary" for="btn-cadastro-turma">Editar Turma</label>
                   </div>
                 </div>
                 
@@ -61,19 +64,21 @@
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
                     <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" required >
-                    <label class="btn btn-primary" for="btn-buscar-turma">Buscar Turma</label>
+                    <label class="btn btn-primary" for="btn-buscar-turma">Trocar turma</label>
                   </div>
                 </div>
                 
                 <div class="form-floating">
                   <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
-                    <option value="" selected="">Selecione uma turma</option> 
-                    
+                    <option value="" selected="">Selecione uma turma</option>
+                    <?php turmasOptions($_GET["turno"] )?>
                   </select>
                   <label for="turma-cadastrada">Turma</label>
                 </div>
+
                 <div id="turma-dados"></div>
               </div>
+
             </div>
           </div>
         </form>

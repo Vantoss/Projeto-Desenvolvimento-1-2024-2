@@ -56,11 +56,8 @@ function turmasOptions($turno){
 
     $turmas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($turmas as $turma){ ?>
+    file_put_contents('dados_turmas.json', json_encode($turmas));    
 
-    <option value="<?php echo $turma["id"]?>" ><?php echo $turma["nome"] . " - " . $turma["turno"];?></option>
-
-    <?php }
 
 }
 
