@@ -1,5 +1,4 @@
 
-    
     $(document).on('submit','#form-consultar-salas',function (e) {
         e.preventDefault()
         var form = $(this).serialize()
@@ -59,7 +58,8 @@
                     success:function(reservasosta){
                         
                         // apaga os inputs do modal cadastrar
-                        $("#cadastrar-reserva")[0].reset()
+                        // $("#cadastrar-reserva")[0].reset()
+                        // $("#")[0].reset()
                         
                         // esconde o modal cadastrar
                         $("#cadastrar-reserva-modal").modal('hide')
@@ -115,13 +115,13 @@ function optionsTurmas(){
             dataType: "json",
             success: function (dadosJSON) {
                 turmas = dadosJSON
-                options = ""
+                options = '<option value="" selected="">Selecione uma turma</option>'
                 turmas.forEach((turma)=> {
 
                     options += '<option value="' + turma.id +'">' + turma.nome + " - " + turma.turno + '</option>'
                 })
 
-                $("#turma-cadastrada").append(options)
+                $("#turma-cadastrada").html(options)
             }
         })
     

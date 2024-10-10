@@ -1,7 +1,5 @@
 
 
-
-
 $(document).on("click",".btn-check", function(){
 
     if(this.id == "btn-cadastro-turma"){
