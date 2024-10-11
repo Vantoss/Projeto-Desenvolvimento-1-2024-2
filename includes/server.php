@@ -80,22 +80,40 @@ if(isset($_GET["consultar"])){
 
         $stm = $conn->prepare($query);
 
-        if($stm->execute()){
+        if(!$stm->execute()){
 
-            $reserva = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $resposta["status"] = 400;
+            $resposta["msg"] = "Erro ao bucar os dados no banco";
+
+        } else {
             
-            if($reserva){
-                file_put_contents('dados_tabela_reservas.json', json_encode($reserva));
+            if($reservas = $stm->fetchAll(PDO::FETCH_ASSOC)){
+                
+                $dados_tabela["status"] = 200;
+                $dados_tabela["reservas"] = $reservas;
+                
+            } else {
+                
+                $dados_tabela["status"] = 204;
+                $dados_tabela["msg"] = "Nenhum resultado encontrado";
+                
+            }
+            
+            file_put_contents(ROOT_DIR.'JSON/dados_tabela_reservas.json', json_encode($dados_tabela));
+            
+            if($reservas){
+
                 $resposta["status"] = 200;
                 $resposta["msg"] = "Dados tranferidos para o arquivo json";
+                
             } else {
+                
                 $resposta["status"] = 204;
                 $resposta["msg"] = "Nenhum resultado encontrado";
             }
-        } else {
-            $resposta["status"] = 400;
-            $resposta["msg"] = "Erro ao bucar os dados no banco";
+            
         }
+
         
         echo json_encode($resposta);
     }
@@ -203,7 +221,7 @@ if(isset($_GET["consultar"])){
                 ];
 
                 if($salas){
-                    file_put_contents('dados_tabela_salas.json', json_encode($dados_tabela));
+                    file_put_contents(ROOT_DIR.'JSON/dados_tabela_salas.json', json_encode($dados_tabela));
                     $resposta["status"] = 200;
                     $resposta["msg"] = "Dados tranferidos para o arquivo json";
                 } else {

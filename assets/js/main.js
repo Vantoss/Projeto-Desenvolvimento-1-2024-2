@@ -1,22 +1,24 @@
 
-
+// MODAL CADASTRAR RESERVA: BOTOES CADASTRAR/BUSCAR TURMA
 $(document).on("click",".btn-check", function(){
 
+    
     if(this.id == "btn-cadastro-turma"){
         $("#turma-cadastrada").prop("disabled",true)
         $("#turma-dados").css("background-color","#e9ecef");
         $(".input-cadastrar-turma").prop("disabled",false)
-        // $("#turma-dados").css("color","");
+
         
     } else {
         $("#turma-cadastrada").prop("disabled",false)
         $("#turma-dados").css("background-color","#fff");
         $(".input-cadastrar-turma").prop("disabled",true)
-        // $("#turma-dados").css("color","");
+        
     }
 
 })
 
+// MODAL CADASTRAR RESERVA: CONTAINER INFORMACOES TURMA
 $(document).on('change','#turma-cadastrada', function(e){
     
     id_turma = $(this).val()

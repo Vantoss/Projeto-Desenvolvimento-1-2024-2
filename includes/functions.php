@@ -56,13 +56,26 @@ function turmasOptions($turno){
 
     $turmas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    if(!($turmas)){
-        
-        file_put_contents('dados_turmas.json', json_encode(" "));    
-    }
-    file_put_contents('dados_turmas.json', json_encode($turmas));    
     
+    if($turmas){
+        
+        $dados = [
+            "status" => 200,
+            "msg" => "Dados transferidos para o arquivo dados_turmas_json",
+            "turmas" => $turmas
+        ];
 
+    } else {
+
+        $dados = [
+            "status" => 204,
+            "msg" => "Nenhuma turma cadastrada",
+            
+        ];
+    }
+
+    file_put_contents(ROOT_DIR. 'JSON/dados_turmas.json', json_encode($dados));    
+    
 }
 
 function salasOptions($opcao){

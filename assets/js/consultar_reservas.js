@@ -17,11 +17,11 @@ $(document).ready(function () {
                     console.log(response.msg)
                     
                     $.ajax({
-                        url:"../includes/dados_tabela_reservas.json",
+                        url:"../JSON/dados_tabela_reservas.json",
                         type:"GET",
                         dataType: "json",
                         success:function(dadosJSON){      
-                            tabela = gerarTabelaReservas(dadosJSON, 1)
+                            tabela = gerarTabelaReservas(dadosJSON.reservas, 1)
                             $("#container-tabela").html(tabela)
                         }
                     })
@@ -83,7 +83,7 @@ $(document).ready(function () {
 function atualizarTabelaReservas(){
     
     form = $("#form-consultar-reservas").serialize()
-    form += '&consultar=' + 'reservas'
+    form += '&consultar=reservas'
     $.ajax({
         url:"../includes/server.php",
         type:"GET",
@@ -95,23 +95,28 @@ function atualizarTabelaReservas(){
             console.log(resposta.msg)
             
             $.ajax({
-                url:"../includes/dados_tabela_reservas.json",
+                url:"../JSON/dados_tabela_reservas.json",
                 type:"GET",
                 dataType: "json",
                 success:function(dadosJSON){
                     
-                    pagina = Number($("#current-page").text())
-                    tabela = gerarTabelaReservas(dadosJSON, pagina)
-                    $("#container-tabela").html(tabela)
+                    if(dadosJSON.status == 200){
+                        pagina = Number($("#current-page").text())
+                        tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
+                        $("#container-tabela").html(tabela)
+                    } else {
+                        
+                        $("#container-tabela").html("<span>"+ dadosJSON.msg +"</span>")
+                    }
                 }
             })
         }
     })
 }
 
-function gerarTabelaReservas(dadosJSON, pagina){
+function    gerarTabelaReservas(reservas, pagina){
 
-    reservas = dadosJSON
+    reservas
 
     tabela = '<table class="table table-striped tabela-consulta">'
     tabela += '<thead>'
@@ -197,13 +202,11 @@ $(document).on('click','.pagina-reservas', function (e) {
     pagina = $(this).val()
 
     $.ajax({
-        url:"../includes/dados_tabela_reservas.json",
+        url:"../JSON/dados_tabela_reservas.json",
         type:"GET",
         dataType: "json",
         success:function(dadosJSON){
-
-            tabela = gerarTabelaReservas(dadosJSON, pagina)
-            
+            tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
             $("#container-tabela").html(tabela)
         }
     })

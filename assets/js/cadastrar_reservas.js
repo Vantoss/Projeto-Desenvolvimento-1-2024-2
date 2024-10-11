@@ -17,7 +17,7 @@
                 if(response.status == 200){
                     console.log(response.msg)
                     $.ajax({
-                        url:"../includes/dados_tabela_salas.json",
+                        url:"../JSON/dados_tabela_salas.json",
                         type:"GET",
                         dataType: "json",
                         success:function(dadosJSON){      
@@ -37,7 +37,7 @@
             } 
         })
             
-    
+    // BOTAO RESERVAR
     
         $(document).on('click','#btn-reservar', function () {
             var id_sala = $(this).val()
@@ -58,8 +58,7 @@
                     success:function(reservasosta){
                         
                         // apaga os inputs do modal cadastrar
-                        // $("#cadastrar-reserva")[0].reset()
-                        // $("#")[0].reset()
+                        $(".input-cadastrar-turma").val("")
                         
                         // esconde o modal cadastrar
                         $("#cadastrar-reserva-modal").modal('hide')
@@ -83,7 +82,7 @@
         pagina = $(this).val()
         
         $.ajax({
-            url:"../includes/dados_tabela_salas.json",
+            url:"../JSON/dados_tabela_salas.json",
             type:"GET",
             dataType: "json",
             success:function(dadosJSON){
@@ -96,32 +95,38 @@
     })
 
     $(document).on('change','#reserva-tipo',function(){
-        
         if(this.value == "única"){
             $("#data-fim").prop("disabled",true)
             $("#data-fim").val('')
         } else {
             $("#data-fim").prop("disabled",false)
         }
-        
     })
 
-
+// MODAL CADASTRAR RESERVA: OPTIONS TURMAS 
 function optionsTurmas(){
 
+
+    $("#turma-cadastrada").empty();
         $.ajax({
             type: "GET",
-            url: "../includes/dados_turmas.json",
+            url: "../JSON/dados_turmas.json",
             dataType: "json",
             success: function (dadosJSON) {
-                turmas = dadosJSON
-                options = '<option value="" selected="">Selecione uma turma</option>'
-                turmas.forEach((turma)=> {
-
-                    options += '<option value="' + turma.id +'">' + turma.nome + " - " + turma.turno + '</option>'
-                })
-
+                msg = dadosJSON.msg
+                if(dadosJSON.status == 200){
+                    options = '<option value="" selected="">Selecione uma turma</option>'
+                    console.log(msg)
+                    turmas = dadosJSON.turmas 
+                    turmas.forEach((turma) => {
+                        options += '<option value="' + turma.id +'">' + turma.nome + " - " + turma.turno + '</option>'
+                    })
+                } else {
+                    options = '<option value="" selected="">Nenhuma turma cadastrada</option>'
+                }
+                
                 $("#turma-cadastrada").html(options)
+
             }
         })
     

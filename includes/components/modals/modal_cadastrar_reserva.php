@@ -57,10 +57,9 @@
               </div>
               
               <div class="col">
-                
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
-                    <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" required >
+                    <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" >
                     <label class="btn btn-primary" for="btn-buscar-turma">Buscar Turma</label>
                   </div>
                 </div>
@@ -80,8 +79,8 @@
       </div>
       
       <div class="modal-footer">
-          <button type="submit"form="cadastrar-reserva" class="btn btn-primary">Salvar</button>
-          <button type="reset" form="cadastrar-reserva" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" form="cadastrar-reserva" class="btn btn-primary">Salvar</button>
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
