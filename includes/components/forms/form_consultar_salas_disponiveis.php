@@ -6,29 +6,28 @@
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="data-inicio" name="data_inicio" required>
+    <input type="date" class="form-control" id="inp-consulta-data-inicio" name="data_inicio" required>
   </div>
-  
   
   <!-- FILTRO DATA FINAL -->
   <div class="col-md-3">
     <label for="data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control" id="data-fim" name="data_fim" disabled required>
+    <input type="date" class="form-control" id="inp-consulta-data-fim" name="data_fim" disabled required>
   </div>
   
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">
-    <label for="reserva-tipo" class="form-label">Tipo de reserva</label>
-    <select id="reserva-tipo" class="form-select" name="reserva_tipo">
-      <option value="única">Única</option>
-      <option value="semanal" >Semanal</option>
+    <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
+    <select id="inp-consulta-reserva-tipo" class="form-select" name="reserva_tipo">
+      <option value="Única">Única</option>
+      <option value="Semanal" >Semanal</option>
     </select>
   </div>
 
   <!-- FILTRO TURNO -->
   <div class="col-md-3">
-    <label for="turno" class="form-label">Turno</label>
-    <select id="turno" class="form-select" name="turno">
+    <label for="inp-consulta-turno" class="form-label">Turno</label>
+    <select id="inp-consulta-turno" class="form-select" name="turno">
       <option value="Manhã" >Manhã</option>
       <option value="Tarde" >Tarde</option>
       <option value="Noite" >Noite</option>
@@ -37,8 +36,8 @@
   
   <!-- FILTRO NUMERO SALA -->
   <div class="col-md-3">
-    <label for="sala" class="form-label">N.&#xba; da sala</label>
-    <select id="sala" class="form-select" name="sala">
+    <label for="inp-consulta-sala" class="form-label">N.&#xba; da sala</label>
+    <select id="inp-consulta-sala" class="form-select" name="sala">
       <option value="" selected="">Qualquer</option>
       <?php salasOptions("id_sala")?>
     </select>
@@ -46,8 +45,8 @@
 
   <!-- FILTRO TIPO DE SALA -->
   <div class="col-md-3">
-    <label for="sala-tipo" class="form-label">Tipo de sala</label>
-    <select id="sala-tipo" class="form-select" name="sala_tipo">
+    <label for="inp-consulta-sala-tipo" class="form-label">Tipo de sala</label>
+    <select id="inp-consulta-sala-tipo" class="form-select" name="sala_tipo">
       <option value="" selected="">Qualquer</option>
       <?php salasOptions("tipo_sala")?>
     </select>
@@ -55,21 +54,21 @@
 
   <!-- FILTRO QUANTIDADE LUGARES -->
   <div class="col-md-3">
-    <label for="lugares-qtd" class="form-label" >N.&#xba; de lugares</label>
-    <input type="number" id="lugares-qtd" class="form-control" min="1" placeholder="Qualquer" name="lugares_qtd">
+    <label for="inp-consulta-lugares-qtd" class="form-label" >N.&#xba; de lugares</label>
+    <input type="number" id="inp-consulta-lugares-qtd" class="form-control" min="1" placeholder="Qualquer" name="lugares_qtd">
   </div>
 
   <!-- FILTRO QUANTIDADE MAQUINAS -->
   <div class="col-md-3">
-    <label for="maquinas-qtd" class="form-label" >N.&#xba; de maquinas</label>
-    <input type="number" id="maquinas-qtd" class="form-control" min="0" placeholder="Qualquer" name="maquinas_qtd">
+    <label for="inp-consulta-maquinas-qtd" class="form-label" >N.&#xba; de maquinas</label>
+    <input type="number" id="inp-consulta-maquinas-qtd" class="form-control" min="0" placeholder="Qualquer" name="maquinas_qtd">
   </div>
   
   <!-- FILTRO MAQUINA TIPO --> 
 
   <div class="col-md-3">
-    <label for="maquinas-tipo" class="form-label">Tipo de maquinas</label>
-    <select id="maquinas-tipo" class="form-select" name="maquinas_tipo">
+    <label for="inp-consulta-maquinas-tipo" class="form-label">Tipo de maquinas</label>
+    <select id="inp-consulta-maquinas-tipo" class="form-select" name="maquinas_tipo">
       <option value="" selected="">Qualquer</option>
       <?php salasOptions("maquinas_tipo")?>
     </select>
@@ -78,8 +77,8 @@
 
   <!-- FILTRO REGISTROS -->
   <div class="col-md-3">
-    <label for="registros" class="form-label" >N.&#xba; de registros</label>
-    <input type="number" id="registros" class="form-control" min="1" placeholder="Todos" name="registros">
+    <label for="inp-consulta-registros" class="form-label" >N.&#xba; de registros</label>
+    <input type="number" id="inp-consulta-registros" class="form-control" min="1" placeholder="Todos" name="registros">
   </div>
 
   <!-- BOTAO BUSCAR -->

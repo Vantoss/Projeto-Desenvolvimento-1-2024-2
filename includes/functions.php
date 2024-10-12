@@ -46,10 +46,10 @@ function customPageHeader($pagina_titulo){
     }
 }
 
-function turmasOptions($turno){
+function gerarTurmasJSON(){
 
     $conn = initDB();
-    $select = "SELECT id_turma as id, nome, codigo, turno FROM turmas WHERE turno = '$turno'";
+    $select = "SELECT * FROM turmas ";
 
     $stm = $conn->prepare($select);
     $stm->execute();
@@ -61,7 +61,6 @@ function turmasOptions($turno){
         
         $dados = [
             "status" => 200,
-            "msg" => "Dados transferidos para o arquivo dados_turmas_json",
             "turmas" => $turmas
         ];
 
@@ -70,7 +69,6 @@ function turmasOptions($turno){
         $dados = [
             "status" => 204,
             "msg" => "Nenhuma turma cadastrada",
-            
         ];
     }
 

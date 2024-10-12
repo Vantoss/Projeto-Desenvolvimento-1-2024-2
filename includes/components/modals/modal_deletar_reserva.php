@@ -7,9 +7,6 @@
       </div>
       <form method="post" id="form-del-reserva">
         <div class="modal-body">
-
-          <input type="hidden" id="id-reserva" name="id_reserva" value="">
-
           <div class="form-check">
             <input class="form-check-input" id="radio-del-atual" type="radio" name="del_reservas" value="atual" checked>
             <label class="form-check-label" for="flexRadioDefault1">Deletar registro atual</label>

@@ -4,13 +4,17 @@
     box-sizing: border-box;    
 }
 
+body{
+    min-height:1800px ;
+}
+
 
 /* ----------------BOX DE FILTROS-------------- */
 
 
 #container-tabela{
     visibility: hidden;
-    min-height: 960px;
+    /* min-height: 960px; */
 }
 
 .table{
@@ -71,7 +75,7 @@
     margin-bottom: 20px;
 }
 
-.input-cadastrar-turma{
+.inp-dados-turma{
 
     margin-bottom: 10px;
 }

@@ -1,4 +1,4 @@
-<div class="modal fade" id="editar-reserva-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -17,77 +17,103 @@
           <h5 id="sala-lugares"></h5>
         </div>
 
-        <form method="post" id="cadastrar-reserva" >
+        <form method="post" id="form-editar" >
           <div class="div-cadastrar-turma">
             <div class="row text-center">
               <!-- INPUT TURMA -->
               <div class="col">
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
-                    <input type="radio" class="btn-check"  id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
-                    <label class="btn btn-primary" for="btn-cadastro-turma">Editar Turma</label>
+                    <input type="radio" class="btn-check " id="btn-editar-turma" name="editar" value="turma" autocomplete="off" checked>
+                    <label class="btn btn-primary" for="btn-editar-turma">Editar Turma</label>
                   </div>
                 </div>
                 
                 <div class="form-floating ">
-                  <input type="text" class="form-control input-cadastrar-turma" id="cad-turma" placeholder="Turma" name="turma" autocomplete="off" required>
-                  <label for="cad-turma" class="form-label">Turma</label>
+                  <input type="text" class="form-control inp-dados-turma" id="inp-turma" placeholder="Turma" name="turma" autocomplete="off" >
+                  <label for="inp-turma" class="form-label">Turma</label>
                 </div>
                 
                 <!-- INPUT DOCENTE -->
                 <div class="form-floating ">
-                  <input type="text" class="form-control input-cadastrar-turma" id="docente" placeholder="Docente" name="docente" autocomplete="off" required>
-                  <label for="docente" class="form-label">Docente</label>
+                  <input type="text" class="form-control inp-dados-turma" id="inp-docente" placeholder="Docente" name="docente" autocomplete="off" >
+                  <label for="inp-docente" class="form-label">Docente</label>
                 </div>
                 
                 <!-- INPUT CURSO -->
                 <div class="form-floating ">
-                  <input type="text" class="form-control input-cadastrar-turma" id="curso" placeholder="Curso" name="curso" autocomplete="off" required>
-                  <label for="curso" class="form-label">Curso</label>
+                  <input type="text" class="form-control inp-dados-turma" id="inp-curso" placeholder="Curso" name="curso" autocomplete="off" >
+                  <label for="inp-curso" class="form-label">Curso</label>
                 </div>
                 
                 <!-- INPUT CODIGO TURMA -->
                 <div class="form-floating ">
-                  <input type="text" class="form-control input-cadastrar-turma" id="codigo" placeholder="Codigo" name="codigo" autocomplete="off" required>
-                  <label for="codigo" class="form-label">Código</label>
+                  <input type="text" class="form-control inp-dados-turma" id="inp-codigo" placeholder="Codigo" name="codigo" autocomplete="off" >
+                  <label for="inp-codigo" class="form-label">Código</label>
                 </div>
                 
                 <!-- INPUT QUANTIDADE PARTICIPANTES -->
                 <div class="form-floating ">
-                  <input type="number" class="form-control input-cadastrar-turma" id="participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
-                  <label for="participantes" class="form-label">N.&#xba; de participantes</label>
+                  <input type="number" class="form-control inp-dados-turma" id="inp-participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
+                  <label for="inp-participantes" class="form-label">N.&#xba; de participantes</label>
                 </div>
               </div>
               
               <div class="col">
-                
                 <div class="row row-btn-check">
                   <div class="form-btn-check">
-                    <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" required >
-                    <label class="btn btn-primary" for="btn-buscar-turma">Trocar turma</label>
+                    <input type="radio" class="btn-check" id="btn-trocar-turma"  name="editar" value="reserva" autocomplete="off" required>
+                    <label class="btn btn-primary" for="btn-trocar-turma">Trocar turma</label>
                   </div>
                 </div>
                 
                 <div class="form-floating">
-                  <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
+                  <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma_nova" aria-label="Floating label select example"  required>
                     <option value="" selected="">Selecione uma turma</option>
-                    <?php turmasOptions($_GET["turno"] )?>
+
                   </select>
                   <label for="turma-cadastrada">Turma</label>
                 </div>
-
                 <div id="turma-dados"></div>
               </div>
-
             </div>
           </div>
         </form>
       </div>
-      
       <div class="modal-footer">
-          <button type="submit"form="cadastrar-reserva" class="btn btn-primary">Salvar</button>
-          <button type="reset" form="cadastrar-reserva" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" form="form-editar" id="btn-salvar-editar" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
+</div>
+
+<div class="modal fade" id="modal-editar-reserva" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Editar Reserva</h1>
+      </div>
+      <form method="post" id="form-edit-reserva">
+        <div class="modal-body">
+          <div class="form-check">
+            <input class="form-check-input" id="radio-edit-atual" type="radio" name="edit_reserva" value="atual" checked>
+            <label class="form-check-label" for="radio-edit-atual">Editar registro atual</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" id="radio-edit-todos" type="radio" name="edit_reserva" value="todos">
+            <label class="form-check-label" for="radio-edit-todos">Editar todos os registros</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" id="radio-edit-apartir" type="radio" name="edit_reserva" value="apartir">
+            <label class="form-check-label" for="radio-edit-apartir">Editar os registros a partir do atual</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button  type="submit" class="btn btn-primary" data-bs-dismiss="modal">Editar</button>
+          <button  type="reset" id="btn-edit-cancelar" class="btn btn-secondary" data-bs-target="#modal-editar" data-bs-toggle="modal" >Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

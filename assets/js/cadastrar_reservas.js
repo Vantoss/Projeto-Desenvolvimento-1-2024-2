@@ -1,8 +1,12 @@
 
+    // RODA AO CLICAR O BOTAO "BUSCAR"
     $(document).on('submit','#form-consultar-salas',function (e) {
         e.preventDefault()
-        var form = $(this).serialize()
-        form += '&consultar=' + 'salas_disponiveis'
+        let form = $(this).serialize()
+        let turno = $("#inp-consulta-turno").val()
+        form += '&consultar=salas_disponiveis'
+        
+        console.log(form)
         $.ajax({
             url:"../includes/server.php",
             type:"GET",
@@ -11,11 +15,13 @@
             $("#container-tabela").html("<span>Procurando...</span>")
             $("#container-tabela").css("visibility","visible")
             },
-            success:function(response){
-                response = JSON.parse(response)
+            success:function(resposta){
+
+                console.log(resposta)
+                resposta = JSON.parse(resposta)
                 
-                if(response.status == 200){
-                    console.log(response.msg)
+                if(resposta.status == 200){
+                    console.log(resposta.msg)
                     $.ajax({
                         url:"../JSON/dados_tabela_salas.json",
                         type:"GET",
@@ -23,58 +29,67 @@
                         success:function(dadosJSON){      
                             tabela = gerarTabelaSalas(dadosJSON, 1)
                             
-                            optionsTurmas()
+                            optionsTurmas(turno)
+
                             $("#container-tabela").html(tabela)
                         }
                     })
-                } else if (response.status == 204) {
+                } else if (resposta.status == 204) {
                     
-                    $("#container-tabela").html("<span>" + response.msg + "</span>")
+                    $("#container-tabela").html("<span>" + resposta.msg + "</span>")
                     
                 } else {   
-                    console.log(response.msg)
+                    console.log(resposta.msg)
                 }
             } 
         })
+
+       
+    })
             
     // BOTAO RESERVAR
     
         $(document).on('click','#btn-reservar', function () {
-            var id_sala = $(this).val()
+            let id_sala = $(this).val()
             // FORM CADASTRO DA RESERVA
+            
             $(document).on('submit','#cadastrar-reserva', function (e) {
                 e.preventDefault()
                 
                 // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
-                formData = $("#cadastrar-reserva").serialize()
-                formData += '&' + form
+                formData = $(this).serialize()
+                formData += '&' + $("#form-consultar-salas").serialize()
                 formData += '&cadastrar-reserva=true'
                 formData += '&id_sala=' + id_sala
-                
+
+
                 $.ajax({
                     url:"../includes/server.php",
                     type:"POST",
                     data: formData,
-                    success:function(reservasosta){
-                        
-                        // apaga os inputs do modal cadastrar
-                        $(".input-cadastrar-turma").val("")
-                        
-                        // esconde o modal cadastrar
-                        $("#cadastrar-reserva-modal").modal('hide')
-                        
-                        // mostra a mesagem de alerta (resultado do cadastro)
-                        $("#modal-alerta-msg").text(reservasosta)
-                        
-                        // mostra o modal alerta
-                        $("#modal-alerta").modal('show')
+                    success:function(resposta){
+
+                        console.log(resposta)
+
+                        resposta = JSON.parse(resposta)
+
+                            // apaga os inputs do modal cadastrar
+                            $(".input-cadastrar-turma").val("")
+                            
+                            // esconde o modal cadastrar
+                            $("#cadastrar-reserva-modal").modal('hide')
+                            
+                            // mostra a mesagem de alerta (resultado do cadastro)
+                            $("#modal-alerta-msg").text(resposta.msg)
+                            
+                            // mostra o modal alerta
+                            $("#modal-alerta").modal('show')
                         
                     }
                 })
             })
         })
     
-    })
 
     $(document).on('click','.pagina-salas', function (e) {
         e.preventDefault()
@@ -94,43 +109,17 @@
         })
     })
 
-    $(document).on('change','#reserva-tipo',function(){
+    // DESABILITAR DATA FIM
+    $(document).on('change','#inp-consulta-reserva-tipo',function(){
         if(this.value == "única"){
-            $("#data-fim").prop("disabled",true)
-            $("#data-fim").val('')
+            $("#inp-consulta-data-fim").prop("disabled",true)
+            $("#inp-consulta-data-fim").val('')
         } else {
-            $("#data-fim").prop("disabled",false)
+            $("#inp-consulta-data-fim").prop("disabled",false)
         }
     })
 
-// MODAL CADASTRAR RESERVA: OPTIONS TURMAS 
-function optionsTurmas(){
 
-
-    $("#turma-cadastrada").empty();
-        $.ajax({
-            type: "GET",
-            url: "../JSON/dados_turmas.json",
-            dataType: "json",
-            success: function (dadosJSON) {
-                msg = dadosJSON.msg
-                if(dadosJSON.status == 200){
-                    options = '<option value="" selected="">Selecione uma turma</option>'
-                    console.log(msg)
-                    turmas = dadosJSON.turmas 
-                    turmas.forEach((turma) => {
-                        options += '<option value="' + turma.id +'">' + turma.nome + " - " + turma.turno + '</option>'
-                    })
-                } else {
-                    options = '<option value="" selected="">Nenhuma turma cadastrada</option>'
-                }
-                
-                $("#turma-cadastrada").html(options)
-
-            }
-        })
-    
-}
 
 // TABELA SALAS DISPONIVEIS
 
@@ -140,14 +129,10 @@ function gerarTabelaSalas(dadosJSON, pagina){
     reserva_tipo = dadosJSON.reserva_tipo
     datas = dadosJSON.datas
     
-    date = new Date (datas[0] + ' 00:00')
-    const formatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
-    data = formatter.format(date)
+    data = converterData(datas[0])
 
     $("#modal-header-cadastrar").html('<h1 class="modal-title fs-5">' + data + ' - ' + turno + ' - ' + reserva_tipo + '</h1>')
     
-
-
     tabela = '<table class="table table-striped tabela-consulta">'
     
     tabela += '<button id="data-tag" class="btn btn-primary btn-sm">'+ reserva_tipo +'</button>'
@@ -155,11 +140,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
     tabela += '<button id="data-tag" class="btn btn-primary btn-sm">'+ turno + '</button>'
     
     datas.forEach( (data) =>{
-        date = new Date (data+ ' 00:00')
-        const formatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
-        data = formatter.format(date)
-        
-        tabela += '<button id="data-tag" class="btn btn-primary btn-sm ">' + data + '</button>'
+        tabela += '<button id="data-tag" class="btn btn-primary btn-sm ">' + converterData(data) + '</button>'
     })
 
 
@@ -221,6 +202,40 @@ function gerarTabelaSalas(dadosJSON, pagina){
 
     return tabela
 }
+
+// function atualizarTabelaReservas(){
+    
+//     let form = $("#form-consultar-reservas").serialize()
+//     form += '&consultar=reservas'
+//     $.ajax({
+//         url:"../includes/server.php",
+//         type:"GET",
+//         data: form,
+//         success:function(resposta){
+//             resposta = JSON.parse(resposta)
+//             console.log(resposta.msg)
+//             $.ajax({
+//                 url:"../JSON/dados_tabela_reservas.json",
+//                 type:"GET",
+//                 dataType: "json",
+//                 success:function(dadosJSON){
+                    
+//                     if(dadosJSON.status == 200){
+//                         pagina = Number($("#current-page").text())
+//                         tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
+//                         $("#container-tabela").html(tabela)
+//                     } else {
+                        
+//                         $("#container-tabela").html("<span>"+ dadosJSON.msg +"</span>")
+//                     }
+//                 }
+//             })
+//         }
+//     })
+// }
+
+
+
 
 
 
