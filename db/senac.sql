@@ -20,11 +20,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `senac`
 --
-
-DELIMITER $$
 --
 -- Procedures
 --
+
+DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `deletar_reservas_passadas` ()   DELETE FROM reservas WHERE data < CURRENT_DATE$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_reservas_histórico` ()   INSERT INTO reservas_historico (id, data, docente, participantes, id_turma, id_sala)
@@ -49,7 +49,7 @@ CREATE TABLE `turmas` (
   `turno` varchar(10) DEFAULT NULL,
   `codigo` varchar(60) DEFAULT NULL,
   `participantes_qtd` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `disciplinas`
@@ -85,7 +85,7 @@ CREATE TABLE `reservas` (
   `reserva_tipo` varchar(30) DEFAULT NULL,
   `id_sala` int(11) NOT NULL,
   `id_turma` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `reservas`
@@ -232,7 +232,7 @@ CREATE TABLE `salas` (
   `maquinas_qtd` int(11) DEFAULT NULL,
   `maquinas_tipo` varchar(45) DEFAULT NULL,
   `descricao` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Dumping data for table `salas`

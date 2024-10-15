@@ -1,17 +1,16 @@
-$(document).ready(function () {
+
 
     $(document).on('submit','#form-consultar-reservas',function (e) {
         e.preventDefault()
-        atualizarTabelaReservas(pagina=1)
+        atualizarTabelaReservas()
     })
 
-    
-    // define o id reserva a ser apagado
+
+    // BOTAO DELETAR
     $(document).on('click','.btn-deletar-reserva', function () {  
         const reserva_dados = $(this).val().split("-")
-
-        const id_reserva = reserva_dados[0]
-        const id_turma = reserva_dados[1]
+        $("#inp-del-reserva").val(reserva_dados[0])
+        $("#inp-del-turma").val(reserva_dados[1])
 
         const tipo_reserva = $(this).parents("tr").children("td:nth-child(5)")
 
@@ -23,16 +22,14 @@ $(document).ready(function () {
             $("#radio-del-todos")  .prop("disabled",false)
             $("#radio-del-apartir").prop("disabled",false)
         }
+    })
         
+    // MODAL-FORM DELETAR RESERVAS
+    $(document).on('submit', '#form-del-reserva', function (e) { 
+        e.preventDefault();
+        form = $(this).serialize()
 
-        $(document).on('submit', '#form-del-reserva', function (e) { 
-            e.preventDefault();
-            form = $(this).serialize()
-            form += "&id_reserva=" + id_reserva
-            form +="&id_turma=" + id_turma
-
-           enviarReqPOST(form)    
-        })
+        enviarReqPOST(form,atualizarTabelaReservas)
     })
     
     
@@ -54,13 +51,22 @@ $(document).ready(function () {
     })
     
     
-    // EDITAR DADOS TURMA
+    // BOTAO EDITAR
     
     $(document).on('click','.btn-editar-reserva',function () { 
         const reserva_dados  = this.value.split("-")
-        const turno = $(this).parents("tr").children("td:nth-child(4)").text()
-        
-        let id_turma = reserva_dados[1]
+
+        id_reserva = reserva_dados[0]
+        id_turma = reserva_dados[1]
+        data = $(this).parents("tr").children("td:nth-child(3)").text()
+        turno = $(this).parents("tr").children("td:nth-child(4)").text()
+        reserva_tipo = $(this).parents("tr").children("td:nth-child(5)").text()
+
+
+        $("#modal-header-editar").html('<h1 class="modal-title fs-5">' + data + ' - ' + turno + ' - ' + reserva_tipo + '</h1>')
+        $("#inp-edit-id_reserva").val(id_reserva)
+        $("#inp-edit-id_turma").val(id_turma)
+
         optionsTurmas(turno)
         
         $.ajax({
@@ -78,39 +84,53 @@ $(document).ready(function () {
             }
         })
         
-        $(document).on('submit','#form-editar', function (e) {
-            e.preventDefault()
-            
-            if($("#btn-editar-turma").prop("checked")){
+    })
 
-                form = $(this).serialize()
-                
-            } else if ($("#btn-trocar-turma").prop("checked")){
-                
-                $("#modal-editar").modal('hide')
-                $("#modal-editar-reserva").modal('toggle')
-                
-                $(document).on('submit','#form-edit-reserva',function(e){
-                    e.preventDefault()
-                    form = $(this).serialize()
-                })
-                
-                form += '&id_turma=' + id_turma
-                
-            }
-            enviarReqPOST(form)
-            
-        })
+    
+    
+// MODAL EDITAR TURMA / TROCAR TURMA
+    $(document).on('submit','#form-editar', function (e) {
+        e.preventDefault()
         
+        if($("#btn-editar-turma").prop("checked")){
+            
+            let form = $(this).serialize()
+
+            enviarReqPOST(form,atualizarTabelaReservas)
+
+            // turno = $(this).parents("tr").children("td:nth-child(4)").text()
+
+            
+        } else if ($("#btn-trocar-turma").prop("checked")){
+            
+            $("#modal-editar").modal('hide')
+
+            $("#modal-editar-reserva").modal('toggle')
+
+        }
+    })
+
+    
+    // MODAL TROCAR TURMA
+    $(document).on('submit','#form-edit-reserva',function(e){
+        e.preventDefault()
+        
+        let form = $(this).serialize() + "&" + $("#form-editar").serialize()
+
+        console.log(form)
+        enviarReqPOST(form,atualizarTabelaReservas)
     })
     
-})
-    function atualizarTabelaReservas(pagina=null){
-    
-        let form = $("#form-consultar-reservas").serialize()
-        form += '&consultar=reservas'
-        $.ajax({
-            url:"../includes/server.php",
+
+// LIMPAR DADOS MODAL EDITAR APOS CANCELAR OPERACAO
+
+function atualizarTabelaReservas(){
+
+    let form = $("#form-consultar-reservas").serialize()
+    form += '&consultar=reservas'
+
+    $.ajax({
+        url:"../includes/server.php",
         type:"GET",
         data: form,
         beforeSend:function(){
@@ -126,13 +146,16 @@ $(document).ready(function () {
                 success:function(dadosJSON){
                     
                     console.log(dadosJSON)
+
                     if(dadosJSON.status == 200){
                         
-                        if(!pagina){
+                        if(document.getElementById("current-page")){
                             pagina = Number($("#current-page").text())
+                        } else {
+                            pagina = 1
                         }
-                            
                         tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
+
                         $("#container-tabela").html(tabela)
 
                     } else {
@@ -146,7 +169,6 @@ $(document).ready(function () {
 }
 
 function gerarTabelaReservas(reservas, pagina){
-
 
     tabela = '<table class="table table-striped tabela-consulta">'
     tabela += '<thead>'
@@ -222,29 +244,6 @@ function gerarTabelaReservas(reservas, pagina){
 
 }
 
-function enviarReqPOST(form){
 
-    $.ajax({
-        type: "POST",
-        url: "../includes/server.php",
-        data: form,
-        success: function (resposta) {
-            console.log(resposta)
-
-            resposta = JSON.parse(resposta)
-            // esconde o modal editar
-            $(".modal").modal('hide')
-
-            // mostra a mesagem de alerta 
-            $("#modal-alerta-msg").text(resposta.msg)
-            
-            // mostra o modal alerta
-            $("#modal-alerta").modal('show')
-            
-            atualizarTabelaReservas()
-
-            }
-    })
-}
 
     

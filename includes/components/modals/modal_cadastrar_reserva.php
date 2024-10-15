@@ -8,13 +8,9 @@
       <div class="modal-body">
         
         <div id="sala-dados">
-          <h4 id="sala-id">704 - Laboratorio</h4>
-          <h5 id="sala-">40 lugares </h5>
-          <h5 id="sala-maquinas"> 30 maquinas</h5>
-          <h5 id="sala-lugares"></h5>
         </div>
-
-        <form method="post" id="cadastrar-reserva" method="post" >
+        <form method="post" id="cadastrar-reserva" >
+          <input id="inp-cadastrar-sala" type="hidden" value="" name="id_sala">
           <div class="div-cadastrar-turma">
             <div class="row text-center">
               <!-- INPUT TURMA -->
@@ -80,7 +76,7 @@
       
       <div class="modal-footer">
           <button type="submit" form="cadastrar-reserva" class="btn btn-primary " >Salvar</button>
-          <button type="button"  class="btn btn-secondary " data-bs-dismiss="modal" id="btn-cancelar-cad-reserva" >Cancelar</button>
+          <button type="button"  class="btn btn-secondary " data-bs-dismiss="modal" id="btn-cancelar-reserva" >Cancelar</button>
         </div>
       </div>
     </div>

@@ -1,11 +1,8 @@
 <div class="modal fade" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5">
-          <!-- <?php $data = $_GET["data_inicio"];
-          echo date_format(date_create($data)," l - d/m/Y") ." - ". $_GET["turno"] . " - " . $_GET["reserva_tipo"]; ?> -->
-        </h1> 
+      <div class="modal-header" id="modal-header-editar">
+        <h1 class="modal-title fs-5"></h1> 
       </div>
       
       <div class="modal-body">
@@ -18,6 +15,8 @@
         </div>
 
         <form method="post" id="form-editar" >
+          <input type="hidden" name="id_reserva" id="inp-edit-id_reserva" value="">
+          <input type="hidden" name="id_turma" id="inp-edit-id_turma" value="">
           <div class="div-cadastrar-turma">
             <div class="row text-center">
               <!-- INPUT TURMA -->
@@ -30,7 +29,7 @@
                 </div>
                 
                 <div class="form-floating ">
-                  <input type="text" class="form-control inp-dados-turma" id="inp-turma" placeholder="Turma" name="turma" autocomplete="off" >
+                  <input type="text" class="form-control inp-dados-turma" id="inp-turma" placeholder="Turma" name="nome" autocomplete="off" >
                   <label for="inp-turma" class="form-label">Turma</label>
                 </div>
                 
@@ -88,6 +87,8 @@
     </div>
 </div>
 
+<!-- MODAL EDITAR RESERVAS -->
+
 <div class="modal fade" id="modal-editar-reserva" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -117,3 +118,5 @@
     </div>
   </div>
 </div>
+
+<?php require_once "modal_deletar_turma.php"; ?>

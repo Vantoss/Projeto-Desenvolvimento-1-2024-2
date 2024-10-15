@@ -6,6 +6,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form method="post" id="form-del-reserva">
+
+        <input type="hidden" id="inp-del-reserva" value="" name="id_reserva">
+        <input type="hidden" id="inp-del-turma" value="" name="id_turma">
+
         <div class="modal-body">
           <div class="form-check">
             <input class="form-check-input" id="radio-del-atual" type="radio" name="del_reservas" value="atual" checked>

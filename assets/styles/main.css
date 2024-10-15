@@ -65,7 +65,7 @@ body{
 /* MODAL ALERTA ================================= */
 
 #modal-alerta-msg{
-    margin: 10;
+    margin: 10px 0px;
     font-size: 1.2rem;
 }
 
@@ -96,6 +96,11 @@ body{
 #turma-dados p{
     margin: 0;
     text-align: left;
+}
+
+.edit-del-turma{
+
+    margin-top: 20px;
 }
 
 

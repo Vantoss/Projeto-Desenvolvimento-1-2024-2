@@ -99,7 +99,10 @@ if(isset($_GET["consultar"])){
                 $dados_tabela["msg"] = "Nenhum resultado encontrado";
                 
             }
-            
+
+            if (!file_exists(ROOT_DIR. 'JSON/dados_tabela_reservas.json')) {
+                touch(ROOT_DIR. 'JSON/dados_tabela_reservas.json');
+            }
             file_put_contents(ROOT_DIR.'JSON/dados_tabela_reservas.json', json_encode($dados_tabela));
             
             if($reservas){
@@ -114,18 +117,20 @@ if(isset($_GET["consultar"])){
             }
             
         }
-
+        
         
         echo json_encode($resposta);
     }
-            
     
-// ===================================================================================================================================
-// CONSULTAR SALAS DISPONIVEIS =======================================================================================================
-// ===================================================================================================================================
-
-
+    
+    // ===================================================================================================================================
+    // CONSULTAR SALAS DISPONIVEIS =======================================================================================================
+    // ===================================================================================================================================
+    
+    
     if($_GET["consultar"] == "salas_disponiveis"){
+        
+        
         $sql = []; //guarda os parametros da pesquisa sql
         
         // filtro sala 
@@ -219,7 +224,12 @@ if(isset($_GET["consultar"])){
                 ];
 
                 if($salas){
+
+                    if (!file_exists(ROOT_DIR. 'JSON/dados_tabela_salas.json')) {
+                        touch(ROOT_DIR. 'JSON/dados_tabela_salas.json');
+                    }
                     file_put_contents(ROOT_DIR.'JSON/dados_tabela_salas.json', json_encode($dados_tabela));
+
                     $resposta["status"] = 200;
                     $resposta["msg"] = "Dados tranferidos para o arquivo json";
                 } else {
@@ -233,12 +243,11 @@ if(isset($_GET["consultar"])){
             }
             
             echo json_encode($resposta);
-
             
-    }
+        }
         
-}
-
+    }
+    
         
 // =====================================================================================================================
 // DELETAR RESERVA =====================================================================================================
@@ -293,7 +302,7 @@ if(isset($_POST["del_reservas"] )){
         $stm = $conn->prepare($delete);
         $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
     }
-
+    
     echo json_encode($resposta);
 }
 
@@ -348,10 +357,11 @@ if(isset($_POST["cadastrar-reserva"])){
         } else {
             // ARMAZENA O ID DA TURMA QUE FOI CRIADA NO CODIGO ACIMA
             $id_turma = $conn->lastInsertId();
-            
             // atualiza os dados do arquivo "dados_turmas.json"
+
             gerarTurmasJSON();
         }
+        
         
     } 
 
@@ -428,7 +438,7 @@ if(isset($_POST["editar"])){
         
         if($_POST["codigo"]) $sql[] = " codigo = '{$_POST["codigo"]}'";
         
-        if($sql) $query .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";
+        if($sql) $updateSQL .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";
 
 
 
@@ -451,7 +461,7 @@ if(isset($_POST["editar"])){
 
         if($_POST["edit_reserva"] == "atual"){
             
-            $updateSQL = "UPDATE reservas SET id_turma = $nova_turma WHERE id_reserva = {$_POST["id_reserva"]}";
+            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = {$_POST["id_reserva"]}";
 
             // EXECUTANDO SQL
             $stm = $conn->prepare($updateSQL);
@@ -466,7 +476,7 @@ if(isset($_POST["editar"])){
         } else if ($_POST["edit_reserva"] == "todos"){
 
              // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA 
-            $updateSQL = "UPDATE reservas SET id_turma = $nova_turma WHERE id_turma = $nova_turma";
+            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma'";
 
             // EXECUTANDO SQL
             $stm = $conn->prepare($updateSQL);
@@ -492,7 +502,7 @@ if(isset($_POST["editar"])){
             $reserva = $stm->fetch(PDO::FETCH_ASSOC);
             $data = $reserva["data"];
 
-            $updateSQL = "UPDATE reservas SET id_turma = $nova_turma WHERE id_turma = $nova_turma AND DATE(data) >= '$data'";
+            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
 
             // EXECUTANDO SQL
             $stm = $conn->prepare($updateSQL);
@@ -505,13 +515,10 @@ if(isset($_POST["editar"])){
             }
         }
         
-        echo json_encode($resposta);
     }
-
+    
+    echo json_encode($resposta);
 }
-
-
-
 
 
 // =====================================================================================================================
@@ -528,6 +535,21 @@ if(isset($_GET["dados_turma"])){
     $resposta = $stm->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode($resposta);
+}
+
+if(isset($_GET["reservas_turma"])){
+
+    $id_turma = $_GET["reservas_turma"];
+
+    $selectSQL = "SELECT count(1) as 'reservas' FROM reservas WHERE id_turma = '$id_turma'";
+
+    $stm = $conn->prepare($selectSQL);
+
+    $stm->execute();
+
+    $arr = $stm->fetch(PDO::FETCH_ASSOC);
+
+    echo $arr["reservas"];
 }
 
 

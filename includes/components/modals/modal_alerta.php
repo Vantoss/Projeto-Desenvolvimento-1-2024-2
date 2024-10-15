@@ -3,11 +3,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5">Alerta</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
 
-        <p id="modal-alerta-msg" ></p>
+        <p id="modal-alerta-msg"></p>
         
       </div>
       <div class="modal-footer">

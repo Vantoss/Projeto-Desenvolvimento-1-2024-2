@@ -49,14 +49,13 @@ function customPageHeader($pagina_titulo){
 function gerarTurmasJSON(){
 
     $conn = initDB();
-    $select = "SELECT * FROM turmas ";
+    $select = "SELECT * FROM turmas";
 
     $stm = $conn->prepare($select);
     $stm->execute();
 
     $turmas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    
     if($turmas){
         
         $dados = [
@@ -72,8 +71,12 @@ function gerarTurmasJSON(){
         ];
     }
 
-    file_put_contents(ROOT_DIR. 'JSON/dados_turmas.json', json_encode($dados));    
-    
+    if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
+        touch(ROOT_DIR. 'JSON/dados_turmas.json');
+    }
+
+    file_put_contents(ROOT_DIR. 'JSON/dados_turmas.json', json_encode($dados));
+  
 }
 
 function salasOptions($opcao){
@@ -113,11 +116,9 @@ function salasOptions($opcao){
     }
 }
 
-
 function getConfig(){
     return parse_ini_file(ROOT_DIR.'conf/config.ini');
 }
-    
 
 function initDB(){
 
@@ -135,7 +136,27 @@ function initDB(){
       return $conn;
 }
 
-// function gerarTabel
+function checkDatabaseInstallation(){
+		$conn = initDb();
+		if (!$conn) {
+			redirectError('Could not connect to database. Please, try to <a href="../pages/install.php">install</a>.');
+		}
+		
+	}
+
+
+function redirectError($errid){
+	$_SESSION['err'] = array('date' => date("Y-m-d H:i:s"), 'message' => $errid);
+	redirectTo('./pages/error.php');
+}
+
+function redirectTo($href){
+    header( "Location: {$href}" );
+  exit;
+}
+
+
+
 
 ?>
 

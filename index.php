@@ -6,7 +6,10 @@
 
     // HEADER
     require_once ROOT_DIR. 'includes/layout/header.php';
-    gerarHistorico()
+    require_once ROOT_DIR. 'includes/loader.php';
+
+
+    // gerarTurmasJSON();
 ?>
 <body>
 
