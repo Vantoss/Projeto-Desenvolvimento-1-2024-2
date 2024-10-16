@@ -424,32 +424,7 @@ if(isset($_POST["editar"])){
 
     if($_POST["editar"] == "turma"){
 
-        $sql = [];
-
-        $updateSQL = "UPDATE turmas SET";
-
-        if($_POST["nome"]) $sql[] = " nome = '{$_POST["nome"]}'";
-        
-        if($_POST["docente"]) $sql[] = " docente = '{$_POST["docente"]}'";
-        
-        if($_POST["participantes"]) $sql[] = " participantes_qtd = {$_POST["participantes"]}";
-        
-        if($_POST["curso"]) $sql[] = " curso = '{$_POST["curso"]}'";
-        
-        if($_POST["codigo"]) $sql[] = " codigo = '{$_POST["codigo"]}'";
-        
-        if($sql) $updateSQL .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";
-
-
-
-        // EXECUTANDO SQL
-        $stm = $conn->prepare($updateSQL);
-        if($stm->execute()){
-            $resposta["status"] = 200;
-            $resposta["msg"] = "Turma editada com sucesso";
-        }
-
-        gerarTurmasJSON();
+        $resposta = editarTurma($_POST);
     }
 
     // EDITAR RESERVA (TROCAR UMA TURMA POR OUTRA)
@@ -490,29 +465,30 @@ if(isset($_POST["editar"])){
 
         } else {
 
-            // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
-            $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
+                // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
+                $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
 
-            // EXECUTANDO SQL
-            $stm = $conn->prepare($selectSQL);
-            if($stm->execute()){
-                $resposta["status"] = 400;
-                $resposta["msg"] = "Erro ao consultar os dados da reserva";
-            }
-            $reserva = $stm->fetch(PDO::FETCH_ASSOC);
-            $data = $reserva["data"];
+                // EXECUTANDO SQL
+                $stm = $conn->prepare($selectSQL);
+                if($stm->execute()){
+                    $resposta["status"] = 400;
+                    $resposta["msg"] = "Erro ao consultar os dados da reserva";
+                }
 
-            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
+                $reserva = $stm->fetch(PDO::FETCH_ASSOC);
+                $data = $reserva["data"];
 
-            // EXECUTANDO SQL
-            $stm = $conn->prepare($updateSQL);
-            if($stm->execute()){
-                $resposta["status"] = 200;
-                $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
-            } else {
-                $resposta["status"] = 400;
-                $resposta["msg"] = "Erro ao alterar reservas";
-            }
+                $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
+
+                // EXECUTANDO SQL
+                $stm = $conn->prepare($updateSQL);
+                if($stm->execute()){
+                    $resposta["status"] = 200;
+                    $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
+                } else {
+                    $resposta["status"] = 400;
+                    $resposta["msg"] = "Erro ao alterar reservas";
+                }
         }
         
     }
@@ -541,7 +517,7 @@ if(isset($_GET["reservas_turma"])){
 
     $id_turma = $_GET["reservas_turma"];
 
-    $selectSQL = "SELECT count(1) as 'reservas' FROM reservas WHERE id_turma = '$id_turma'";
+    $selectSQL = "SELECT count(1) as 'reservas_num' FROM reservas WHERE id_turma = '$id_turma'";
 
     $stm = $conn->prepare($selectSQL);
 
@@ -549,10 +525,61 @@ if(isset($_GET["reservas_turma"])){
 
     $arr = $stm->fetch(PDO::FETCH_ASSOC);
 
-    echo $arr["reservas"];
+    $reservas_num = $arr["reservas_num"];
+
+    $resposta["msg"] = "<p>Certeza que deseja deletar a turma selecionada?";
+
+    if($reservas_num == 1){
+        $resposta["msg"] .= '<br>Uma reserva tambem sera deletada</p>';
+    }
+    else if ($reservas_num > 1) {
+        $resposta["msg"] .= '<br>'. $reservas_num." reservas tambem serao deletadas";
+    }
+    
+    echo json_encode($resposta);
 }
 
 
+
+// GERAR OPTIONS TURMA
+if(isset($_GET["turmas_options"])){
+
+    optionsTurmas($_GET["turmas_options"]);
+}
+
+if(isset($_POST["deletar_turma"])){
+    
+    $id_turma = $_POST["deletar_turma"];
+
+    $delete = "DELETE FROM reservas WHERE id_turma = '$id_turma'";
+    $stm = $conn->prepare($delete);
+    
+    $del_msg = "";
+
+    if(!$stm->execute()){
+        $del_msg = "Erro ao deletar reservas";    
+    }
+
+    $row_num = $stm->rowCount();
+
+     if($row_num == 1) {
+        $del_msg = "Uma reserva tambem foi deletada";
+     } 
+     else if($row_num > 1){
+        $del_msg = $row_num. " reservas tambem foram deletadas";
+     }
+    
+    $delete = "DELETE FROM turmas WHERE id_turma = '$id_turma'";
+    $stm = $conn->prepare($delete);
+    $resposta["msg"] = $stm->execute() ?  "Turma deletada com sucesso! " : "Erro ao deletar turma ";
+
+    $resposta["msg"].= $del_msg;
+
+    gerarTurmasJSON();
+
+    echo json_encode($resposta);
+    
+}
 
             
 ?>

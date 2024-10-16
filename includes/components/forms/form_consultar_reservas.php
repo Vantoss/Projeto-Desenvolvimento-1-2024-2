@@ -61,7 +61,6 @@
       <option value="" selected="">Qualquer</option>
       <option value="unica">Única</option>
       <option value="semanal" >Semanal</option>
-      <option value="diaria" >Diária</option>
     </select>
   </div>
   

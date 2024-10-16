@@ -1,4 +1,4 @@
-<div class="modal fade" id="cadastrar-reserva-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade modal-pricipal" id="cadastrar-reserva-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header" id="modal-header-cadastrar">
@@ -81,3 +81,5 @@
       </div>
     </div>
 </div>
+
+<?php require_once "modal_deletar_turma.php"; ?>

@@ -80,35 +80,15 @@ $(document).on('change','#turma-cadastrada', function(e){
 function optionsTurmas(turno){
     $("#turma-cadastrada").empty()
 
-    fetch("../JSON/dados_turmas.json",{cache: 'no-store'})
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error
-                    (`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-            })
-        .then((dadosJSON) => {
-
-            msg = dadosJSON.msg
-            let turmaEncontrada = false
+    $.ajax({
+        type: "GET",
+        url: "../includes/server.php",
+        data: {turmas_options:turno},
+        success: function (response) {
             
-            if(dadosJSON.status == 200){
-                options = '<option value="" selected="">Selecione uma turma</option>'
-                turmas = dadosJSON.turmas
-                turmas.forEach((turma) => {
-                    if(turma.turno == turno){
-                        turmaEncontrada = true
-                        options += '<option value="' + turma.id_turma +'">' + turma.nome + " - " + turma.turno + '</option>'
-                    }
-                })
-            }
-            
-            if(!turmaEncontrada) { options = '<option value="" selected="">Nenhuma turma cadastrada</option>'}
-            $("#turma-cadastrada").html(options)
-        })
-        .catch((error) =>
-            console.error("Unable to fetch data:", error));
+            $("#turma-cadastrada").html(response)
+        }
+    })
 }
         
 
@@ -140,6 +120,7 @@ function enviarReqPOST(form, atualizarTabela){
         url: "../includes/server.php",
         data: form,
         success: function (resposta) {
+
             console.log(resposta)
 
             resposta = JSON.parse(resposta)
@@ -162,12 +143,13 @@ $(document).on('submit','#mysql-setup',function(e){
         type: "POST",
         url: "../includes/mysql_init.php",
         data: form,
-        success: function (response) {
-            console.log(response)
+        success: function (resposta) {
+
+            console.log(resposta)
             
-            response = JSON.parse(response)
+            resposta = JSON.parse(resposta)
         
-            modalAlerta(response.msg)
+            modalAlerta(resposta.msg)
             
         } 
     });
@@ -177,30 +159,39 @@ $(document).on('click','.btn-deletar-turma',function(){
 
     let id_turma = $(this).val()
 
+    $("#del-turma-id-turma").val(id_turma)
+
+    console.log(id_turma)
+
     $.ajax({
         type: "GET",
         url: "../includes/server.php",
         data: {reservas_turma:id_turma},
-        success: function (response) {
+        success: function (resposta) {
+            console.log(resposta)
+            resposta = JSON.parse(resposta)
+
+            $("#msg-del-turma").html(resposta.msg)
+
+            $(".modal").modal('hide')
             
-            console.log(response)
-
-            if(response > 0){
-
-                $("#msg-del-turma").html("<p>Certeza que deseja deletar a turma selecionada?<br>" + response +" reservas tambem serao deletadas</p>")
-                
-            } else {
-                
-                $("#msg-del-turma").html("<p>Certeza que deseja deletar a turma selecionada?<p>")
-            }
-
-
-            $("#modal-editar").modal('hide')
-            
-            $("#modal-deletar-turma").modal('toggle')
+            $("#modal-deletar-turma").modal('show')
         }
     });
 
+})
+
+$(document).on('submit','#form-del-turma', function (e) {
+    e.preventDefault()
+
+    form = $(this).serialize()
+    
+    console.log(form)
+
+    atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalas
+
+    enviarReqPOST(form, atualizarTabela)
+    
 })
 
 

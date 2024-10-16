@@ -7,8 +7,8 @@
       </div>
       <form method="post" id="form-del-reserva">
 
-        <input type="hidden" id="inp-del-reserva" value="" name="id_reserva">
-        <input type="hidden" id="inp-del-turma" value="" name="id_turma">
+        <input type="hidden" id="del-reserva-id-reserva" value="" name="id_reserva">
+        <input type="hidden" id="del-reserva-id-turma" value="" name="id_turma">
 
         <div class="modal-body">
           <div class="form-check">

@@ -79,24 +79,82 @@ function gerarTurmasJSON(){
   
 }
 
+function optionsTurmas($turno){
+
+    $dadosJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_turmas.json'),true);
+
+    $turmas = $dadosJSON["turmas"];
+    
+    $turmaEncontrada = false;
+
+    if($dadosJSON["status"] == 200){?>
+        <option value="" selected="">Selecione uma turma</option>    
+<?php   foreach ($turmas as $turma) {
+
+            if($turma["turno"] == $turno){
+                $turmaEncontrada = true;?>
+                <option value="<?php echo $turma["id_turma"]; ?>"> <?php echo $turma["nome"] . " - " . $turma["turno"];?> </option>
+      <?php }
+        }
+    }
+    if(!$turmaEncontrada){?>
+        <option value="" selected="">Nenhuma turma cadastrada</option>
+<?php }
+
+}
+
+
+function gerarSalasJSON(){
+
+    $conn = initDB();
+    $select = "SELECT * FROM salas";
+
+    $stm = $conn->prepare($select);
+    $stm->execute();
+
+    $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    if($salas){
+        
+        $dados = [
+            "status" => 200,
+            "salas" => $salas
+        ];
+
+    } else {
+
+        $dados = [
+            "status" => 204,
+            "msg" => "Nenhuma sala cadastrada",
+        ];
+    }
+
+    
+    touch(ROOT_DIR. 'JSON/dados_salas.json');
+    
+    file_put_contents(ROOT_DIR. 'JSON/dados_salas.json', json_encode($dados));
+
+}
+
 function salasOptions($opcao){
 
-        $conn = initDB();
-        $select = "SELECT  id_sala as 'id' , tipo_sala as 'tipo', maquinas_tipo as 'maquinas' FROM salas";
-        $stm = $conn->prepare($select);
-        $stm->execute();
-        $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
+    if (!file_exists(ROOT_DIR. 'JSON/dados_salas.json')) {
+        gerarSalasJSON();
+    }
 
+    $salasJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_salas.json'),true);
+
+    $salas = $salasJSON["salas"];
         
         foreach ($salas as $sala) {
-            $salas_tipos[] = $sala["tipo"];
-            $maquinas_tipos[] = $sala["maquinas"]; 
+            $salas_tipos[] = $sala["tipo_sala"];
+            $maquinas_tipos[] = $sala["maquinas_qtd"]; 
             }
 
     if($opcao == "id_sala"){
 
         foreach ($salas as $sala) {?>
-          <option value="<?php echo $sala["id"]?>" ><?php echo $sala["id"] ?></option>
+          <option value="<?php echo $sala["id_sala"]?>" ><?php echo $sala["id_sala"] ?></option>
           <?php }
     } 
     else if ($opcao == "tipo_sala") {
@@ -156,7 +214,38 @@ function redirectTo($href){
 }
 
 
+function editarTurma($turma){
 
+    $conn = initDB();
+    
+    $sql = [];
+        $updateSQL = "UPDATE turmas SET";
+
+        if($turma["nome"]) $sql[] = " nome = '{$_POST["nome"]}'";
+        
+        if($turma["docente"]) $sql[] = " docente = '{$_POST["docente"]}'";
+        
+        if($turma["participantes"]) $sql[] = " participantes_qtd = {$_POST["participantes"]}";
+        
+        if($turma["curso"]) $sql[] = " curso = '{$_POST["curso"]}'";
+        
+        if($turma["codigo"]) $sql[] = " codigo = '{$_POST["codigo"]}'";
+        
+        if($sql) $updateSQL .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";
+
+
+        // EXECUTANDO SQL
+        $stm = $conn->prepare($updateSQL);
+
+        if($stm->execute()){
+            $resposta["status"] = 200;
+            $resposta["msg"] = "Turma editada com sucesso";
+        }
+
+        gerarTurmasJSON();
+        
+        return $resposta;
+}
 
 ?>
 

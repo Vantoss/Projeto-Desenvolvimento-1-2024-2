@@ -9,8 +9,8 @@
     // BOTAO DELETAR
     $(document).on('click','.btn-deletar-reserva', function () {  
         const reserva_dados = $(this).val().split("-")
-        $("#inp-del-reserva").val(reserva_dados[0])
-        $("#inp-del-turma").val(reserva_dados[1])
+        $("#del-reserva-id-reserva").val(reserva_dados[0])
+        $("#del-reserva-id-turma").val(reserva_dados[1])
 
         const tipo_reserva = $(this).parents("tr").children("td:nth-child(5)")
 
@@ -29,7 +29,7 @@
         e.preventDefault();
         form = $(this).serialize()
 
-        enviarReqPOST(form,atualizarTabelaReservas)
+        enviarReqPOST(form, atualizarTabelaReservas)
     })
     
     
