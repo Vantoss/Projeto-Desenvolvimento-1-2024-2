@@ -1,0 +1,4 @@
+101 102 103 204 
+DATA DIA TURNO Turma Docente Turma Docente Turma Docente Turma 
+1 QUI M SENAT 
+1 QUI T SENAT 

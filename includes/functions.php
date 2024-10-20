@@ -2,7 +2,7 @@
 // MOVE AS RESERVAS PARA A TABELA "reservas_historico"
 function gerarHistorico(){
     $conn = initDB();
-    $data = date('Y-m-d');
+    $data = dataAtual();
 
     // verifica se as reservas ja foram movidas
     // faz uma nova verificacao a cada nova sessao iniciada  
@@ -197,7 +197,7 @@ function initDB(){
 function checkDatabaseInstallation(){
 		$conn = initDb();
 		if (!$conn) {
-			redirectError('Could not connect to database. Please, try to <a href="../pages/install.php">install</a>.');
+			redirectError('Nao foi possivel estabelecer conxao com o banco. Por favor, tente inicializar o banco: <a href="../pages/install.php">install</a>.');
 		}
 		
 	}
@@ -245,6 +245,27 @@ function editarTurma($turma){
         gerarTurmasJSON();
         
         return $resposta;
+}
+
+function dataAtual(){
+
+    $dt = new DateTime("now", new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format('Y-m-d');
+}
+
+
+function salaDados($id_sala){
+
+    $json = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_salas.json'),true);
+
+    $salas = $json["salas"];
+
+    foreach ($salas as $sala) {
+        if($sala["id_sala"] == $id_sala){
+            return $sala;
+        }
+    }
+
 }
 
 ?>

@@ -3,29 +3,54 @@
 $(document).on('submit','#form-consultar-salas',function (e) {
     e.preventDefault()
     atualizarTabelaSalas()
+})
+
+// BOTAO RESERVAR
+$(document).on('click','#btn-reservar', function () {
+
+    $("#turma-cadastrada").val("")
+    $(".turma-dados").empty()
+
+    const id_sala = $(this).val()
+
+    $("#inp-cadastrar-sala").val(id_sala)
+    
+    reqServidorGET({sala_dados:id_sala}, mostarSalaDados)
+    
+})
+
+// BOTOES CADASTRAR/BUSCAR TURMA PARA CADASTRAR RESERVA
+// DESABILITA INPUTS CONFORME OPCAO SELECIONADA
+$(document).on("click",".btn-check", function(){
+
+    if(this.id == "btn-cadastro-turma" ){ 
+        $("#turma-cadastrada").prop("disabled",true)
+        $("#turma-dados-cadastrar").css("background-color","#e9ecef");
+        $(".inp-cadastrar-turma").prop("disabled",false)
+        $("#turma-cadastrada").val("")
+        $("#turma-dados-cadastrar").empty()
+    } else {
+        $("#turma-cadastrada").prop("disabled",false)
+        $("#turma-dados-cadastrar").css("background-color","#fff");
+        $(".inp-cadastrar-turma").prop("disabled",true)
+    }
 
 })
-            
-    // BOTAO RESERVAR
-    $(document).on('click','#btn-reservar', function () {
-        $("#inp-cadastrar-sala").val($(this).val())
-        
-    })
 
-    // MODAL-FORM CADASTRAR RESERVA
-    $(document).on('submit','#cadastrar-reserva', function (e) {
-        e.preventDefault()
         
-                // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
-                formData = $(this).serialize()
-                formData += '&' + $("#form-consultar-salas").serialize()
-                formData += '&cadastrar-reserva=true'
+// SUBMIT MODAL-FORM CADASTRAR RESERVA
+$(document).on('submit','#cadastrar-reserva', function (e) {
+    e.preventDefault()
     
-                enviarReqPOST(formData, atualizarTabelaSalas)
-                // apaga os inputs do modal cadastrar
-                $(".input-cadastrar-turma").val("")
-                            
-                        
+            // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
+            formData = $(this).serialize()
+            formData += '&' + $("#form-consultar-salas").serialize()
+            formData += '&cadastrar-reserva=true'
+
+            reqServidorPOST(formData, atualizarTabelaSalas)
+            
+            // apaga os inputs do modal cadastrar
+            $(".input-cadastrar-turma").val("")                
 })
 
 
@@ -48,6 +73,7 @@ $(document).on('click','.pagina-salas', function (e) {
 })
 
 
+
 // DESABILITAR DATA FIM
 $(document).on('change','#inp-consulta-reserva-tipo',function(){
     if(this.value == "Única"){
@@ -64,22 +90,26 @@ $(document).on('change','#inp-consulta-reserva-tipo',function(){
 
 function gerarTabelaSalas(dadosJSON, pagina){
     salas = dadosJSON.salas
+    
     turno = dadosJSON.turno
     reserva_tipo = dadosJSON.reserva_tipo
     datas = dadosJSON.datas
     
     data = converterData(datas[0])
+    dia = diaSemana(datas[0])
 
-    $("#modal-header-cadastrar").html('<h1 class="modal-title fs-5">' + data + ' - ' + turno + ' - ' + reserva_tipo + '</h1>')
+    date = dia + ' - ' + data
+
+    mostarReservaDados(date,reserva_tipo,turno)
     
     tabela = '<table class="table table-striped tabela-consulta">'
     
-    tabela += '<button id="data-tag" class="btn btn-primary btn-sm">'+ reserva_tipo +'</button>'
+    tabela += '<button id="reserva-tipo-tag" class="btn btn-primary btn-sm">'+ reserva_tipo +'</button>'
     
-    tabela += '<button id="data-tag" class="btn btn-primary btn-sm">'+ turno + '</button>'
+    tabela += '<button id="turno-tag" class="btn btn-primary btn-sm">'+ turno + '</button>'
     
     datas.forEach( (data) =>{
-        tabela += '<button id="data-tag" class="btn btn-primary btn-sm ">' + converterData(data) + '</button>'
+        tabela += '<button class="btn btn-primary btn-sm data-tag">' + converterData(data) + '</button>'
     })
 
 
@@ -178,7 +208,7 @@ function atualizarTabelaSalas(){
                         }
                         tabela = gerarTabelaSalas(dadosJSON, pagina)
                         
-                        optionsTurmas(turno)
+                        reqServidorGET({turmas_options:turno}, mostrarOptionsTurmas)
 
                         $("#container-tabela").html(tabela)
                     }

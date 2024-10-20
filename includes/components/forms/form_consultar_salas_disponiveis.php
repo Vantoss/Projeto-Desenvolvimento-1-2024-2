@@ -1,18 +1,18 @@
 <!-- BOX FILTROS -->
 <form class="row g-3 form-consulta" id="form-consultar-salas"  method="get">
 
-    <h2>Cadastrar Reservas</h2>
+    <h2>Consultar Salas Disponiveis</h2>
   
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="inp-consulta-data-inicio" name="data_inicio" required>
+    <input type="date" class="form-control" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data_inicio" required>
   </div>
   
   <!-- FILTRO DATA FINAL -->
   <div class="col-md-3">
     <label for="data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control" id="inp-consulta-data-fim" name="data_fim" disabled required>
+    <input type="date" class="form-control" id="inp-consulta-data-fim" min="<?php echo dataAtual();?>" name="data_fim" disabled required>
   </div>
   
   <!-- FILTRO TIPO DE RESERVA -->
@@ -73,7 +73,7 @@
       <?php salasOptions("maquinas_tipo")?>
     </select>
   </div>
-  
+
 
   <!-- FILTRO REGISTROS -->
   <div class="col-md-3">

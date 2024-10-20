@@ -26,13 +26,22 @@ if(isset($_GET["consultar"])){
         $sql = [];
         
         // filtro turma
-        if($_GET["turma"]) $sql[] = " t.nome LIKE '{$_GET["turma"]}%'";
+        if($_GET["turma"]){
+            $turma = trim(preg_replace('/\s+/', ' ', $_GET["turma"]));
+            $sql[] = " t.nome LIKE '$turma%'";
+        } 
         
         // filtro docente
-        if($_GET["docente"]) $sql[] = " t.docente LIKE '{$_GET["docente"]}%'";
+        if($_GET["docente"]) {
+            $docente = trim(preg_replace('/\s+/', ' ', $_GET["docente"]));
+            $sql[] = " t.docente LIKE '$docente%'";
+        }
         
         //filtro curso
-        if($_GET["curso"]) $sql[] = " t.curso LIKE '{$_GET["curso"]}%'";
+        if($_GET["curso"]){
+            $curso = trim(preg_replace('/\s+/', ' ', $_GET["curso"]));
+            $sql[] = " t.curso LIKE '$curso%'";
+        } 
         
         // filtro sala 
         if($_GET["sala"]) $sql[] = " s.id_sala = '{$_GET["sala"]}'";
@@ -320,7 +329,7 @@ if(isset($_POST["cadastrar-reserva"])){
     // DADOS DA RESERVA
     $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
     // INPUT ID SALA 
-    $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA TIPO' ESTA VAZIO");
+    $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA' ESTA VAZIO");
     // INPUT TURNO
     $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
     // INPUT DATA INICIO
@@ -418,40 +427,66 @@ if(isset($_POST["cadastrar-reserva"])){
 // =====================================================================================================================
 
 
-if(isset($_POST["editar"])){
+if(isset($_POST["editar_turma"])){
+
+    $resposta = editarTurma($_POST);
+
+    echo json_encode($resposta);
+}
+
+
+if(isset($_POST["editar_reserva"])){
 
     $id_reserva = $_POST["id_reserva"];
 
-    if($_POST["editar"] == "turma"){
+    $id_turma = $_POST["id_turma"];
+    // TROCA A TURMA DA RESERVA SELECIONADA
+    $nova_turma = $_POST["id_turma_nova"];
 
-        $resposta = editarTurma($_POST);
-    }
+    if($_POST["edit_reserva"] == "atual"){
+        
+        $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = {$_POST["id_reserva"]}";
 
-    // EDITAR RESERVA (TROCAR UMA TURMA POR OUTRA)
-    if($_POST["editar"] == "reserva"){
+        // EXECUTANDO SQL
+        $stm = $conn->prepare($updateSQL);
+        if($stm->execute()){
+            $resposta["status"] = 200;
+            $resposta["msg"] = "Turma trocada com sucesso";
+        } else {
+            $resposta["status"] = 400;
+            $resposta["msg"] = "Erro ao trocar a turma";
+        }
+        
+    } else if ($_POST["edit_reserva"] == "todos"){
 
-        $id_turma = $_POST["id_turma"];
-        // TROCA A TURMA DA RESERVA SELECIONADA
-        $nova_turma = $_POST["id_turma_nova"];
+            // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA 
+        $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma'";
 
-        if($_POST["edit_reserva"] == "atual"){
-            
-            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = {$_POST["id_reserva"]}";
+        // EXECUTANDO SQL
+        $stm = $conn->prepare($updateSQL);
+        if($stm->execute()){
+            $resposta["status"] = 200;
+            $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
+        } else {
+            $resposta["status"] = 400;
+            $resposta["msg"] = "Erro";
+        }
+
+    } else {
+            // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
+            $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
 
             // EXECUTANDO SQL
-            $stm = $conn->prepare($updateSQL);
+            $stm = $conn->prepare($selectSQL);
             if($stm->execute()){
-                $resposta["status"] = 200;
-                $resposta["msg"] = "Turma trocada com sucesso";
-            } else {
                 $resposta["status"] = 400;
-                $resposta["msg"] = "Erro ao trocar a turma";
+                $resposta["msg"] = "Erro ao consultar os dados da reserva";
             }
-            
-        } else if ($_POST["edit_reserva"] == "todos"){
 
-             // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA 
-            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma'";
+            $reserva = $stm->fetch(PDO::FETCH_ASSOC);
+            $data = $reserva["data"];
+
+            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
 
             // EXECUTANDO SQL
             $stm = $conn->prepare($updateSQL);
@@ -460,39 +495,9 @@ if(isset($_POST["editar"])){
                 $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
             } else {
                 $resposta["status"] = 400;
-                $resposta["msg"] = "Erro";
+                $resposta["msg"] = "Erro ao alterar reservas";
             }
-
-        } else {
-
-                // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
-                $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
-
-                // EXECUTANDO SQL
-                $stm = $conn->prepare($selectSQL);
-                if($stm->execute()){
-                    $resposta["status"] = 400;
-                    $resposta["msg"] = "Erro ao consultar os dados da reserva";
-                }
-
-                $reserva = $stm->fetch(PDO::FETCH_ASSOC);
-                $data = $reserva["data"];
-
-                $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
-
-                // EXECUTANDO SQL
-                $stm = $conn->prepare($updateSQL);
-                if($stm->execute()){
-                    $resposta["status"] = 200;
-                    $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
-                } else {
-                    $resposta["status"] = 400;
-                    $resposta["msg"] = "Erro ao alterar reservas";
-                }
-        }
-        
     }
-    
     echo json_encode($resposta);
 }
 
@@ -513,9 +518,9 @@ if(isset($_GET["dados_turma"])){
     echo json_encode($resposta);
 }
 
-if(isset($_GET["reservas_turma"])){
+if(isset($_GET["num_reservas_turma"])){
 
-    $id_turma = $_GET["reservas_turma"];
+    $id_turma = $_GET["num_reservas_turma"];
 
     $selectSQL = "SELECT count(1) as 'reservas_num' FROM reservas WHERE id_turma = '$id_turma'";
 
@@ -549,7 +554,7 @@ if(isset($_GET["turmas_options"])){
 
 if(isset($_POST["deletar_turma"])){
     
-    $id_turma = $_POST["deletar_turma"];
+    $id_turma = $_POST["id_turma"];
 
     $delete = "DELETE FROM reservas WHERE id_turma = '$id_turma'";
     $stm = $conn->prepare($delete);
@@ -579,6 +584,11 @@ if(isset($_POST["deletar_turma"])){
 
     echo json_encode($resposta);
     
+}
+
+if(isset($_GET["sala_dados"])){
+
+    echo json_encode(salaDados($_GET["sala_dados"]));
 }
 
             

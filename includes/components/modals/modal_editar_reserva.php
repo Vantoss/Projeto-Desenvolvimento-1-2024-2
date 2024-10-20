@@ -1,90 +1,50 @@
-<div class="modal fade modal-pricipal" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade modal-principal" id="modal-editar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header" id="modal-header-editar">
-        <h1 class="modal-title fs-5"></h1> 
+        <h1 class="modal-title fs-4">Editar Reserva</h1> 
       </div>
       
       <div class="modal-body">
         
-        <div id="sala-dados">
-          <h4 id="sala-id">704 - Laboratorio</h4>
-          <h5 id="sala-">40 lugares </h5>
-          <h5 id="sala-maquinas"> 30 maquinas</h5>
-          <h5 id="sala-lugares"></h5>
+        <!-- DADOS SALA -->
+        <div class="row row-cols-2" style="margin-bottom: 10px;" >
+          <div class="col">
+            <div class="modal-dados" id="sala-dados"></div>
+          </div>
+          <!-- DADOS RESERVA -->
+          <div class="col">
+            <div class="modal-dados" id="reserva-dados"></div>
+          </div>
         </div>
 
         <form method="post" id="form-editar" >
           <input type="hidden" name="id_reserva" id="inp-edit-id_reserva" value="">
           <input type="hidden" name="id_turma" id="inp-edit-id_turma" value="">
-          <div class="div-cadastrar-turma">
+          
             <div class="row text-center">
-              <!-- INPUT TURMA -->
               <div class="col">
-                <div class="row row-btn-check">
-                  <div class="form-btn-check">
-                    <input type="radio" class="btn-check " id="btn-editar-turma" name="editar" value="turma" autocomplete="off" checked>
-                    <label class="btn btn-primary" for="btn-editar-turma">Editar Turma</label>
-                  </div>
-                </div>
-                
-                <div class="form-floating ">
-                  <input type="text" class="form-control inp-dados-turma" id="inp-turma" placeholder="Turma" name="nome" autocomplete="off" >
-                  <label for="inp-turma" class="form-label">Turma</label>
-                </div>
-                
-                <!-- INPUT DOCENTE -->
-                <div class="form-floating ">
-                  <input type="text" class="form-control inp-dados-turma" id="inp-docente" placeholder="Docente" name="docente" autocomplete="off" >
-                  <label for="inp-docente" class="form-label">Docente</label>
-                </div>
-                
-                <!-- INPUT CURSO -->
-                <div class="form-floating ">
-                  <input type="text" class="form-control inp-dados-turma" id="inp-curso" placeholder="Curso" name="curso" autocomplete="off" >
-                  <label for="inp-curso" class="form-label">Curso</label>
-                </div>
-                
-                <!-- INPUT CODIGO TURMA -->
-                <div class="form-floating ">
-                  <input type="text" class="form-control inp-dados-turma" id="inp-codigo" placeholder="Codigo" name="codigo" autocomplete="off" >
-                  <label for="inp-codigo" class="form-label">Código</label>
-                </div>
-                
-                <!-- INPUT QUANTIDADE PARTICIPANTES -->
-                <div class="form-floating ">
-                  <input type="number" class="form-control inp-dados-turma" id="inp-participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
-                  <label for="inp-participantes" class="form-label">N.&#xba; de participantes</label>
-                </div>
-              </div>
-              
-              <div class="col">
-                <div class="row row-btn-check">
-                  <div class="form-btn-check">
-                    <input type="radio" class="btn-check" id="btn-trocar-turma"  name="editar" value="reserva" autocomplete="off" required>
-                    <label class="btn btn-primary" for="btn-trocar-turma">Trocar turma</label>
-                  </div>
-                </div>
-                
                 <div class="form-floating">
-                  <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma_nova" aria-label="Floating label select example"  required>
+                  <select id="turma-cadastrada" class="form-select" name="id_turma_nova" aria-label="Floating label select example"  required>
                     <option value="" selected="">Selecione uma turma</option>
-
                   </select>
-                  <label for="turma-cadastrada">Turma</label>
+                  <label for="turma-cadastrada">Trocar por turma</label>
                 </div>
-                <div id="turma-dados"></div>
+                <!-- BOX DE DADOS TURMA -->
+                <div class="turma-dados" id="turmas-dados-editar"></div>
               </div>
             </div>
-          </div>
+    
         </form>
       </div>
+
       <div class="modal-footer">
-          <button type="submit" form="form-editar" id="btn-salvar-editar" class="btn btn-primary">Salvar</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        </div>
+          <button type="submit" class="btn btn-primary" form="form-editar" id="btn-salvar-editar" >Salvar</button>
+          <button type="button" class="btn btn-secondary btn-cancelar-modal-principal" data-bs-dismiss="modal">Cancelar</button>
       </div>
+
     </div>
+   </div>
 </div>
 
 <!-- MODAL EDITAR RESERVAS -->
@@ -119,4 +79,7 @@
   </div>
 </div>
 
-<?php require_once "modal_deletar_turma.php"; ?>
+<?php 
+require_once "modal_deletar_turma.php"; 
+require_once "modal_editar_turma.php"; 
+?>

@@ -27,9 +27,9 @@
     // MODAL-FORM DELETAR RESERVAS
     $(document).on('submit', '#form-del-reserva', function (e) { 
         e.preventDefault();
-        form = $(this).serialize()
+        form = $(this).serialize() 
 
-        enviarReqPOST(form, atualizarTabelaReservas)
+        reqServidorPOST(form, atualizarTabelaReservas)
     })
     
     
@@ -58,67 +58,54 @@
 
         id_reserva = reserva_dados[0]
         id_turma = reserva_dados[1]
+
+
+        sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
+        
+        reqServidorGET({sala_dados:sala_row[0]}, mostarSalaDados)
+        
+
         data = $(this).parents("tr").children("td:nth-child(3)").text()
         turno = $(this).parents("tr").children("td:nth-child(4)").text()
         reserva_tipo = $(this).parents("tr").children("td:nth-child(5)").text()
 
+        
+        mostarReservaDados(data,reserva_tipo,turno)
 
-        $("#modal-header-editar").html('<h1 class="modal-title fs-5">' + data + ' - ' + turno + ' - ' + reserva_tipo + '</h1>')
+
         $("#inp-edit-id_reserva").val(id_reserva)
         $("#inp-edit-id_turma").val(id_turma)
 
-        optionsTurmas(turno)
+        reqServidorGET({turmas_options:turno}, mostrarOptionsTurmas)
         
-        $.ajax({
-            type: "GET",
-            url: "../includes/server.php",
-            data: {dados_turma : id_turma},
-            success: function (resposta) {
-                let objTurma = JSON.parse(resposta)
-                
-                $("#inp-turma").val(objTurma.nome)
-                $("#inp-docente").val(objTurma.docente)
-                $("#inp-curso").val(objTurma.curso)
-                $("#inp-codigo").val(objTurma.codigo)
-                $("#inp-participantes").val(objTurma.participantes_qtd)
-            }
-        })
+        reqServidorGET({dados_turma:id_turma}, mostrarInputDadosTurma)
         
     })
+    
 
-    
-    
-// MODAL EDITAR TURMA / TROCAR TURMA
     $(document).on('submit','#form-editar', function (e) {
         e.preventDefault()
-        
-        if($("#btn-editar-turma").prop("checked")){
             
-            let form = $(this).serialize()
+        $("#modal-editar").modal('hide')
 
-            enviarReqPOST(form,atualizarTabelaReservas)
+        $("#modal-editar-reserva").modal('toggle')
 
-            // turno = $(this).parents("tr").children("td:nth-child(4)").text()
-
-            
-        } else if ($("#btn-trocar-turma").prop("checked")){
-            
-            $("#modal-editar").modal('hide')
-
-            $("#modal-editar-reserva").modal('toggle')
-
-        }
     })
 
-    
-    // MODAL TROCAR TURMA
+    // SUBMIT FORM-MODAL TROCAR TURMA
     $(document).on('submit','#form-edit-reserva',function(e){
         e.preventDefault()
+
+        $(".turma-dados").empty()
         
         let form = $(this).serialize() + "&" + $("#form-editar").serialize()
 
+        form += "&editar_reserva=true"
+
         console.log(form)
-        enviarReqPOST(form,atualizarTabelaReservas)
+        
+
+        reqServidorPOST(form,atualizarTabelaReservas)
     })
     
 
@@ -138,7 +125,7 @@ function atualizarTabelaReservas(){
         },
         success:function(resposta){
             resposta = JSON.parse(resposta)
-            console.log(resposta.msg)
+            console.log(resposta )
             $.ajax({
                 url:"../JSON/dados_tabela_reservas.json",
                 type:"GET",
@@ -199,16 +186,14 @@ function gerarTabelaReservas(reservas, pagina){
         if (i == reg_qtd){
             break;
         }
-        const diaSemana = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"]
-
+        
         data = converterData(reservas[i].data)
-        
-        dia = diaSemana[date.getDay()];
-        
+        dia = diaSemana(reservas[i].data)
+
         tabela += '<tr>'
         tabela += '<td>' + reservas[i].id_reserva + '</td>' 
         tabela += '<td>' + reservas[i].sala + " - " + reservas[i].sala_tipo + '</td>'
-        tabela += '<td>' + dia + ' - ' + data +'</td>'
+        tabela += '<td>' + dia + ' - ' + data + '</td>'
         tabela += '<td>' + reservas[i].turno   + '</td>' 
         tabela += '<td>' + reservas[i].reserva + '</td>'
         tabela += '<td>' + reservas[i].turma   + '</td>'
@@ -243,6 +228,13 @@ function gerarTabelaReservas(reservas, pagina){
     return tabela
 
 }
+
+
+
+
+
+
+
 
 
 

@@ -63,6 +63,16 @@
       <option value="semanal" >Semanal</option>
     </select>
   </div>
+
+  <!-- RESERVA STATUS -->
+  
+  <div class="col-md-3">
+    <label for="inp-reserva-status" class="form-label">Reservas status</label>
+    <select id="inp-reserva-status" class="form-select" name="reserva_status">
+      <option value="Ativas" selected="">Ativas</option>
+      <option value="Inativas" >Inativas</option>
+    </select>
+  </div>
   
   <!-- FILTRO REGISTROS -->
   <div class="col-md-3">

@@ -9,6 +9,8 @@
 
 ?>
 <body>
+
+<h1 style="text-align: center; margin-top:40px;" >Cadastrar Reservas</h1>
     
 <?php 
     // BOX FILTROS CADASTRAR RESERVA

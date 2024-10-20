@@ -33,47 +33,25 @@
     <?php } ?> -->
 
 
-        <?php 
+        <?php
+        $locale = "pt_BR";
 
+        $fmt = datefmt_create($locale,IntlDateFormatter::FULL,IntlDateFormatter::NONE,'America/Sao_Paulo',IntlDateFormatter::GREGORIAN);
 
-        $conn = initDB();
+        echo datefmt_format($fmt,0);
 
-        $select = "SELECT id_sala, tipo_sala FROM  salas";
-
-        $stm = $conn->prepare($select);
-
-        $stm->execute();
-
-        $reserva = $stm->fetchAll(PDO::FETCH_ASSOC);
-
-        $reg_qtd = $stm->rowCount();
-
-
-        $reg_pag = 20;
-
-        $pag = 4; 
-
-        $end = $reg_pag * $pag;
         
-        $i = $end - $reg_pag;
+// datefmt_create(
+//     ?string $locale,
+//     int $dateType = IntlDateFormatter::FULL,
+//     int $timeType = IntlDateFormatter::FULL,
+//     IntlTimeZone|DateTimeZone|string|null $timezone = null,
+//     IntlCalendar|int|null $calendar = null,
+//     ?string $pattern = null
+// ): ?IntlDateFormatter
 
-        $pages = ceil($reg_qtd / $reg_pag);
+
         
-        for ($i; $i < $end; $i++) { 
-            
-            if ($i == $reg_qtd){
-                break;
-            }
-                echo $reserva[$i]["id_sala"] . "<br>";
-
-        }
-
-        echo $pag . "<hr>";
-
-        echo $pages . "<br>";
-        for ($e = 1; $e < $pages + 1; $e++) { 
-            echo $e . " ";
-        }
 
 
 
