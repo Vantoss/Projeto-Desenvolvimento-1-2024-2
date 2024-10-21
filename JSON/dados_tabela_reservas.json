@@ -1,1 +1,1 @@
-{"status":200,"reservas":[{"sala":101,"id_reserva":128,"sala_tipo":"Laborat\u00f3rio","data":"2024-10-19","reserva":"\u00danica","id_turma":7,"turma":"Fundamentos Computacionais","docente":"Ronaldo","turno":"Manh\u00e3","lugares":"22\/20"}]}
+{"status":204,"msg":"Nenhum resultado encontrado"}
