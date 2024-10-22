@@ -49,7 +49,7 @@ require_once ROOT_DIR. 'includes/layout/header.php';
           <div class="row" style="margin:10px 0px;">
             <div class="col">
               <label><span style="color: #ccc;" class="fa fa-question-circle fa-lg" ></span> DB user</label>
-              <input type="text" class="form-control" autocomplete="off" name="dbuser" placeholder="root" required>
+              <input type="text" class="form-control" autocomplete="off" name="dbuser" value="root" required>
             </div>
             <div class="col">
               <label><span style="color: #ccc;" class="fa fa-question-circle fa-lg" ></span> DB password</label>

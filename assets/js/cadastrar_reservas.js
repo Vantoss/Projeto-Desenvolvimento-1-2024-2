@@ -2,6 +2,7 @@
 // RODA AO CLICAR O BOTAO "BUSCAR"
 $(document).on('submit','#form-consultar-salas',function (e) {
     e.preventDefault()
+    $('#aviso').detach()
     atualizarTabelaSalas()
 })
 
@@ -84,6 +85,16 @@ $(document).on('change','#inp-consulta-reserva-tipo',function(){
     }
 })
 
+
+//DESABILITA BOTÕES RESERVAR CASO FORM MUDAR
+$(document).on('change', '#form-consultar-salas', function block(){ 
+    $('[id^="btn-reservar"]').each(function(){ //Pega cada botão reservar
+        $(this).prop('disabled', true) //Desabilita os botões
+    })
+    if ($('#aviso').is("p") == false){ //Verifica o alerta de mudanças está na pág.
+        $('.col-12').append("<p id='aviso'>Mudanças detectadas, por favor busque novamente.</p>").css("color", "red") //Alerta
+    }
+});
 
 
 // TABELA SALAS DISPONIVEIS
