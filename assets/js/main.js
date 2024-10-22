@@ -4,26 +4,6 @@ $(".modal").modal({
     backdrop: 'static'
 })
 
-// LIMPAR DADOS DO MODAL EDITAR E CADASTRAR QUANDO O MODAL SUMIR (hidden.bs.modal)
-// modal = (document.getElementById("modal-editar")) ? document.getElementById("modal-editar") : document.getElementById("cadastrar-reserva-modal")
-// modal.addEventListener('hidden.bs.modal', () => {
-//     $(".inp-dados-turma").val("")
-//     $("#turma-cadastrada").val("")
-//     $("#turma-dados").empty()
-// })
-
-
-
-// MODAL CADASTRAR/EDITAR RESERVA: DESABILITANDO OS INPUTS COM BASE NA OPCAO SELECIONADA (CADASTRAR E EDITAR TURMA/ESCOLHER TURMA)
-
-
-// $(document).on("click",".btn-check", function(){
-//     if(this.id == "btn-cadastro-turma")
-    
-//     $("btn-cadastro-turma").prop("checked",false)
-// })
-
-
 // MODAL CADASTRAR/EDITAR RESERVA: CONTAINER INFORMACOES TURMA
 $(document).on('change','#turma-cadastrada', function(e){
     id_turma = $(this).val()
@@ -126,12 +106,12 @@ $(document).on('submit','#mysql-setup',function(e){
     });
 })
 
-$(document).on('click','.btn-cancelar-modal-principal', function () {
+// $(document).on('click','.btn-cancelar-modal-principal', function () {
 
-    $("#turma-cadastrada").val("")
-    $(".turma-dados").empty()
+//     $("#turma-cadastrada").val("")
+//     $(".turma-dados").empty()
     
-});
+// });
 
 // FUNC EDITAR/DELETAR TURMA ======================================================================================
 

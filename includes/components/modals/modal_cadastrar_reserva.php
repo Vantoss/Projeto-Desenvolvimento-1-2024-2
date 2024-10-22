@@ -23,10 +23,14 @@
                
                 <div class="row row-cols-2 ">
                   <div class="col">
+
+                    <!-- BTN CADASTRAR TURMA -->
                     <div class="form-btn-check row-btn-check">
+
                       <input type="radio" class="btn-check"  id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
-                      <label class="btn btn-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
+                      <label class="btn btn-outline-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
                     </div>
+
                     <div class="form-floating ">
                       <input type="text" class="form-control inp-cadastrar-turma" id="inp-cadastrar-turma" placeholder="Turma" name="turma" autocomplete="off" required>
                       <label for="inp-cad-turma" class="form-label">Turma</label>
@@ -36,12 +40,12 @@
                   <div class="col">
                     <div class="form-btn-check row-btn-check">
                       <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" >
-                      <label class="btn btn-primary" for="btn-buscar-turma">Buscar Turma</label>
+                      <label class="btn btn-outline-primary" for="btn-buscar-turma">Buscar Turma</label>
                     </div>
 
                     <div class="form-floating">
                       <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
-                        <option value="" selected="">Selecione uma turma</option> 
+                        <!-- <option value="" selected="">Selecione uma turma</option>  -->
                       </select>
                       <label for="turma-cadastrada">Turma</label>
                     </div>

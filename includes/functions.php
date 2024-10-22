@@ -79,7 +79,9 @@ function gerarTurmasJSON(){
   
 }
 
-function optionsTurmas($turno){
+function optionsTurmas($turno,$id_turma=null){
+
+
 
     $dadosJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_turmas.json'),true);
 
@@ -87,16 +89,21 @@ function optionsTurmas($turno){
     
     $turmaEncontrada = false;
 
-    if($dadosJSON["status"] == 200){?>
-        <option value="" selected="">Selecione uma turma</option>    
-<?php   foreach ($turmas as $turma) {
+    if($dadosJSON["status"] == 200){
+        
+        if(!$id_turma){?>
+        <option value="" selected="">Selecione uma turma</option>
+        <?php }    
 
+        foreach ($turmas as $turma) {
+        
             if($turma["turno"] == $turno){
                 $turmaEncontrada = true;?>
-                <option value="<?php echo $turma["id_turma"]; ?>"> <?php echo $turma["nome"] . " - " . $turma["turno"];?> </option>
+                <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" <?php if($id_turma and $turma["id_turma"] == $id_turma) echo 'selected=""'?>   >  <?php echo $turma["nome"]?> </option>
       <?php }
         }
     }
+
     if(!$turmaEncontrada){?>
         <option value="" selected="">Nenhuma turma cadastrada</option>
 <?php }

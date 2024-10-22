@@ -104,12 +104,12 @@ function gerarTabelaSalas(dadosJSON, pagina){
     
     tabela = '<table class="table table-striped tabela-consulta">'
     
-    tabela += '<button id="reserva-tipo-tag" class="btn btn-primary btn-sm">'+ reserva_tipo +'</button>'
+    tabela += '<span class="badge text-bg-secondary " id="reserva-tipo-tag">'+ reserva_tipo +'</span>'
     
-    tabela += '<button id="turno-tag" class="btn btn-primary btn-sm">'+ turno + '</button>'
+    tabela += '<span class="badge text-bg-secondary" id="turno-tag">'+ turno +'</span>'
     
     datas.forEach( (data) =>{
-        tabela += '<button class="btn btn-primary btn-sm data-tag">' + converterData(data) + '</button>'
+        tabela += '<span class="badge text-bg-secondary">' + converterData(data) + '</span>'
     })
 
 
@@ -208,7 +208,7 @@ function atualizarTabelaSalas(){
                         }
                         tabela = gerarTabelaSalas(dadosJSON, pagina)
                         
-                        reqServidorGET({turmas_options:turno}, mostrarOptionsTurmas)
+                        reqServidorGET({turmas_options:true,turno:turno}, mostrarOptionsTurmas)
 
                         $("#container-tabela").html(tabela)
                     }

@@ -22,6 +22,8 @@ if(isset($_GET["consultar"])){
     
     // SERVER REQUEST CONSULTAR RESERVAS
     if($_GET["consultar"] == "reservas"){
+
+        // $resposta["reserva"] = $_GET["reserva_status"];
         
         $sql = [];
         
@@ -58,9 +60,10 @@ if(isset($_GET["consultar"])){
         // filtro data fim
         if($_GET["data_fim"]) $sql[] = " DATE(data) <= '{$_GET["data_fim"]}'"; 
         
-        
-        // PESQUISA BASE CONSULTAR RESERVAS
-        $query = "SELECT s.id_sala as 'sala',
+        if($_GET["reserva_status"] == "Ativa"){
+
+            // PESQUISA BASE CONSULTAR RESERVAS
+            $query = "SELECT r.id_sala as 'sala',
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
@@ -75,6 +78,25 @@ if(isset($_GET["consultar"])){
                 ON r.id_turma = t.id_turma
                 INNER JOIN salas as s
                 ON r.id_sala = s.id_sala";
+        } else {
+
+            $query = "SELECT r.id_sala as 'sala',
+                        r.id as 'id_reserva', 
+                        s.tipo_sala as 'sala_tipo', 
+                        r.data as 'data',
+                        r.reserva_tipo as 'reserva',
+                        t.id_turma as id_turma,
+                        t.nome as 'turma',
+                        r.docente as 'docente', 
+                        t.turno as 'turno', 
+                        CONCAT(r.participantes, '/', s.lugares_qtd) as 'lugares' 
+                FROM reservas_historico as r
+                INNER JOIN turmas as t 
+                ON r.id_turma = t.id_turma
+                INNER JOIN salas as s
+                ON r.id_sala = s.id_sala";
+
+        }
         
         
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
@@ -194,7 +216,7 @@ if(isset($_GET["consultar"])){
             $data_inicial=strtotime("{$_GET['data_inicio']}");
             $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
             
-            while ($data_inicial < $data_final) {
+            while ($data_inicial <= $data_final) {
                 
                 $dias .=  date("'Y-m-d', ", $data_inicial);         
                 
@@ -549,7 +571,12 @@ if(isset($_GET["num_reservas_turma"])){
 // GERAR OPTIONS TURMA
 if(isset($_GET["turmas_options"])){
 
-    optionsTurmas($_GET["turmas_options"]);
+    $turno = $_GET["turno"];
+
+    $id_turma = isset($_GET["id_turma"]) ? $_GET["id_turma"] : null;
+
+    optionsTurmas($turno,$id_turma);
+
 }
 
 if(isset($_POST["deletar_turma"])){

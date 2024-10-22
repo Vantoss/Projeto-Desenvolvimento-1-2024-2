@@ -69,8 +69,8 @@
   <div class="col-md-3">
     <label for="inp-reserva-status" class="form-label">Reservas status</label>
     <select id="inp-reserva-status" class="form-select" name="reserva_status">
-      <option value="Ativas" selected="">Ativas</option>
-      <option value="Inativas" >Inativas</option>
+      <option value="Ativa" selected="">Ativa</option>
+      <option value="Inativa" >Inativa</option>
     </select>
   </div>
   

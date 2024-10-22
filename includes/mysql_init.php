@@ -11,7 +11,6 @@ require_once ROOT_DIR. 'includes/functions.php';
   $pass = $_POST['dbpass'];
   $dbname = $_POST['dbname'];
 
-
   $conn =  new PDO("mysql:host=$host;port=$port", $user, $pass);
   if (!$conn) {
     $resposta["status"] = 400;
@@ -82,6 +81,7 @@ if (!$conn->query($tabela_reservas)) {
 
 $tabela_historico = "CREATE TABLE reservas_historico (
   id int(11) NOT NULL,
+  reserva_tipo varchar(30) DEFAULT NULL,
   `data` date NOT NULL,
   docente varchar(80) NOT NULL,
   participantes int(11) NOT NULL,
@@ -123,8 +123,8 @@ if (!$conn->query($alter_tables)) {
 
 $procedures = "CREATE DEFINER=`root`@`localhost` PROCEDURE deletar_reservas_passadas ()   DELETE FROM reservas WHERE data < CURRENT_DATE;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id, data, docente, participantes, id_turma, id_sala)
-SELECT r.id_reserva,r.data,t.docente,t.participantes_qtd,r.id_turma,r.id_sala
+CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id, data, reserva_tipo, docente, participantes, id_turma, id_sala)
+SELECT r.id_reserva, r.reserva_tipo, r.data, t.docente, t.participantes_qtd, r.id_turma, r.id_sala
 FROM reservas as r
 INNER JOIN turmas as t
 ON r.id_turma = t.id_turma

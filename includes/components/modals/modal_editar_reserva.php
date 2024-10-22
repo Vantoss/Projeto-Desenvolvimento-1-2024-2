@@ -23,13 +23,16 @@
           <input type="hidden" name="id_turma" id="inp-edit-id_turma" value="">
           
             <div class="row text-center">
+
+
               <div class="col">
                 <div class="form-floating">
                   <select id="turma-cadastrada" class="form-select" name="id_turma_nova" aria-label="Floating label select example"  required>
-                    <option value="" selected="">Selecione uma turma</option>
+                    <!-- <option value="" selected="">Selecione uma turma</option> -->
                   </select>
-                  <label for="turma-cadastrada">Trocar por turma</label>
+                  <label for="turma-cadastrada">turma</label>
                 </div>
+
                 <!-- BOX DE DADOS TURMA -->
                 <div class="turma-dados" id="turmas-dados-editar"></div>
               </div>

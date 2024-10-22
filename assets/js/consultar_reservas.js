@@ -1,5 +1,6 @@
 
 
+
     $(document).on('submit','#form-consultar-reservas',function (e) {
         e.preventDefault()
         atualizarTabelaReservas()
@@ -56,9 +57,12 @@
     $(document).on('click','.btn-editar-reserva',function () { 
         const reserva_dados  = this.value.split("-")
 
+        // $(".turma-dados").empty()
+
         id_reserva = reserva_dados[0]
         id_turma = reserva_dados[1]
 
+        
 
         sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
         
@@ -75,12 +79,19 @@
 
         $("#inp-edit-id_reserva").val(id_reserva)
         $("#inp-edit-id_turma").val(id_turma)
+        
+        reqServidorGET({turmas_options: true, turno:turno, id_turma:id_turma }, mostrarOptionsTurmas)
 
-        reqServidorGET({turmas_options:turno}, mostrarOptionsTurmas)
+        reqServidorGET({dados_turma:id_turma}, mostrarDadosTurma)
         
         reqServidorGET({dados_turma:id_turma}, mostrarInputDadosTurma)
+
+        
+        
         
     })
+    
+   
     
 
     $(document).on('submit','#form-editar', function (e) {
@@ -96,7 +107,6 @@
     $(document).on('submit','#form-edit-reserva',function(e){
         e.preventDefault()
 
-        $(".turma-dados").empty()
         
         let form = $(this).serialize() + "&" + $("#form-editar").serialize()
 
@@ -124,8 +134,11 @@ function atualizarTabelaReservas(){
             $("#container-tabela").css("visibility","visible")
         },
         success:function(resposta){
+            console.log(resposta)
+            
             resposta = JSON.parse(resposta)
-            console.log(resposta )
+            
+
             $.ajax({
                 url:"../JSON/dados_tabela_reservas.json",
                 type:"GET",
