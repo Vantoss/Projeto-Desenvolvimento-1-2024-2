@@ -108,7 +108,7 @@ if(isset($_GET["consultar"])){
         
         // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
-        //estabelece conexao com o banco de dados
+        $query .= " ORDER BY id_reserva";
 
         $stm = $conn->prepare($query);
 
@@ -457,7 +457,10 @@ if(isset($_POST["editar_turma"])){
 }
 
 
+
 if(isset($_POST["editar_reserva"])){
+
+    $editar_registro = $_POST["editar_reserva"];
 
     $id_reserva = $_POST["id_reserva"];
 
@@ -465,9 +468,11 @@ if(isset($_POST["editar_reserva"])){
     // TROCA A TURMA DA RESERVA SELECIONADA
     $nova_turma = $_POST["id_turma_nova"];
 
-    if($_POST["edit_reserva"] == "atual"){
+    if($editar_registro == "atual"){
         
-        $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = {$_POST["id_reserva"]}";
+        $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = '$id_reserva'";
+
+        // echo $updateSQL;
 
         // EXECUTANDO SQL
         $stm = $conn->prepare($updateSQL);
@@ -479,7 +484,7 @@ if(isset($_POST["editar_reserva"])){
             $resposta["msg"] = "Erro ao trocar a turma";
         }
         
-    } else if ($_POST["edit_reserva"] == "todos"){
+    } else if ($editar_registro == "todos"){
 
             // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA 
         $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma'";

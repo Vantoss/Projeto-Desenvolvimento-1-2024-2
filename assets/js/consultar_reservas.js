@@ -1,10 +1,16 @@
 
 
-
-    $(document).on('submit','#form-consultar-reservas',function (e) {
+    $(document).on('submit','#form-consultar-reservas', function (e) {
         e.preventDefault()
+        $('#aviso').remove()
         atualizarTabelaReservas()
     })
+
+    $(document).on('change', '#form-consultar-reservas', function(){ 
+        if ($('#aviso').is("span") == false){ //Verifica o alerta de mudanças está na pág.
+            $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css("color", "red") //Alerta
+        }
+    });
 
 
     // BOTAO DELETAR
@@ -54,15 +60,12 @@
     
     // BOTAO EDITAR
     
-    $(document).on('click','.btn-editar-reserva',function () { 
+    $(document).on('click','.btn-editar-reserva', function () { 
         const reserva_dados  = this.value.split("-")
 
-        // $(".turma-dados").empty()
 
         id_reserva = reserva_dados[0]
         id_turma = reserva_dados[1]
-
-        
 
         sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
         
@@ -92,30 +95,22 @@
     })
     
    
-    
-
     $(document).on('submit','#form-editar', function (e) {
         e.preventDefault()
-            
         $("#modal-editar").modal('hide')
-
         $("#modal-editar-reserva").modal('toggle')
-
     })
 
     // SUBMIT FORM-MODAL TROCAR TURMA
-    $(document).on('submit','#form-edit-reserva',function(e){
+    $(document).on('submit','#form-edit-reserva', function(e){
         e.preventDefault()
 
         
         let form = $(this).serialize() + "&" + $("#form-editar").serialize()
 
-        form += "&editar_reserva=true"
-
         console.log(form)
         
-
-        reqServidorPOST(form,atualizarTabelaReservas)
+        reqServidorPOST(form, atualizarTabelaReservas)
     })
     
 

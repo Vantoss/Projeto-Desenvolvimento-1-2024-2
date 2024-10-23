@@ -82,7 +82,7 @@
   </div>
 
   <!-- BOTAO BUSCAR -->
-  <div class="col-12">
+  <div class="col-12" style="display: flex; align-items: center; gap:10px;">
     <button type="submit" class="btn btn-primary " id="btn-buscar-sala-disponivel" >Buscar</button>
   </div>
 </form>

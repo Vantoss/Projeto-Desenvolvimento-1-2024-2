@@ -155,7 +155,7 @@ function salasOptions($opcao){
         
         foreach ($salas as $sala) {
             $salas_tipos[] = $sala["tipo_sala"];
-            $maquinas_tipos[] = $sala["maquinas_qtd"]; 
+            $maquinas_tipos[] = $sala["maquinas_tipo"]; 
             }
 
     if($opcao == "id_sala"){

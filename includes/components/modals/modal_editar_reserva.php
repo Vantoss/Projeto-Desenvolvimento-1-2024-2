@@ -28,7 +28,6 @@
               <div class="col">
                 <div class="form-floating">
                   <select id="turma-cadastrada" class="form-select" name="id_turma_nova" aria-label="Floating label select example"  required>
-                    <!-- <option value="" selected="">Selecione uma turma</option> -->
                   </select>
                   <label for="turma-cadastrada">turma</label>
                 </div>
@@ -61,15 +60,15 @@
       <form method="post" id="form-edit-reserva">
         <div class="modal-body">
           <div class="form-check">
-            <input class="form-check-input" id="radio-edit-atual" type="radio" name="edit_reserva" value="atual" checked>
+            <input class="form-check-input" id="radio-edit-atual" type="radio" name="editar_reserva" value="atual" checked>
             <label class="form-check-label" for="radio-edit-atual">Editar registro atual</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" id="radio-edit-todos" type="radio" name="edit_reserva" value="todos">
+            <input class="form-check-input" id="radio-edit-todos" type="radio" name="editar_reserva" value="todos">
             <label class="form-check-label" for="radio-edit-todos">Editar todos os registros</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" id="radio-edit-apartir" type="radio" name="edit_reserva" value="apartir">
+            <input class="form-check-input" id="radio-edit-apartir" type="radio" name="editar_reserva" value="apartir">
             <label class="form-check-label" for="radio-edit-apartir">Editar os registros a partir do atual</label>
           </div>
         </div>

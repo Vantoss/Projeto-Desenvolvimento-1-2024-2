@@ -76,7 +76,7 @@ $(document).on('click','.pagina-salas', function (e) {
 
 
 // DESABILITAR DATA FIM
-$(document).on('change','#inp-consulta-reserva-tipo',function(){
+$(document).on('change','#inp-consulta-reserva-tipo', function(){
     if(this.value == "Única"){
         $("#inp-consulta-data-fim").prop("disabled",true)
         $("#inp-consulta-data-fim").val('')
@@ -91,8 +91,8 @@ $(document).on('change', '#form-consultar-salas', function block(){
     $('[id^="btn-reservar"]').each(function(){ //Pega cada botão reservar
         $(this).prop('disabled', true) //Desabilita os botões
     })
-    if ($('#aviso').is("p") == false){ //Verifica o alerta de mudanças está na pág.
-        $('.col-12').append("<p id='aviso'>Mudanças detectadas, por favor busque novamente.</p>").css("color", "red") //Alerta
+    if ($('#aviso').is("span") == false){ //Verifica o alerta de mudanças está na pág.
+        $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css("color", "red") //Alerta
     }
 });
 

@@ -80,7 +80,7 @@
     <input type="number" id="inp-consulta-registros" class="form-control" min="1" placeholder="Todos" name="registros">
   </div>
   <!-- BOTAO BUSCAR -->
-  <div class="col-12">
+  <div class="col-12" style="display: flex; align-items: center; gap:10px;">
     <button type="submit" class="btn btn-primary" value="consultar-reservas" id="btn-buscar">Buscar</button>
   </div>
 </form>
