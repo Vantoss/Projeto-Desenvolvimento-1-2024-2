@@ -55,6 +55,7 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
 })
 
 
+//
 $(document).on('click','.pagina-salas', function (e) {
     e.preventDefault()
     
@@ -68,7 +69,13 @@ $(document).on('click','.pagina-salas', function (e) {
             
             tabela = gerarTabelaSalas(dadosJSON, pagina)
             
+
             $("#container-tabela").html(tabela)
+            if ($('#aviso').is("span")){
+                $('[id^="btn-reservar"]').each(function(){ //Pega cada botão reservar
+                    $(this).prop('disabled', true) //Desabilita os botões
+                })
+            }
         }
     })
 })
@@ -95,6 +102,7 @@ $(document).on('change', '#form-consultar-salas', function block(){
         $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css("color", "red") //Alerta
     }
 });
+
 
 
 // TABELA SALAS DISPONIVEIS
@@ -173,7 +181,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
             tabela += '<li class="page-item active" aria-current="page"><span id="current-page" class="page-link">' + e + '</span></li>'
         } else { 
             tabela += '<li class="page-item pagina-salas" type="button" value="' + e + '">'
-            tabela += '<a class="page-link">' + e + '</a>'
+            tabela += '<a class="page-link" id="bb">' + e + '</a>'
             tabela += '</li>'
         }
     } 
