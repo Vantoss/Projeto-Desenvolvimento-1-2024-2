@@ -18,7 +18,7 @@
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">
     <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
-    <select id="inp-consulta-reserva-tipo" class="form-select" name="reserva_tipo">
+    <select id="inp-consulta-reserva-tipo" class="form-select" name="tipo_reserva">
       <option value="Única">Única</option>
       <option value="Semanal" >Semanal</option>
     </select>

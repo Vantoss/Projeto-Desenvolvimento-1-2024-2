@@ -111,7 +111,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
     salas = dadosJSON.salas
     
     turno = dadosJSON.turno
-    reserva_tipo = dadosJSON.reserva_tipo
+    tipo_reserva = dadosJSON.tipo_reserva
     datas = dadosJSON.datas
     
     data = converterData(datas[0])
@@ -119,11 +119,11 @@ function gerarTabelaSalas(dadosJSON, pagina){
 
     date = dia + ' - ' + data
 
-    mostarReservaDados(date,reserva_tipo,turno)
+    mostarReservaDados(date,tipo_reserva,turno)
     
     tabela = '<table class="table table-striped tabela-consulta">'
     
-    tabela += '<span class="badge text-bg-secondary " id="reserva-tipo-tag">'+ reserva_tipo +'</span>'
+    tabela += '<span class="badge text-bg-secondary " id="reserva-tipo-tag">'+ tipo_reserva +'</span>'
     
     tabela += '<span class="badge text-bg-secondary" id="turno-tag">'+ turno +'</span>'
     

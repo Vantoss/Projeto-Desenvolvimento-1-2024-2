@@ -7,10 +7,6 @@ define('ROOT_DIR', '../');
 require_once ROOT_DIR. 'includes/functions.php';
 
 
-// echo print_r($_GET);
-// echo print_r($_POST);
-
-
 // =====================================================================================================================
 // CONSULTAR RESERVA ===================================================================================================
 // =====================================================================================================================
@@ -23,7 +19,7 @@ if(isset($_GET["consultar"])){
     // SERVER REQUEST CONSULTAR RESERVAS
     if($_GET["consultar"] == "reservas"){
 
-        // $resposta["reserva"] = $_GET["reserva_status"];
+        $dados_tabela["reserva_status"] = $_GET["reserva_status"];
         
         $sql = [];
         
@@ -51,8 +47,8 @@ if(isset($_GET["consultar"])){
         // filtro turno
         if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
         
-        // filtro reserva_tipo
-        if($_GET["reserva_tipo"]) $sql[] = " r.reserva_tipo = '{$_GET["reserva_tipo"]}'"; 
+        // filtro tipo_reserva
+        if($_GET["tipo_reserva"]) $sql[] = " r.tipo_reserva = '{$_GET["tipo_reserva"]}'"; 
         
         // filtro data inicio
         if($_GET["data_inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'"; 
@@ -67,7 +63,7 @@ if(isset($_GET["consultar"])){
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
-                        r.reserva_tipo as 'reserva',
+                        r.tipo_reserva as 'reserva',
                         t.id_turma as id_turma,
                         t.nome as 'turma',
                         t.docente as 'docente', 
@@ -78,21 +74,19 @@ if(isset($_GET["consultar"])){
                 ON r.id_turma = t.id_turma
                 INNER JOIN salas as s
                 ON r.id_sala = s.id_sala";
+                
         } else {
 
             $query = "SELECT r.id_sala as 'sala',
-                        r.id as 'id_reserva', 
+                        r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
-                        r.reserva_tipo as 'reserva',
-                        t.id_turma as id_turma,
-                        t.nome as 'turma',
+                        r.tipo_reserva as 'reserva',
+                        r.nome_turma as 'turma',
                         r.docente as 'docente', 
-                        t.turno as 'turno', 
+                        r.turno as 'turno', 
                         CONCAT(r.participantes, '/', s.lugares_qtd) as 'lugares' 
                 FROM reservas_historico as r
-                INNER JOIN turmas as t 
-                ON r.id_turma = t.id_turma
                 INNER JOIN salas as s
                 ON r.id_sala = s.id_sala";
 
@@ -203,7 +197,7 @@ if(isset($_GET["consultar"])){
         if($sql) $query .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
         
         
-        if($_GET["reserva_tipo"] == "Única"){
+        if($_GET["tipo_reserva"] == "Única"){
             
             $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
             
@@ -250,7 +244,7 @@ if(isset($_GET["consultar"])){
                 $dados_tabela = [
                     "datas" => $datas,
                     "turno" => $_GET["turno"],
-                    "reserva_tipo" => $_GET["reserva_tipo"],
+                    "tipo_reserva" => $_GET["tipo_reserva"],
                     "salas" => $salas
                 ];
 
@@ -289,9 +283,6 @@ if(isset($_POST["del_reservas"] )){
     
     $id_reserva = $_POST["id_reserva"];
     $id_turma = $_POST["id_turma"];
-
-    // echo "id_reserva: " . $id_reserva . " " ;
-    // echo "id_turma: " . $id_turma . " ";
 
     if($_POST["del_reservas"] == "atual"){
 
@@ -349,7 +340,7 @@ if(isset($_POST["cadastrar-reserva"])){
     if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
     
     // DADOS DA RESERVA
-    $reserva_tipo = $_POST["reserva_tipo"] ? $_POST["reserva_tipo"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
+    $tipo_reserva = $_POST["tipo_reserva"] ? $_POST["tipo_reserva"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
     // INPUT ID SALA 
     $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA' ESTA VAZIO");
     // INPUT TURNO
@@ -397,9 +388,9 @@ if(isset($_POST["cadastrar-reserva"])){
     } 
 
     //  RODA CASO FOR UMA RESERVA SEMANAL
-    if($reserva_tipo == "Semanal"){
+    if($tipo_reserva == "Semanal"){
         
-        $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) VALUES";    
+        $query = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) VALUES";    
         
         // INPUT DATA FIM
         $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
@@ -409,7 +400,7 @@ if(isset($_POST["cadastrar-reserva"])){
         
         while ($data_inicial < $data_final) {
             $data =  date("Y-m-d", $data_inicial);         
-            $query .= " ('$data','$reserva_tipo',$id_sala, $id_turma),";
+            $query .= " ('$data','$tipo_reserva',$id_sala, $id_turma),";
             $data_inicial = strtotime("+1 week", $data_inicial);   
         }
         
@@ -426,8 +417,8 @@ if(isset($_POST["cadastrar-reserva"])){
         
     } else { // RODA CASO A RESERVA FOR UNICA
         
-        $query = "INSERT INTO `reservas`(`data`, `reserva_tipo`, `id_sala`, `id_turma`) 
-        VALUES ('$data_inicio','$reserva_tipo', $id_sala, $id_turma)";
+        $query = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) 
+        VALUES ('$data_inicio','$tipo_reserva', $id_sala, $id_turma)";
 
         $stm = $conn->prepare($query);
 

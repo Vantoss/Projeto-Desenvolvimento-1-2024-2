@@ -242,10 +242,10 @@ function mostarSalaDados(resposta){
     $("#sala-dados").html(dados)
 }
 
-function mostarReservaDados(data,reserva_tipo,turno){
+function mostarReservaDados(data,tipo_reserva,turno){
 
     dados = '<h6>' + data + '</h6>'
-    dados += '<h6>' + reserva_tipo + '</h6>'
+    dados += '<h6>' + tipo_reserva + '</h6>'
     dados += '<h6>' + turno + '</h6>'
 
     $("#reserva-dados").html(dados)
