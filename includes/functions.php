@@ -35,6 +35,7 @@ function customPageHeader($pagina_titulo){
     
     // HEADER DA PAGINA CADASTRAR RESERVA
     if($pagina_titulo == "Cadastrar Reserva"){?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo ROOT_DIR. "assets/styles/cadastrar_reserva.css"?>">
     <script src="<?php echo ROOT_DIR. 'assets/js/cadastrar_reservas.js'?>" defer></script> <?php
     } 
@@ -79,9 +80,11 @@ function gerarTurmasJSON(){
   
 }
 
-function optionsTurmas($turno,$id_turma=null){
+function optionsTurmas($turno,$datas,$id_turma=null){
 
-
+    if(!is_array($datas)){
+        $datas = array($datas);
+    }
 
     $dadosJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_turmas.json'),true);
 
@@ -89,18 +92,43 @@ function optionsTurmas($turno,$id_turma=null){
     
     $turmaEncontrada = false;
 
+    $selectSQL = "SELECT DISTINCT id_turma FROM reservas WHERE DATE(data)";
+
+    if(count($datas) > 1){
+        $str_datas = implode("','" ,$datas);
+        $selectSQL .= " IN ('$str_datas')";
+    } else {
+        $selectSQL .= " = '$datas[0]'";
+    }
+
+    $conn = initDB();
+    $stm = $conn->query($selectSQL);
+    $arr_ids = $stm->fetchAll(PDO::FETCH_COLUMN);
+
+    echo $selectSQL;
+
+
+    print_r($arr_ids);
+
     if($dadosJSON["status"] == 200){
         
         if(!$id_turma){?>
         <option value="" selected="">Selecione uma turma</option>
-        <?php }    
+        <?php }   
 
         foreach ($turmas as $turma) {
-        
+
             if($turma["turno"] == $turno){
-                $turmaEncontrada = true;?>
-                <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" <?php if($id_turma and $turma["id_turma"] == $id_turma) echo 'selected=""'?>   >  <?php echo $turma["nome"]?> </option>
-      <?php }
+
+                if($id_turma and $turma["id_turma"] == $id_turma){?>
+                    <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" selected="" >  <?php echo $turma["nome"]?> </option>
+                <?php } 
+
+                if(!in_array($turma["id_turma"],$arr_ids)){
+                    $turmaEncontrada = true;?>
+                    <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" >  <?php echo $turma["nome"]?> </option>
+                <?php }
+                }
         }
     }
 
@@ -121,22 +149,18 @@ function gerarSalasJSON(){
 
     $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    if($salas){
-        
+    if($salas){        
         $dados = [
             "status" => 200,
             "salas" => $salas
         ];
-
     } else {
-
         $dados = [
             "status" => 204,
             "msg" => "Nenhuma sala cadastrada",
         ];
     }
 
-    
     touch(ROOT_DIR. 'JSON/dados_salas.json');
     
     file_put_contents(ROOT_DIR. 'JSON/dados_salas.json', json_encode($dados));
@@ -156,7 +180,7 @@ function salasOptions($opcao){
         foreach ($salas as $sala) {
             $salas_tipos[] = $sala["tipo_sala"];
             $maquinas_tipos[] = $sala["maquinas_tipo"]; 
-            }
+        }
 
     if($opcao == "id_sala"){
 

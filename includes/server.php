@@ -59,7 +59,7 @@ if(isset($_GET["consultar"])){
         if($_GET["reserva_status"] == "Ativa"){
 
             // PESQUISA BASE CONSULTAR RESERVAS
-            $query = "SELECT r.id_sala as 'sala',
+            $insertSQL = "SELECT r.id_sala as 'sala',
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
@@ -77,7 +77,7 @@ if(isset($_GET["consultar"])){
                 
         } else {
 
-            $query = "SELECT r.id_sala as 'sala',
+            $insertSQL = "SELECT r.id_sala as 'sala',
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
@@ -94,17 +94,17 @@ if(isset($_GET["consultar"])){
         
         
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
-        if($sql) $query .= ' WHERE ' .implode(' AND ',$sql); 
+        if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql); 
         
         
         // limita a quatidade de registros que o banco de dados ira retornar
-        if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
+        if ($_GET["registros"]) $insertSQL .= " LIMIT {$_GET["registros"]}";
         
         // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
-        $query .= " ORDER BY id_reserva";
+        $insertSQL .= " ORDER BY id_reserva";
 
-        $stm = $conn->prepare($query);
+        $stm = $conn->prepare($insertSQL);
 
         if(!$stm->execute()){
 
@@ -180,59 +180,52 @@ if(isset($_GET["consultar"])){
         
         
         
-        $query = "SELECT s.id_sala as 'sala',
-                            s.tipo_sala as 'sala_tipo',
-                            s.lugares_qtd as 'lugares',
-                            s.maquinas_qtd as 'maquinas_qtd',
-                            s.maquinas_tipo as 'maquinas_tipo'
-                    FROM salas as s";
+        $insertSQL = "SELECT s.id_sala as 'sala',
+                         s.tipo_sala as 'sala_tipo',
+                         s.lugares_qtd as 'lugares',
+                         s.maquinas_qtd as 'maquinas_qtd',
+                         s.maquinas_tipo as 'maquinas_tipo'
+                  FROM salas as s";
         
         $sql[] = " s.id_sala NOT IN (SELECT s.id_sala from salas as s 
-        INNER JOIN reservas as r 
-        ON s.id_sala = r.id_sala 
-        INNER JOIN turmas as t 
-        ON r.id_turma = t.id_turma";
+                    INNER JOIN reservas as r 
+                    ON s.id_sala = r.id_sala 
+                    INNER JOIN turmas as t 
+                    ON r.id_turma = t.id_turma";
         
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
-        if($sql) $query .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
+        if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
         
         
-        if($_GET["tipo_reserva"] == "Única"){
-            
-            $query .= " DATE(data) = '{$_GET["data_inicio"]}'";
-            
+        if($_GET["tipo_reserva"] == "Única") {
+            $insertSQL .= " DATE(data) = '{$_GET["data_inicio"]}'";
             $dias = $_GET["data_inicio"];
-        } 
-        else {  
-            
+        } else {  
             $dias = "";
-            
-            $data_inicial=strtotime("{$_GET['data_inicio']}");
-            $data_final=strtotime("{$_GET['data_fim']}", $data_inicial);
-            
+            $data_inicial = strtotime("{$_GET['data_inicio']}");
+            $data_final = strtotime("{$_GET['data_fim']}", $data_inicial);
+
             while ($data_inicial <= $data_final) {
-                
-                $dias .=  date("'Y-m-d', ", $data_inicial);         
-                
+                $dias .=  date("'Y-m-d',", $data_inicial);                             
                 $data_inicial = strtotime("+1 week", $data_inicial);
             }
             
-            $dias = substr_replace($dias,"",-2);    
-            
-            $query .= "DATE(data) in ($dias)";
+            $dias = substr_replace($dias,"",-1);    
+
+            $insertSQL .= "DATE(data) IN ($dias)";
         }
         
         // filtro turno
-        $query .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
+        $insertSQL .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
         
         // limita a quatidade de registros que o banco de dados ira retornar
-        if ($_GET["registros"]) $query .= " LIMIT {$_GET["registros"]}";
+        if ($_GET["registros"]) $insertSQL .= " LIMIT {$_GET["registros"]}";
         
         
             // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
             // prepara a pesquisa para ser executada
-            $stm = $conn->prepare($query);
+            $stm = $conn->prepare($insertSQL);
         
             if($stm->execute()){
 
@@ -257,6 +250,7 @@ if(isset($_GET["consultar"])){
 
                     $resposta["status"] = 200;
                     $resposta["msg"] = "Dados tranferidos para o arquivo json";
+
                 } else {
                     $resposta["status"] = 204;
                     $resposta["msg"] = "Nenhum resultado encontrado";
@@ -302,19 +296,17 @@ if(isset($_POST["del_reservas"] )){
     
         } else {
 
-        if($arr = $stm->fetch(PDO::FETCH_ASSOC)){
+            if($arr = $stm->fetch(PDO::FETCH_ASSOC)){
 
-            $delete = "DELETE FROM reservas WHERE id_turma = '$id_turma' AND data >= '{$arr["data"]}'";
+                $delete = "DELETE FROM reservas WHERE id_turma = '$id_turma' AND data >= '{$arr["data"]}'";
 
-            // echo $delete;
-            $stm = $conn->prepare($delete);
-            $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
+                // echo $delete;
+                $stm = $conn->prepare($delete);
+                $resposta["msg"] = $stm->execute() ? $stm->rowCount(). " reservas deletadas com sucesso!" : "Erro ao tentar deletar as reservas";
 
-        } else {
-
-            $resposta["msg"] = "Nenhuma reserva deletada";
-
-        }
+            } else {
+                $resposta["msg"] = "Nenhuma reserva deletada";
+            }
 
         }
         
@@ -336,17 +328,10 @@ if(isset($_POST["del_reservas"] )){
 
 if(isset($_POST["cadastrar-reserva"])){
     
+
     // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
     if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
     
-    // DADOS DA RESERVA
-    $tipo_reserva = $_POST["tipo_reserva"] ? $_POST["tipo_reserva"]: exit("ERRO: O CAMPO 'RESERVA TIPO' ESTA VAZIO");
-    // INPUT ID SALA 
-    $id_sala = $_POST["id_sala"] ? $_POST["id_sala"]: exit("ERRO: O CAMPO 'ID SALA' ESTA VAZIO");
-    // INPUT TURNO
-    $turno = $_POST["turno"] ? $_POST["turno"]: exit("ERRO: O CAMPO 'TURNO' ESTA VAZIO");
-    // INPUT DATA INICIO
-    $data_inicio = $_POST['data_inicio'] ? $_POST["data_inicio"] : exit("ERRO: O CAMPO DATA INICIO ESTA VAZIO");
     
     // RODA CASO FOR UM NOVO CADASTRO 
     if($_POST["cadastro-turma"] == "nova"){
@@ -363,11 +348,11 @@ if(isset($_POST["cadastrar-reserva"])){
         $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
         
         
-        $query = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
+        $insertSQL = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
                 VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
                 
                 
-        $stm = $conn->prepare($query);
+        $stm = $conn->prepare($insertSQL);
         
         if(!$stm->execute()){
             
@@ -382,54 +367,40 @@ if(isset($_POST["cadastrar-reserva"])){
             // atualiza os dados do arquivo "dados_turmas.json"
 
             gerarTurmasJSON();
+        }    
+    }
+
+        $tipo_reserva = $_POST["tipo_reserva"];
+        
+        $id_sala = $_POST["id_sala"];
+        
+        $turno = $_POST["turno"];
+
+        $datas = explode(",",$_POST["datas"]);
+    
+        $insertSQL = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) VALUES";    
+        
+        foreach ($datas as $data) {
+            $insertSQL .= "('$data','$tipo_reserva',$id_sala,$id_turma),";
         }
         
+        $insertSQL = substr_replace($insertSQL,"",-1);
         
-    } 
+        $stm = $conn->query($insertSQL);
 
-    //  RODA CASO FOR UMA RESERVA SEMANAL
-    if($tipo_reserva == "Semanal"){
-        
-        $query = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) VALUES";    
-        
-        // INPUT DATA FIM
-        $data_fim = $_POST['data_fim'] ? $_POST["data_fim"] : exit("ERRO: O CAMPO DATA FIM ESTA VAZIO");
-        
-        $data_inicial = strtotime($data_inicio);
-        $data_final = strtotime( $data_fim);
-        
-        while ($data_inicial < $data_final) {
-            $data =  date("Y-m-d", $data_inicial);         
-            $query .= " ('$data','$tipo_reserva',$id_sala, $id_turma),";
-            $data_inicial = strtotime("+1 week", $data_inicial);   
-        }
-        
-        $query = substr_replace($query,"",-1);
-        $stm = $conn->prepare($query);
-
-         if($stm->execute()) { 
+         if($stm) { 
             $resposta["status"] = 200;
-            $resposta["msg"] = $stm->rowCount() . " reservas cadastradas com sucesso!" ; 
+
+            $row_num = $stm->rowCount();
+
+            $resposta["msg"] = $row_num > 1 ? $row_num . " reservas cadastradas com sucesso!" : "Reserva cadastrada com sucesso!"; 
+
         } else {
+
             $resposta["status"] = 400;
             $resposta["msg"] = "Erro ao tentar cadastrar as reservas";
         }
-        
-    } else { // RODA CASO A RESERVA FOR UNICA
-        
-        $query = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) 
-        VALUES ('$data_inicio','$tipo_reserva', $id_sala, $id_turma)";
-
-        $stm = $conn->prepare($query);
-
-        if($stm->execute()) { 
-            $resposta["status"] = 200;
-            $resposta["msg"] = "Reserva cadastrada com sucesso!" ; 
-        } else {
-            $resposta["status"] = 400;
-            $resposta["msg"] = "Erro ao tentar cadastrar reserva";
-        }
-    }
+    
 
     echo json_encode($resposta);
 }
@@ -453,69 +424,45 @@ if(isset($_POST["editar_reserva"])){
 
     $editar_registro = $_POST["editar_reserva"];
 
-    $id_reserva = $_POST["id_reserva"];
+    $id_reserva = $_POST["id_reserva"]; // id da reserva 
 
-    $id_turma = $_POST["id_turma"];
-    // TROCA A TURMA DA RESERVA SELECIONADA
-    $nova_turma = $_POST["id_turma_nova"];
+    $id_turma = $_POST["id_turma"]; // id da turma atual
+
+    $nova_turma = $_POST["id_turma_nova"];// id da turma nova
 
     if($editar_registro == "atual"){
-        
+
         $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_reserva = '$id_reserva'";
-
-        // echo $updateSQL;
-
-        // EXECUTANDO SQL
-        $stm = $conn->prepare($updateSQL);
-        if($stm->execute()){
-            $resposta["status"] = 200;
-            $resposta["msg"] = "Turma trocada com sucesso";
-        } else {
-            $resposta["status"] = 400;
-            $resposta["msg"] = "Erro ao trocar a turma";
-        }
         
     } else if ($editar_registro == "todos"){
-
-            // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA 
+        
         $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma'";
 
-        // EXECUTANDO SQL
+    } else {
+        // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
+        $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
+
+        if($conn->query($selectSQL)){
+            $reserva = $stm->fetch(PDO::FETCH_ASSOC);
+            $data = $reserva["data"];
+            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
+        } else {
+            $resposta["status"] = 400;
+            $resposta["msg"] = "Erro ao consultar os dados da reserva";
+        }
+    }
+
+    if(isset($updateSQL)){
         $stm = $conn->prepare($updateSQL);
         if($stm->execute()){
             $resposta["status"] = 200;
-            $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
+            $resposta["msg"] = $row_num . " reservas alterdas com sucesso";
         } else {
             $resposta["status"] = 400;
-            $resposta["msg"] = "Erro";
+            $resposta["msg"] = "Erro ao alterar reservas";
         }
-
-    } else {
-            // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
-            $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
-
-            // EXECUTANDO SQL
-            $stm = $conn->prepare($selectSQL);
-            if($stm->execute()){
-                $resposta["status"] = 400;
-                $resposta["msg"] = "Erro ao consultar os dados da reserva";
-            }
-
-            $reserva = $stm->fetch(PDO::FETCH_ASSOC);
-            $data = $reserva["data"];
-
-            $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
-
-            // EXECUTANDO SQL
-            $stm = $conn->prepare($updateSQL);
-            if($stm->execute()){
-                $resposta["status"] = 200;
-                $resposta["msg"] = $stm->rowCount() . " reservas alterdas com sucesso";
-            } else {
-                $resposta["status"] = 400;
-                $resposta["msg"] = "Erro ao alterar reservas";
-            }
     }
+
     echo json_encode($resposta);
 }
 
@@ -543,9 +490,7 @@ if(isset($_GET["num_reservas_turma"])){
     $selectSQL = "SELECT count(1) as 'reservas_num' FROM reservas WHERE id_turma = '$id_turma'";
 
     $stm = $conn->prepare($selectSQL);
-
     $stm->execute();
-
     $arr = $stm->fetch(PDO::FETCH_ASSOC);
 
     $reservas_num = $arr["reservas_num"];
@@ -567,11 +512,9 @@ if(isset($_GET["num_reservas_turma"])){
 // GERAR OPTIONS TURMA
 if(isset($_GET["turmas_options"])){
 
-    $turno = $_GET["turno"];
-
     $id_turma = isset($_GET["id_turma"]) ? $_GET["id_turma"] : null;
 
-    optionsTurmas($turno,$id_turma);
+    optionsTurmas($_GET["turno"],$_GET["datas"],$id_turma );
 
 }
 

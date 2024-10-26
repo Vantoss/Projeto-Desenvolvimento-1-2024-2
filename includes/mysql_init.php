@@ -84,11 +84,11 @@ $tabela_historico = "CREATE TABLE reservas_historico (
   tipo_reserva varchar(30) DEFAULT NULL,
   `data` date NOT NULL,
   docente varchar(80) NOT NULL,
-  participantes int(11) NOT NULL,
   nome_turma varchar(80) DEFAULT NULL,
   curso varchar(80) DEFAULT NULL,
   turno varchar(10) DEFAULT NULL,
   codigo varchar(60) DEFAULT NULL,
+  participantes int(11) NOT NULL,
   id_sala int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
@@ -126,7 +126,7 @@ if (!$conn->query($alter_tables)) {
 
 $procedures = "CREATE DEFINER=`root`@`localhost` PROCEDURE deletar_reservas_passadas ()   DELETE FROM reservas WHERE data < CURRENT_DATE;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id_reserva, tipo_reserva, data, docente, participantes, nome_turma, curso, turno, codigo, id_sala)
+CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id_reserva, tipo_reserva, data, docente, nome_turma, curso, turno, codigo, participantes, id_sala)
 SELECT r.id_reserva, r.tipo_reserva, r.data, t.docente, t.nome, t.curso, t.turno, t.codigo, t.participantes_qtd, r.id_sala
 FROM reservas as r
 INNER JOIN turmas as t

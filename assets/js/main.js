@@ -4,6 +4,18 @@ $(".modal").modal({
     backdrop: 'static'
 })
 
+
+//DESABILITA BOTÕES RESERVAR CASO FORM MUDAR
+$(document).on('change', '.form-consulta', function (){
+
+    $('.btn-reservar').prop('disabled', true) //Desabilita os botões 'reservar'
+
+    if ($('#aviso').is("span") == false){ //Verifica o alerta de mudanças está na pág.
+        $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css({"color": "#dc3545", "font-size": ".875em"}) //Alerta
+    }
+});
+
+
 // MODAL CADASTRAR/EDITAR RESERVA: CONTAINER INFORMACOES TURMA
 $(document).on('change','#turma-cadastrada', function(e){
     id_turma = $(this).val()
@@ -14,11 +26,7 @@ $(document).on('change','#turma-cadastrada', function(e){
     }
 })
 
-// MODAL CADASTRAR/EDITAR RESERVA: OPCOES DE TURMA PARA ESCOLHER/TROCAR NA RESERVA
-
-        
-
-
+    
 // CONVERTE DATA NO FORMATO "Y-m-d" PARA O FORMATO "d/m/Y"
 function converterData(data){
     date = new Date (data + ' 00:00')
@@ -106,12 +114,6 @@ $(document).on('submit','#mysql-setup',function(e){
     });
 })
 
-// $(document).on('click','.btn-cancelar-modal-principal', function () {
-
-//     $("#turma-cadastrada").val("")
-//     $(".turma-dados").empty()
-    
-// });
 
 // FUNC EDITAR/DELETAR TURMA ======================================================================================
 
@@ -242,14 +244,41 @@ function mostarSalaDados(resposta){
     $("#sala-dados").html(dados)
 }
 
-function mostarReservaDados(data,tipo_reserva,turno){
+function mostarReservaDados(datas,tipo_reserva,turno){
 
-    dados = '<h6>' + data + '</h6>'
+    dados = '<h6>' + datas + '</h6>'
     dados += '<h6>' + tipo_reserva + '</h6>'
     dados += '<h6>' + turno + '</h6>'
 
     $("#reserva-dados").html(dados)
 
 }
+
+$(document).on('change',".inp-data", function(){
+    checkDatas()
+})
+
+
+function checkDatas(){
+    if(!$('#inp-consulta-data-fim').val() == '' && $("#inp-consulta-data-inicio").val() > $("#inp-consulta-data-fim").val() ){
+        $(".inp-data").addClass('is-invalid')
+        $(".btn-buscar").prop("disabled",true)
+    } else {   
+        $(".inp-data").removeClass('is-invalid')
+        $(".btn-buscar").prop("disabled",false)
+    }
+}
+
+function getPaginaAtual(){
+    if(document.getElementById("current-page")){
+        pagina = Number($("#current-page").text())
+    } else {
+        pagina = 1
+    }
+    return pagina
+}
+
+
+
 
 

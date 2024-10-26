@@ -29,7 +29,7 @@
                 <div class="form-floating">
                   <select id="turma-cadastrada" class="form-select" name="id_turma_nova" aria-label="Floating label select example"  required>
                   </select>
-                  <label for="turma-cadastrada">turma</label>
+                  <label for="turma-cadastrada">Turma</label>
                 </div>
 
                 <!-- BOX DE DADOS TURMA -->

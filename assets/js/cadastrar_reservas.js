@@ -2,12 +2,24 @@
 // RODA AO CLICAR O BOTAO "BUSCAR"
 $(document).on('submit','#form-consultar-salas',function (e) {
     e.preventDefault()
-    $('#aviso').detach()
+    $('#aviso').remove()
     atualizarTabelaSalas()
 })
 
+$(document).on('click','.close-badge', function(){
+     
+    let num = $(".data-badge").map(function(){
+        return 1
+    }).get()
+
+    if(num.length > 1){
+        $(this).closest('.data-badge').remove()
+    }
+
+})
+
 // BOTAO RESERVAR
-$(document).on('click','#btn-reservar', function () {
+$(document).on('click','.btn-reservar', function () {
 
     $("#turma-cadastrada").val("")
     $(".turma-dados").empty()
@@ -15,6 +27,19 @@ $(document).on('click','#btn-reservar', function () {
     const id_sala = $(this).val()
 
     $("#inp-cadastrar-sala").val(id_sala)
+
+    turno = $("#badge-turno").text()
+    tipo_reserva = $("#badge-tipo-reserva").text()
+
+    let datas = $(".data-badge").map(function(){
+        return this.innerText
+    }).get()
+
+    console.log(datas)
+
+    datas = ' Datas:<div id="reserva-datas">' + " " + datas.join(" - ") +"</div>"
+
+    mostarReservaDados(datas, tipo_reserva, turno)
     
     reqServidorGET({sala_dados:id_sala}, mostarSalaDados)
     
@@ -42,24 +67,32 @@ $(document).on("click",".btn-check", function(){
 // SUBMIT MODAL-FORM CADASTRAR RESERVA
 $(document).on('submit','#cadastrar-reserva', function (e) {
     e.preventDefault()
-    
-            // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
-            formData = $(this).serialize()
-            formData += '&' + $("#form-consultar-salas").serialize()
-            formData += '&cadastrar-reserva=true'
 
-            reqServidorPOST(formData, atualizarTabelaSalas)
+            let datas = $(".data-badge").map(function(){
+                return this.value
+            }).get()
+            
+
+            // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
+            form = $(this).serialize()
+            form += '&' + $("#form-consultar-salas").serialize()
+            form += '&cadastrar-reserva=true'
+            form += '&datas=' + datas
+
+            console.log(form)
+            
+            reqServidorPOST(form, atualizarTabelaSalas)
             
             // apaga os inputs do modal cadastrar
             $(".input-cadastrar-turma").val("")                
 })
 
 
-//
+// BOTAO PAGINA
 $(document).on('click','.pagina-salas', function (e) {
     e.preventDefault()
     
-    pagina = $(this).val()
+    const pagina = $(this).val()
     
     $.ajax({
         url:"../JSON/dados_tabela_salas.json",
@@ -68,13 +101,11 @@ $(document).on('click','.pagina-salas', function (e) {
         success:function(dadosJSON){
             
             tabela = gerarTabelaSalas(dadosJSON, pagina)
-            
 
             $("#container-tabela").html(tabela)
+
             if ($('#aviso').is("span")){
-                $('[id^="btn-reservar"]').each(function(){ //Pega cada botão reservar
-                    $(this).prop('disabled', true) //Desabilita os botões
-                })
+                $('.btn-reservar').prop('disabled', true) //Desabilita os botões 'reservar'
             }
         }
     })
@@ -90,22 +121,26 @@ $(document).on('change','#inp-consulta-reserva-tipo', function(){
     } else {
         $("#inp-consulta-data-fim").prop("disabled",false)
     }
+    checkDatas()
 })
-
-
-//DESABILITA BOTÕES RESERVAR CASO FORM MUDAR
-$(document).on('change', '#form-consultar-salas', function block(){ 
-    $('[id^="btn-reservar"]').each(function(){ //Pega cada botão reservar
-        $(this).prop('disabled', true) //Desabilita os botões
-    })
-    if ($('#aviso').is("span") == false){ //Verifica o alerta de mudanças está na pág.
-        $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css("color", "red") //Alerta
-    }
-});
 
 
 
 // TABELA SALAS DISPONIVEIS
+
+function tabelaBadges(tipo_reserva,turno,datas){
+
+    conteudo = '<button class="badge text-bg-primary " id="badge-tipo-reserva">'+ tipo_reserva +'</button>'
+    
+    conteudo += '<button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button>'
+    
+    datas.forEach( (data) =>{
+        conteudo += '<button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<i class="fa fa-close close-badge"></i></div></button>'
+    })
+    
+    return conteudo
+}
+
 
 function gerarTabelaSalas(dadosJSON, pagina){
     salas = dadosJSON.salas
@@ -119,18 +154,9 @@ function gerarTabelaSalas(dadosJSON, pagina){
 
     date = dia + ' - ' + data
 
-    mostarReservaDados(date,tipo_reserva,turno)
-    
     tabela = '<table class="table table-striped tabela-consulta">'
     
-    tabela += '<span class="badge text-bg-secondary " id="reserva-tipo-tag">'+ tipo_reserva +'</span>'
-    
-    tabela += '<span class="badge text-bg-secondary" id="turno-tag">'+ turno +'</span>'
-    
-    datas.forEach( (data) =>{
-        tabela += '<span class="badge text-bg-secondary">' + converterData(data) + '</span>'
-    })
-
+    tabela += tabelaBadges(tipo_reserva,turno,datas)
 
     tabela += '<thead>'
     tabela += '<tr>'
@@ -166,7 +192,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
         tabela += '<td>' + salas[i].maquinas_qtd   + '</td>' 
         tabela += '<td>' + salas[i].maquinas_tipo + '</td>'
         tabela += '<td>'
-        tabela += '<button type="button" id="btn-reservar" class="btn btn-primary" data-bs-toggle="modal" value="' + salas[i].sala + '" data-bs-target="#cadastrar-reserva-modal">Reservar</button>'
+        tabela += '<button type="button" class="btn btn-primary btn-reservar" data-bs-toggle="modal" value="' + salas[i].sala + '" data-bs-target="#cadastrar-reserva-modal">Reservar</button>'
         tabela += '</td>' 
         tabela += '</tr>'
     }
@@ -194,7 +220,6 @@ function gerarTabelaSalas(dadosJSON, pagina){
 function atualizarTabelaSalas(){
 
     let form = $('#form-consultar-salas').serialize()
-    let turno = $("#inp-consulta-turno").val()
 
     form += '&consultar=salas_disponiveis'
 
@@ -214,20 +239,16 @@ function atualizarTabelaSalas(){
             
             if(resposta.status == 200){
                 console.log(resposta.msg)
+
                 $.ajax({
                     url:"../JSON/dados_tabela_salas.json",
                     type:"GET",
                     dataType: "json",
                     success:function(dadosJSON){
                         
-                        if(document.getElementById("current-page")){
-                            pagina = Number($("#current-page").text())
-                        } else {
-                            pagina = 1
-                        }
-                        tabela = gerarTabelaSalas(dadosJSON, pagina)
+                        tabela = gerarTabelaSalas(dadosJSON, getPaginaAtual())
                         
-                        reqServidorGET({turmas_options:true,turno:turno}, mostrarOptionsTurmas)
+                        reqServidorGET({turmas_options:true, turno:dadosJSON.turno, datas:dadosJSON.datas}, mostrarOptionsTurmas)
 
                         $("#container-tabela").html(tabela)
                     }

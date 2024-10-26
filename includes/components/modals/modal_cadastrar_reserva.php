@@ -45,7 +45,7 @@
 
                     <div class="form-floating">
                       <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
-                        <!-- <option value="" selected="">Selecione uma turma</option>  -->
+                        
                       </select>
                       <label for="turma-cadastrada">Turma</label>
                     </div>

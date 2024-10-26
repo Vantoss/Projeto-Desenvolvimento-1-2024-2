@@ -6,11 +6,6 @@
         atualizarTabelaReservas()
     })
 
-    $(document).on('change', '#form-consultar-reservas', function(){ 
-        if ($('#aviso').is("span") == false){ //Verifica o alerta de mudanças está na pág.
-            $('.col-12').append("<span id='aviso'>Mudanças detectadas, por favor busque novamente.</span>").css("color", "red") //Alerta
-        }
-    });
 
 
     // BOTAO DELETAR
@@ -23,11 +18,9 @@
 
         // desabilita as opcoes (radio) de deletar todos os registros e apartir no modal deletar reservas 
         if(tipo_reserva.text() == "Única"){
-            $("#radio-del-todos").prop("disabled",true)
-            $("#radio-del-apartir").prop("disabled",true)
+            $("#radio-del-apartir, #radio-del-todos").prop("disabled",true)
         } else {
-            $("#radio-del-todos")  .prop("disabled",false)
-            $("#radio-del-apartir").prop("disabled",false)
+            $("#radio-del-apartir, #radio-del-todos").prop("disabled",false)
         }
     })
         
@@ -72,26 +65,25 @@
         reqServidorGET({sala_dados:sala_row[0]}, mostarSalaDados)
         
 
-        data = $(this).parents("tr").children("td:nth-child(3)").text()
+        dataText = $(this).parents("tr").children("td:nth-child(3)").text()
         turno = $(this).parents("tr").children("td:nth-child(4)").text()
         tipo_reserva = $(this).parents("tr").children("td:nth-child(5)").text()
 
-        
-        mostarReservaDados(data,tipo_reserva,turno)
+        mostarReservaDados(dataText,tipo_reserva,turno)
 
+        data_arr = dataText.split(" - ")
+        
+        data = data_arr[1].split("/").reverse().join("-")
+        
 
         $("#inp-edit-id_reserva").val(id_reserva)
         $("#inp-edit-id_turma").val(id_turma)
         
-        reqServidorGET({turmas_options: true, turno:turno, id_turma:id_turma }, mostrarOptionsTurmas)
+        reqServidorGET({turmas_options: true, turno:turno, datas:data, id_turma:id_turma }, mostrarOptionsTurmas)
 
         reqServidorGET({dados_turma:id_turma}, mostrarDadosTurma)
         
         reqServidorGET({dados_turma:id_turma}, mostrarInputDadosTurma)
-
-        
-        
-        
     })
     
    
@@ -104,12 +96,8 @@
     // SUBMIT FORM-MODAL TROCAR TURMA
     $(document).on('submit','#form-edit-reserva', function(e){
         e.preventDefault()
-
-        
         let form = $(this).serialize() + "&" + $("#form-editar").serialize()
-
         console.log(form)
-        
         reqServidorPOST(form, atualizarTabelaReservas)
     })
     
@@ -129,9 +117,7 @@ function atualizarTabelaReservas(){
             $("#container-tabela").css("visibility","visible")
         },
         success:function(resposta){
-
             console.log(resposta)
-
             resposta = JSON.parse(resposta)
 
             $.ajax({
@@ -139,11 +125,8 @@ function atualizarTabelaReservas(){
                 type:"GET",
                 dataType: "json",
                 success:function(dadosJSON){
-                    
                     console.log(dadosJSON)
-
-                    mostradorTabela(dadosJSON)
-                    
+                    mostradorTabelaReservas(dadosJSON)
                 }
             })
         }
@@ -224,6 +207,8 @@ function gerarTabelaReservas(reservas, pagina){
     return tabela
 
 }
+
+
 function gerarTabelaHistorico(reservas, pagina){
 
     tabela = '<table class="table table-striped tabela-consulta">'
@@ -292,23 +277,14 @@ function gerarTabelaHistorico(reservas, pagina){
 }
 
 
-function mostradorTabela(dadosJSON){
+function mostradorTabelaReservas(dadosJSON){
 
-    if(dadosJSON.status == 200){
-                        
-        if(document.getElementById("current-page")){
-            pagina = Number($("#current-page").text())
-        } else {
-            pagina = 1
-        }
-        
+    if(dadosJSON.status == 200){     
 
         gerarTabela = (dadosJSON.reserva_status == "Ativa")? gerarTabelaReservas : gerarTabelaHistorico
-        
-        resposta = gerarTabela(dadosJSON.reservas, pagina)
 
+        resposta = gerarTabela(dadosJSON.reservas, getPaginaAtual())
     } else {
-
         resposta = "<span>"+ dadosJSON.msg +"</span>"
     }
     

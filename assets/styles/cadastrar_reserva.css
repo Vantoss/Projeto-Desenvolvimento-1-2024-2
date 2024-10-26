@@ -1,3 +1,39 @@
 .badge{
     margin: 5px;
+    border: none;
 }
+
+
+.data-badge{
+    width: 82px;
+    text-align: left;
+    transition: 300ms all;
+}
+
+
+.data-badge:hover{
+    width: 96px;
+    
+}
+.data-badge:hover .close-badge{
+    display: block;
+}
+
+.close-badge{
+    color: #ffffffb3;
+    display: none;
+    font-size: 1em;
+    transition: 300ms all;
+}
+
+.close-badge:hover{
+    color: #fff;
+}
+
+
+    .d-inline-flex{
+        align-items: center;
+        gap: 6px;
+        transition: 300ms all;
+    }
+    

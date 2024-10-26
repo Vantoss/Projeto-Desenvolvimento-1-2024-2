@@ -1,18 +1,21 @@
 <!-- BOX FILTROS -->
-<form class="row g-3 form-consulta" id="form-consultar-salas"  method="get">
+<form class="row g-3 form-consulta " id="form-consultar-salas"  method="get" >
 
     <h2>Consultar Salas Disponiveis</h2>
   
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
-    <label for="data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data_inicio" required>
+    <label for="inp-consulta-data-inicio" class="form-label">De</label>
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data_inicio" required>
   </div>
   
   <!-- FILTRO DATA FINAL -->
   <div class="col-md-3">
-    <label for="data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control" id="inp-consulta-data-fim" min="<?php echo dataAtual();?>" name="data_fim" disabled required>
+    <label for="inp-consulta-data-fim" class="form-label">Até</label>
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-fim" min="<?php echo dataAtual();?>" name="data_fim" disabled required>
+    <div  class="invalid-feedback">
+        A data final não pode ser maior que a data inicial
+      </div>
   </div>
   
   <!-- FILTRO TIPO DE RESERVA -->
@@ -83,6 +86,6 @@
 
   <!-- BOTAO BUSCAR -->
   <div class="col-12" style="display: flex; align-items: center; gap:10px;">
-    <button type="submit" class="btn btn-primary " id="btn-buscar-sala-disponivel" >Buscar</button>
+    <button type="submit" class="btn btn-primary btn-buscar" id="btn-buscar-sala-disponivel" >Buscar</button>
   </div>
 </form>

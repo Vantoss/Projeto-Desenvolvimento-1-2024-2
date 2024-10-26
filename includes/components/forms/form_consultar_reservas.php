@@ -25,13 +25,16 @@
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="inp-consulta-data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control" id="inp-consulta-data-inicio" name="data_inicio">
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" name="data_inicio">
   </div>
   
   <!-- FILTRO DATA FIM -->
   <div class="col-md-3">
     <label for="inp-consulta-data-fim" class="form-label">Até</label>
-    <input type="date"id="inp-consulta-data-fim" class="form-control"  name="data_fim">
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-fim" name="data_fim">
+    <div  class="invalid-feedback">
+        A data final não pode ser maior que a data inicial
+      </div>
   </div>
 
   <!-- FILTRO SALA -->
@@ -81,6 +84,6 @@
   </div>
   <!-- BOTAO BUSCAR -->
   <div class="col-12" style="display: flex; align-items: center; gap:10px;">
-    <button type="submit" class="btn btn-primary" value="consultar-reservas" id="btn-buscar">Buscar</button>
+    <button type="submit" class="btn btn-primary btn-buscar" value="consultar-reservas" id="btn-buscar">Buscar</button>
   </div>
 </form>
