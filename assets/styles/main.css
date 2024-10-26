@@ -29,6 +29,19 @@
     padding: 20px;
 }
 
+#tabDatas{
+    min-height: 32px;
+    overflow: hidden;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid var(--bs-border-color);
+}
+
+#tabDatas:not(.show) {
+    display: block;
+    height: 32px;
+}
+
 #data-tag{
     margin: 20px 10px;
 }
@@ -106,7 +119,7 @@
 
 }
 #reserva-datas{
-    overflow: auto;
+    /* overflow: auto; */
     white-space: nowrap;
     padding: 1px;
 }

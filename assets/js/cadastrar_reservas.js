@@ -37,9 +37,12 @@ $(document).on('click','.btn-reservar', function () {
 
     console.log(datas)
 
-    datas = ' Datas:<div id="reserva-datas">' + " " + datas.join(" - ") +"</div>"
+    str_datas = '<h6>'+ diaSemana(datas[0]) +'</h6><h6 id="reserva-datas" class="overflow-x-auto">' + " " + datas.join(" - ") +"</h6>"
 
-    mostarReservaDados(datas, tipo_reserva, turno)
+    str_tipo_reserva = tipo_reserva
+    
+
+    mostarReservaDados(str_datas, str_tipo_reserva, turno)
     
     reqServidorGET({sala_dados:id_sala}, mostarSalaDados)
     
@@ -79,7 +82,7 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
             form += '&cadastrar-reserva=true'
             form += '&datas=' + datas
 
-            console.log(form)
+            // console.log(form)
             
             reqServidorPOST(form, atualizarTabelaSalas)
             
@@ -116,12 +119,27 @@ $(document).on('click','.pagina-salas', function (e) {
 // DESABILITAR DATA FIM
 $(document).on('change','#inp-consulta-reserva-tipo', function(){
     if(this.value == "Única"){
-        $("#inp-consulta-data-fim").prop("disabled",true)
-        $("#inp-consulta-data-fim").val('')
-    } else {
-        $("#inp-consulta-data-fim").prop("disabled",false)
+        $("#inp-consulta-data-fim, #inp-num-encontros").prop("disabled",true)
+        $("#inp-consulta-data-fim, #inp-num-encontros").val('')
+    } 
+    else {
+        $("#inp-consulta-data-fim, #inp-num-encontros").prop("disabled",false)
     }
     checkDatas()
+})
+
+
+$(document).on('change','#inp-num-encontros, #inp-consulta-data-fim', function(){
+
+    if(this.id == "inp-num-encontros" && !this.value == ''){
+        $("#inp-consulta-data-fim").prop("disabled",true)
+    }
+    else if(this.id == "inp-consulta-data-fim" && !this.value == ''){
+        $("#inp-num-encontros").prop("disabled",true)
+    } 
+    else {
+        $("#inp-consulta-data-fim, #inp-num-encontros").prop("disabled",false)
+    }
 })
 
 
@@ -134,9 +152,12 @@ function tabelaBadges(tipo_reserva,turno,datas){
     
     conteudo += '<button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button>'
     
+    conteudo += '<div class="collapse" id="tabDatas" >'
     datas.forEach( (data) =>{
         conteudo += '<button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<i class="fa fa-close close-badge"></i></div></button>'
     })
+
+    conteudo += "</div>"
     
     return conteudo
 }
@@ -185,12 +206,14 @@ function gerarTabelaSalas(dadosJSON, pagina){
             break;
         }
 
+        maquinas_tipo = (!salas[i].maquinas_tipo) ? "Nenhum" : salas[i].maquinas_tipo
+
         tabela += '<tr>'
         tabela += '<td>' + salas[i].sala + '</td>' 
         tabela += '<td>' + salas[i].sala_tipo + '</td>' 
         tabela += '<td>' + salas[i].lugares + '</td>'
         tabela += '<td>' + salas[i].maquinas_qtd   + '</td>' 
-        tabela += '<td>' + salas[i].maquinas_tipo + '</td>'
+        tabela += '<td>' + maquinas_tipo + '</td>'
         tabela += '<td>'
         tabela += '<button type="button" class="btn btn-primary btn-reservar" data-bs-toggle="modal" value="' + salas[i].sala + '" data-bs-target="#cadastrar-reserva-modal">Reservar</button>'
         tabela += '</td>' 
@@ -251,6 +274,15 @@ function atualizarTabelaSalas(){
                         reqServidorGET({turmas_options:true, turno:dadosJSON.turno, datas:dadosJSON.datas}, mostrarOptionsTurmas)
 
                         $("#container-tabela").html(tabela)
+
+                        $("#tabDatas").on('mouseenter', () => {
+                            $("#tabDatas").collapse('show');
+                        })
+                        
+                        $("#tabDatas").mouseleave(() => {
+                            $("#tabDatas").collapse('hide');
+                        })
+                        
                     }
                 })
             } else if (resposta.status == 204) {

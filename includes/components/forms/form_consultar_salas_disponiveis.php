@@ -17,6 +17,12 @@
         A data final não pode ser maior que a data inicial
       </div>
   </div>
+
+  <!-- NUM ENCONTROS -->
+  <div class="col-md-3">
+    <label for="inp-num-encontros" class="form-label">N.&#xba; de encontros</label>
+    <input type="number" class="form-control" id="inp-num-encontros" min="1" name="num_encontros" disabled required>
+  </div>
   
   <!-- FILTRO TIPO DE RESERVA -->
   <div class="col-md-3">

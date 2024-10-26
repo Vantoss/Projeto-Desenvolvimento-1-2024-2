@@ -18,46 +18,26 @@
 
     
     
-    <!-- <?php
-    // $datas = "'2024-03-04', '2024-03-06', '2024-03-08', '2024-03-10'";
-    $datas = "'2024-04-04'";
-    
-    $datas = str_replace(array("'"),array(""),$datas);
-
-    $datas = explode(",",$datas);
-
-    
-    foreach ($datas as $data) {?>
-        <button id="btn-dia" class="btn btn-light"><?php echo date_format(date_create($data),"d/m/Y"); ?></button>
-        
-    <?php } ?> -->
-
-
-        <?php
-        $locale = "pt_BR";
-
-        $fmt = datefmt_create($locale,IntlDateFormatter::FULL,IntlDateFormatter::NONE,'America/Sao_Paulo',IntlDateFormatter::GREGORIAN);
-
-        echo datefmt_format($fmt,0);
-
-        
-// datefmt_create(
-//     ?string $locale,
-//     int $dateType = IntlDateFormatter::FULL,
-//     int $timeType = IntlDateFormatter::FULL,
-//     IntlTimeZone|DateTimeZone|string|null $timezone = null,
-//     IntlCalendar|int|null $calendar = null,
-//     ?string $pattern = null
-// ): ?IntlDateFormatter
-
+    <p class="d-inline-flex gap-1">
+  <a class="btn btn-primary" role="button" aria-expanded="false" >
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" aria-expanded="false" >
+    Button with data-bs-target
+  </button>
+</p>
+<div class="collapse" style="min-height: 20px;" id="collapseExample">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
+</div>
 
         
 
 
-
-
         
-        ?>
+
 
 </body>
 </html>

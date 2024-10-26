@@ -246,7 +246,7 @@ function mostarSalaDados(resposta){
 
 function mostarReservaDados(datas,tipo_reserva,turno){
 
-    dados = '<h6>' + datas + '</h6>'
+    dados = datas 
     dados += '<h6>' + tipo_reserva + '</h6>'
     dados += '<h6>' + turno + '</h6>'
 
@@ -277,6 +277,7 @@ function getPaginaAtual(){
     }
     return pagina
 }
+
 
 
 

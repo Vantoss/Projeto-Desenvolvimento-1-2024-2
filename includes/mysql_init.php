@@ -159,9 +159,9 @@ if (!$conn->query($insert_turmas)) {
 
 
 $insert_salas = "INSERT INTO `salas` (`id_sala`, `tipo_sala`, `lugares_qtd`, `maquinas_qtd`, `maquinas_tipo`, `descricao`) VALUES
-(101, 'Laboratório', 20, 20, 'intel-i5-7', NULL),
-(102, 'Laboratório', 40, 30, 'intel-i5-7', NULL),
-(103, 'Laboratório', 30, 20, 'intel-i3-7', NULL),
+(101, 'Laboratório', 20, 20, 'Intel-i5-7', NULL),
+(102, 'Laboratório', 40, 30, 'Intel-i5-7', NULL),
+(103, 'Laboratório', 30, 20, 'Intel-i3-7', NULL),
 (104, 'Auditório', 100, 2, 'Intel-i3-7', NULL),
 (105, 'Laboratório', 30, 20, 'Intel-i3-7', NULL),
 (122, 'Estudio de Aúdio', 10, 2, 'Intel-i3-7', NULL),

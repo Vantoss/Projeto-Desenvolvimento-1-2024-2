@@ -200,18 +200,32 @@ if(isset($_GET["consultar"])){
         if($_GET["tipo_reserva"] == "Única") {
             $insertSQL .= " DATE(data) = '{$_GET["data_inicio"]}'";
             $dias = $_GET["data_inicio"];
-        } else {  
+        } else {
+
             $dias = "";
             $data_inicial = strtotime("{$_GET['data_inicio']}");
-            $data_final = strtotime("{$_GET['data_fim']}", $data_inicial);
-
-            while ($data_inicial <= $data_final) {
-                $dias .=  date("'Y-m-d',", $data_inicial);                             
-                $data_inicial = strtotime("+1 week", $data_inicial);
-            }
             
-            $dias = substr_replace($dias,"",-1);    
+            if(isset($_GET["data_fim"])){
 
+                $data_final = strtotime("{$_GET['data_fim']}", $data_inicial);
+                
+                while ($data_inicial <= $data_final) {
+                    $dias .=  date("'Y-m-d',", $data_inicial);                             
+                    $data_inicial = strtotime("+1 week", $data_inicial);
+                }
+                
+            } else {
+                
+                $econtros = $_GET["num_encontros"]; 
+                
+                for ($i=0; $i < $econtros; $i++) { 
+                    $dias .=  date("'Y-m-d',", $data_inicial);
+                    $data_inicial = strtotime("+1 week", $data_inicial);
+                }
+            }
+
+            $dias = substr_replace($dias,"",-1);    
+            
             $insertSQL .= "DATE(data) IN ($dias)";
         }
         
