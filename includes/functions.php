@@ -10,19 +10,19 @@ function gerarHistorico(){
 
         $_SESSION["historico_gerado"] = $data;
         
-        echo "data: " . $_SESSION["historico_gerado"] . "<br>";
+        // echo "data: " . $_SESSION["historico_gerado"] . "<br>";
         
         $query = "CALL inserir_reservas_historico";
         $stm = $conn->prepare($query);
         $stm->execute(); 
         $reservas = $stm->rowCount();
-        echo $reservas ." reservas inseridas na tabela reservas_historico <br>";
+        // echo $reservas ." reservas inseridas na tabela reservas_historico <br>";
         
         $query = "CALL deletar_reservas_passadas";
         $stm = $conn->prepare($query);
         $stm->execute();
         $reservas = $stm->rowCount();
-        echo $reservas ." reservas deletadas da tabela reservas";
+        // echo $reservas ." reservas deletadas da tabela reservas";
 
     }
 }

@@ -10,7 +10,6 @@
 
 #container-tabela{
     visibility: hidden;
-    /* min-height: 960px; */
 }
 
 .table{
@@ -48,7 +47,6 @@
 
 /* BOTOES =========================================== */
 .btn{ 
-    /* border: none; */
     transition: all 300ms;
 }
 
@@ -101,9 +99,6 @@
     background-color: #fff;
 }
 
-#sala-dados {
-    /* margin-bottom: 20px; */
-}
 
 .inp-cadastrar-turma, .inp-editar-turma{
     margin-top: 10px;
@@ -119,7 +114,6 @@
 
 }
 #reserva-datas{
-    /* overflow: auto; */
     white-space: nowrap;
     padding: 1px;
 }
