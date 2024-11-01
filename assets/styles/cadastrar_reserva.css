@@ -1,39 +1,59 @@
-.badge{
-    margin: 5px;
-    border: none;
+#tabDatas{
+    justify-content: center;
+    min-height: 39px;
+    width: 100%;
+    overflow: hidden;
+    align-items: center;
+    margin-bottom: 30px;
+    transition: 300ms all;
 }
 
+#tabDatas:not(.show) {
+    display: block;
+    height: 0px;
+}
+
+.data-badge-div{
+    text-align: center;
+    width: 100px;
+}
+.badge{
+    margin: 5px 0px;
+    width: 82px;
+    border: none;
+    height: 25px;
+}
 
 .data-badge{
     width: 82px;
+    
     text-align: left;
     transition: 300ms all;
 }
 
-
 .data-badge:hover{
-    width: 96px;
+    width: 100px;
     
 }
+
 .data-badge:hover .close-badge{
     display: block;
 }
 
 .close-badge{
-    color: #ffffffb3;
+    fill: #ffffffb3;
     display: none;
-    font-size: 1em;
     transition: 300ms all;
 }
 
 .close-badge:hover{
-    color: #fff;
+    fill: #fff;
 }
 
 
-    .d-inline-flex{
-        align-items: center;
-        gap: 6px;
-        transition: 300ms all;
-    }
+.data-badge .d-inline-flex{
+    align-items: center;
+    gap: 6px;
+    transition: 300ms all;
+}
     

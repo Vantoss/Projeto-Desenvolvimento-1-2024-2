@@ -13,7 +13,7 @@ $(document).on('click','.close-badge', function(){
     }).get()
 
     if(num.length > 1){
-        $(this).closest('.data-badge').remove()
+        $(this).closest('.data-badge-div').remove()
     }
 
 })
@@ -32,7 +32,7 @@ $(document).on('click','.btn-reservar', function () {
     tipo_reserva = $("#badge-tipo-reserva").text()
 
     let datas = $(".data-badge").map(function(){
-        return this.innerText
+        return this.value
     }).get()
 
     console.log(datas)
@@ -45,6 +45,8 @@ $(document).on('click','.btn-reservar', function () {
     mostarReservaDados(str_datas, str_tipo_reserva, turno)
     
     reqServidorGET({sala_dados:id_sala}, mostarSalaDados)
+
+    reqServidorGET({turmas_options:true, turno:turno, datas:datas}, mostrarOptionsTurmas)
     
 })
 
@@ -82,7 +84,7 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
             form += '&cadastrar-reserva=true'
             form += '&datas=' + datas
 
-            // console.log(form)
+            console.log(form)
             
             reqServidorPOST(form, atualizarTabelaSalas)
             
@@ -118,7 +120,7 @@ $(document).on('click','.pagina-salas', function (e) {
 
 // DESABILITAR DATA FIM
 $(document).on('change','#inp-consulta-reserva-tipo', function(){
-    if(this.value == "Única"){
+    if(this.value == "Avulsa"){
         $("#inp-consulta-data-fim, #inp-num-encontros").prop("disabled",true)
         $("#inp-consulta-data-fim, #inp-num-encontros").val('')
     } 
@@ -148,13 +150,15 @@ $(document).on('change','#inp-num-encontros, #inp-consulta-data-fim', function()
 
 function tabelaBadges(tipo_reserva,turno,datas){
 
-    conteudo = '<button class="badge text-bg-primary " id="badge-tipo-reserva">'+ tipo_reserva +'</button>'
+    conteudo = '<div class="collapse d-inline-flex flex-wrap" id="tabDatas" >'
     
-    conteudo += '<button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button>'
+    conteudo += '<div class="data-badge-div"><button class="badge text-bg-primary " id="badge-tipo-reserva">'+ tipo_reserva +'</button></div>'
     
-    conteudo += '<div class="collapse" id="tabDatas" >'
+    conteudo += '<div class="data-badge-div"><button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button></div>'
+
+    
     datas.forEach( (data) =>{
-        conteudo += '<button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<i class="fa fa-close close-badge"></i></div></button>'
+        conteudo += '<div class="data-badge-div"><button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<svg xmlns="http://www.w3.org/2000/svg" class="close-badge"  viewBox="0 0 72 72" width="14px" height="14px"><path d="M 19 15 C 17.977 15 16.951875 15.390875 16.171875 16.171875 C 14.609875 17.733875 14.609875 20.266125 16.171875 21.828125 L 30.34375 36 L 16.171875 50.171875 C 14.609875 51.733875 14.609875 54.266125 16.171875 55.828125 C 16.951875 56.608125 17.977 57 19 57 C 20.023 57 21.048125 56.609125 21.828125 55.828125 L 36 41.65625 L 50.171875 55.828125 C 51.731875 57.390125 54.267125 57.390125 55.828125 55.828125 C 57.391125 54.265125 57.391125 51.734875 55.828125 50.171875 L 41.65625 36 L 55.828125 21.828125 C 57.390125 20.266125 57.390125 17.733875 55.828125 16.171875 C 54.268125 14.610875 51.731875 14.609875 50.171875 16.171875 L 36 30.34375 L 21.828125 16.171875 C 21.048125 15.391875 20.023 15 19 15 z"/></svg></div></button></div>'
     })
 
     conteudo += "</div>"
@@ -270,8 +274,6 @@ function atualizarTabelaSalas(){
                     success:function(dadosJSON){
                         
                         tabela = gerarTabelaSalas(dadosJSON, getPaginaAtual())
-                        
-                        reqServidorGET({turmas_options:true, turno:dadosJSON.turno, datas:dadosJSON.datas}, mostrarOptionsTurmas)
 
                         $("#container-tabela").html(tabela)
 

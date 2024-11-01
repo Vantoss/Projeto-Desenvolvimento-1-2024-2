@@ -9,6 +9,7 @@
     <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data_inicio" required>
   </div>
   
+  
   <!-- FILTRO DATA FINAL -->
   <div class="col-md-3">
     <label for="inp-consulta-data-fim" class="form-label">Até</label>
@@ -28,7 +29,7 @@
   <div class="col-md-3">
     <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
     <select id="inp-consulta-reserva-tipo" class="form-select" name="tipo_reserva">
-      <option value="Única">Única</option>
+      <option value="Avulsa">Avulsa</option>
       <option value="Semanal" >Semanal</option>
     </select>
   </div>

@@ -197,7 +197,7 @@ if(isset($_GET["consultar"])){
         if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
         
         
-        if($_GET["tipo_reserva"] == "Única") {
+        if($_GET["tipo_reserva"] == "Avulsa") {
             $insertSQL .= " DATE(data) = '{$_GET["data_inicio"]}'";
             $dias = $_GET["data_inicio"];
         } else {
@@ -342,11 +342,14 @@ if(isset($_POST["del_reservas"] )){
 
 if(isset($_POST["cadastrar-reserva"])){
     
-
+    
     // ARMAZENA O ID DA TURMA CASO A TURMA JA EXISTA
     if(isset($_POST["id_turma"])) $id_turma = $_POST["id_turma"];
     
+    $turno = $_POST["turno"];
     
+    $tipo_reserva = $_POST["tipo_reserva"];
+
     // RODA CASO FOR UM NOVO CADASTRO 
     if($_POST["cadastro-turma"] == "nova"){
         
@@ -362,8 +365,8 @@ if(isset($_POST["cadastrar-reserva"])){
         $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
         
         
-        $insertSQL = "INSERT INTO `turmas`(`nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) 
-                VALUES ('$nome', '$curso', '$docente', '$turno', '$codigo', $participantes)";
+        $insertSQL = "INSERT INTO  turmas ( nome, curso, docente, turno, tipo_reserva, codigo, participantes_qtd) 
+                VALUES ('$nome', '$curso', '$docente', '$turno','$tipo_reserva', '$codigo', $participantes)";
                 
                 
         $stm = $conn->prepare($insertSQL);
@@ -384,11 +387,9 @@ if(isset($_POST["cadastrar-reserva"])){
         }    
     }
 
-        $tipo_reserva = $_POST["tipo_reserva"];
         
         $id_sala = $_POST["id_sala"];
         
-        $turno = $_POST["turno"];
 
         $datas = explode(",",$_POST["datas"]);
     
@@ -455,8 +456,8 @@ if(isset($_POST["editar_reserva"])){
     } else {
         // TROCA A TURMA EM TODAS AS RESERVAS QUE A TURMA ANTIGA ESTA CADASTRADA APARTIR (DATA) DA SELECIONADA
         $selectSQL = "SELECT data FROM reservas WHERE id_reserva = $id_reserva";
-
-        if($conn->query($selectSQL)){
+        $stm = $conn->query($selectSQL);
+        if($stm){
             $reserva = $stm->fetch(PDO::FETCH_ASSOC);
             $data = $reserva["data"];
             $updateSQL = "UPDATE reservas SET id_turma = '$nova_turma' WHERE id_turma = '$id_turma' AND DATE(data) >= '$data'";
@@ -470,7 +471,17 @@ if(isset($_POST["editar_reserva"])){
         $stm = $conn->prepare($updateSQL);
         if($stm->execute()){
             $resposta["status"] = 200;
-            $resposta["msg"] = $row_num . " reservas alterdas com sucesso";
+            
+            $row_num = $stm->rowCount();
+
+            if($row_num > 1){
+                
+                $resposta["msg"] = $row_num . " reservas alteradas com sucesso";
+            } else {
+                $resposta["msg"] = "Reserva alterada com sucesso";
+                
+            }
+            
         } else {
             $resposta["status"] = 400;
             $resposta["msg"] = "Erro ao alterar reservas";

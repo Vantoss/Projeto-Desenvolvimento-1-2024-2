@@ -182,8 +182,10 @@ function mostrarDadosTurma(resposta){
     dados = "<p> Nome: " + objTurma.nome + "</p>"
     dados += "<p> Curso: " + objTurma.curso + "</p>"
     dados += "<p> Docente: " + objTurma.docente + "</p>"
-    dados += "<p> Codigo: " + objTurma.codigo + "</p>"
+    // dados += "<p> Codigo: " + objTurma.codigo + "</p>"
+    dados += "<p> Semestre: " + objTurma.semestre + "</p>"
     dados += "<p> Participantes: " + objTurma.participantes_qtd + "</p>"
+    dados += "<p> Reservas cadastradas: " + objTurma.reservas_cadastradas +  "</p>"
     dados += "<div class='d-grid gap-3 d-md-flex justify-content-md-center edit-del-turma'>"
     dados += "<button type='button' class='btn btn-primary btn-editar-turma'value='"+ objTurma.id_turma +"'>Editar</button>"
     dados += "<button type='button' class='btn btn-danger btn-deletar-turma' value='"+ objTurma.id_turma +"'>Deletar</button>"
@@ -277,6 +279,18 @@ function getPaginaAtual(){
     }
     return pagina
 }
+
+// $('#datepicker').datepicker({
+//     startDate: new Date(),
+//     multidate: true,
+//     format: "dd/mm/yyyy",
+//     daysOfWeekHighlighted: "5,6",
+//     datesDisabled: ['31/08/2017'],
+//     language: 'pt-br'
+// }).on('changeDate', function(e) {
+//     // `e` here contains the extra attributes
+//     $(this).find('.input-group-addon .count').text(' ' + e.dates.length);
+// });
 
 
 

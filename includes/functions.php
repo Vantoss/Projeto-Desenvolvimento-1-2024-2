@@ -80,7 +80,11 @@ function gerarTurmasJSON(){
   
 }
 
-function optionsTurmas($turno,$datas,$id_turma=null){
+function optionsTurmas($turno,$datas,$tipo_reserva,$id_turma=null){
+    if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
+        gerarTurmasJSON();
+    }
+
 
     if(!is_array($datas)){
         $datas = array($datas);
@@ -92,21 +96,41 @@ function optionsTurmas($turno,$datas,$id_turma=null){
     
     $turmaEncontrada = false;
 
-    $selectSQL = "SELECT DISTINCT id_turma FROM reservas WHERE DATE(data)";
+    $selectSQL = "SELECT DISTINCT id_turma FROM reservas WHERE tipo_reserva = 'Semanal' AND";
 
-    if(count($datas) > 1){
-        $str_datas = implode("','" ,$datas);
-        $selectSQL .= " IN ('$str_datas')";
-    } else {
-        $selectSQL .= " = '$datas[0]'";
+    $sql = [];
+
+    $i = 0;
+
+    while(isset($datas[$i])){
+
+        $data_inicial = date('Y-m-d',strtotime("-6 days",strtotime($datas[$i])));
+
+            while(isset($datas[$i+1])){
+
+                $diff = date_diff(date_create($datas[$i]),date_create($datas[$i+1]),true);
+
+                if((int) $diff->format("%a") > 7 ){
+                    break;
+                }
+                $i++;
+            }
+
+        $data_final = date('Y-m-d',strtotime("+6 days",strtotime($datas[$i])));
+        
+        $sql[] = " DATE(data) BETWEEN '$data_inicial' AND '$data_final'";
+
+        $i++;
     }
+
+    $selectSQL .= implode(" OR ", $sql);
+    
+
+    echo $selectSQL;
 
     $conn = initDB();
     $stm = $conn->query($selectSQL);
     $arr_ids = $stm->fetchAll(PDO::FETCH_COLUMN);
-
-    echo $selectSQL;
-
 
     print_r($arr_ids);
 
@@ -128,7 +152,7 @@ function optionsTurmas($turno,$datas,$id_turma=null){
                     $turmaEncontrada = true;?>
                     <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" >  <?php echo $turma["nome"]?> </option>
                 <?php }
-                }
+            }
         }
     }
 

@@ -40,8 +40,11 @@ require_once ROOT_DIR. 'includes/functions.php';
   curso varchar(80) DEFAULT NULL,
   docente varchar(50) DEFAULT NULL,
   turno varchar(10) DEFAULT NULL,
+  semestre varchar(10) DEFAULT NULL,
+  tipo_reserva varchar(10) DEFAULT NULL,
   codigo varchar(60) DEFAULT NULL,
-  participantes_qtd int(11) DEFAULT NULL
+  participantes_qtd int(11) DEFAULT NULL,
+  reservas_cadastradas int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
 // $table_users = "CREATE TABLE users (id INT(6) NOT NULL auto_increment, name VARCHAR(15), surname VARCHAR(32), password VARCHAR(40), PRIMARY KEY (id) );";
@@ -67,9 +70,10 @@ if (!$conn->query($tabela_salas)) {
 $tabela_reservas = "CREATE TABLE reservas (
   id_reserva int(11) NOT NULL,
   `data` date NOT NULL,
-  tipo_reserva varchar(30) DEFAULT NULL,
+  tipo_reserva varchar(10) DEFAULT NULL,
   id_sala int(11) NOT NULL,
-  id_turma int(11) NOT NULL
+  id_turma int(11) NOT NULL,
+  observacoes text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
 
@@ -109,10 +113,10 @@ $alter_tables = "ALTER TABLE `turmas`
   ADD PRIMARY KEY (`id_sala`);
 
   ALTER TABLE `turmas`
-  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_turma` int(11) NOT NULL AUTO_INCREMENT;
 
   ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT;
 
   ALTER TABLE `reservas`
   ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id_sala`),
@@ -142,15 +146,15 @@ if (!$conn->query($procedures)) {
 // -----------------------------------------------------------------------------
 // 4. Insert data
 
-$insert_turmas = "INSERT INTO `turmas` (`id_turma`, `nome`, `curso`, `docente`, `turno`, `codigo`, `participantes_qtd`) VALUES
-(1, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Manhã', 'RS-20231-FSPOA-DlW-PRE-SPI1M24-1A', 20),
-(2, 'Desenvolvimento Interface Web', 'SPI', 'Fernando', 'Noite', 'RS-20231-FSPOA-DlW-PRE-SPI1N24-1A', 25),
-(3, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Manhã', 'RS-20242-FSPOA-DGR-PRE-PM1M24-2', 18),
-(4, 'Desenvolvimento Gráfico', 'PM', 'Roberto', 'Noite', 'RS-20242-FSPOA-DGR-PRE-PM1N24-2', 25),
-(5, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Manhã', 'RS-20232-FSPOA-ALG1-PRE-ADS3M24-2', 27),
-(6, 'Algoritmos Estruturas de Dados I', 'ADS', 'Roberto', 'Noite', 'RS-20232-FSPOA-ALG1-PRE-ADS3N24-2', 22),
-(7, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Manhã', 'RS-20222-FSPOA-FUND-PRE-ADS1M24-2', 22),
-(8, 'Fundamentos Computacionais', 'ADS', 'Ronaldo', 'Noite', 'RS-20222-FSPOA-FUND-PRE-ADS1N24-2', 26);";
+$insert_turmas = "INSERT INTO turmas ( nome, curso, docente, turno, tipo_reserva, semestre , codigo, participantes_qtd) VALUES
+('Desenvolvimento Interface Web','SPI','Fernando','Manhã','Semanal','2-2024','RS-20231-FSPOA-DlW-PRE-SPI1M24-1A',20),
+('Desenvolvimento Interface Web','SPI','Fernando','Noite','Semanal','2-2024','RS-20231-FSPOA-DlW-PRE-SPI1N24-1A',25),
+('Desenvolvimento Gráfico','PM','Roberto','Manhã','Semanal','2-2024','RS-20242-FSPOA-DGR-PRE-PM1M24-2',18),
+('Desenvolvimento Gráfico','PM','Roberto','Noite','Semanal','2-2024','RS-20242-FSPOA-DGR-PRE-PM1N24-2',25),
+('Algoritmos Estruturas de Dados I','ADS','Roberto','Manhã','Semanal','2-2024','RS-20232-FSPOA-ALG1-PRE-ADS3M24-2',27),
+('Algoritmos Estruturas de Dados I','ADS','Roberto','Noite','Semanal','2-2024','RS-20232-FSPOA-ALG1-PRE-ADS3N24-2',22),
+('Fundamentos Computacionais','ADS','Ronaldo','Manhã','Semanal','2-2024','RS-20222-FSPOA-FUND-PRE-ADS1M24-2',22),
+('Fundamentos Computacionais','ADS','Ronaldo','Noite','Semanal','2-2024','RS-20222-FSPOA-FUND-PRE-ADS1N24-2',26);";
 
 if (!$conn->query($insert_turmas)) {
   $resposta["status"] = 400;
@@ -158,7 +162,7 @@ if (!$conn->query($insert_turmas)) {
 }
 
 
-$insert_salas = "INSERT INTO `salas` (`id_sala`, `tipo_sala`, `lugares_qtd`, `maquinas_qtd`, `maquinas_tipo`, `descricao`) VALUES
+$insert_salas = "INSERT INTO salas (id_sala, tipo_sala, lugares_qtd, maquinas_qtd, maquinas_tipo, descricao) VALUES
 (101, 'Laboratório', 20, 20, 'Intel-i5-7', NULL),
 (102, 'Laboratório', 40, 30, 'Intel-i5-7', NULL),
 (103, 'Laboratório', 30, 20, 'Intel-i3-7', NULL),

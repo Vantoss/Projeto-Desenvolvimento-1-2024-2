@@ -8,13 +8,30 @@
     require_once ROOT_DIR. "includes/layout/header.php";
 ?>
 
-    <style>#btn-dia{
+    <!-- <style>#btn-dia{
         font-weight: bold;
         color: #0d6efd;
-    } </style>
+    } </style> -->
 <body>
 
-    <h1>Pagina teste</h1>
+
+  <?php
+    $selectSQL = "SELECT DISTINCT id_turma FROM reservas WHERE";
+
+    $sql = [];
+
+    $sql[] = " DATE(data) BETWEEN '2024-11-01' AND '2024-11-08'";
+    // $sql[] = " DATE(data) BETWEEN '2024-11-15' AND '2024-11-22'";
+
+    $selectSQL .= implode(" OR ", $sql);
+
+    echo $selectSQL;
+
+  // $gap = date_diff(date_create('2024-11-01'),date_create('2024-11-09'));
+  // echo (int)($gap->format("%a"));
+  ?>
+
+    <!-- <h1>Pagina teste</h1>
 
     
     
@@ -31,7 +48,7 @@
     Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
     Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
     Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.<br>
-</div>
+</div> -->
 
         
 

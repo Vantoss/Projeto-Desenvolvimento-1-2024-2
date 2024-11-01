@@ -62,8 +62,8 @@
     <label for="inp-consulta-sala-tipo" class="form-label">Tipo de reserva</label>
     <select id="inp-consulta-sala-tipo" class="form-select" name="tipo_reserva">
       <option value="" selected="">Qualquer</option>
-      <option value="unica">Única</option>
-      <option value="semanal" >Semanal</option>
+      <option value="Avulsa">Avulsa</option>
+      <option value="Semanal" >Semanal</option>
     </select>
   </div>
 

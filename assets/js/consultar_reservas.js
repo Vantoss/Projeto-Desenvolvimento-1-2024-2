@@ -17,7 +17,7 @@
         const tipo_reserva = $(this).parents("tr").children("td:nth-child(5)")
 
         // desabilita as opcoes (radio) de deletar todos os registros e apartir no modal deletar reservas 
-        if(tipo_reserva.text() == "Única"){
+        if(tipo_reserva.text() == "Avulsa"){
             $("#radio-del-apartir, #radio-del-todos").prop("disabled",true)
         } else {
             $("#radio-del-apartir, #radio-del-todos").prop("disabled",false)
