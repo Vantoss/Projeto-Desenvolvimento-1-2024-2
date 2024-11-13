@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    
+    getTabelaSalas()
+});
+
+function getTabelaSalas(pagina=null){
     $.ajax({
         type: "GET",
         url: "../JSON/dados_salas.json",
@@ -8,21 +11,28 @@ $(document).ready(function () {
             $("#container-tabela").css("visibility","visible")
         },
         success: function (dadosJSON) {
-            tabela = gerarTabelaSalas(dadosJSON,getPaginaAtual())
+            if(!pagina){
+                pagina = getPaginaAtual()
+            }
+            tabela = gerarTabelaSalas(dadosJSON, pagina)
             $("#container-tabela").html(tabela)
-            
-            
         }
     });
-    
-});
+}
 
+
+// BOTAO PAGINA
+$(document).on('click','.pagina-salas', function (e) {
+    e.preventDefault()
+    const pagina = $(this).val()
+    getTabelaSalas(pagina)
+})
         
         
 function gerarTabelaSalas(dadosJSON, pagina){
+
+    
     salas = dadosJSON.salas
-
-
     tabela = '<table class="table table-striped tabela-consulta">'
     tabela += '<thead>'
     tabela += '<tr>'

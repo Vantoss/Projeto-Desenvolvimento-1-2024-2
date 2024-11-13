@@ -105,7 +105,7 @@ $(document).on('click','.pagina-salas', function (e) {
         dataType: "json",
         success:function(dadosJSON){
             
-            tabela = gerarTabelaSalas(dadosJSON, pagina)
+            tabela = gerarTabelaSalasDisponiveis(dadosJSON, pagina)
 
             $("#container-tabela").html(tabela)
 
@@ -167,7 +167,7 @@ function tabelaBadges(tipo_reserva,turno,datas){
 }
 
 
-function gerarTabelaSalas(dadosJSON, pagina){
+function gerarTabelaSalasDisponiveis(dadosJSON, pagina){
     salas = dadosJSON.salas
     
     turno = dadosJSON.turno
@@ -273,7 +273,7 @@ function atualizarTabelaSalasDisponiveis(){
                     dataType: "json",
                     success:function(dadosJSON){
                         
-                        tabela = gerarTabelaSalas(dadosJSON, getPaginaAtual())
+                        tabela = gerarTabelaSalasDisponiveis(dadosJSON, getPaginaAtual())
 
                         $("#container-tabela").html(tabela)
 
