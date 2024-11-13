@@ -14,6 +14,12 @@
         <li class="nav-item" >
           <a class="nav-link <?php activeTab("cadastrar_reserva")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/page_cadastrar_reserva.php'?>>Cadastrar Reserva</a>
         </li>
+        <li class="nav-item" >
+          <a class="nav-link <?php activeTab("gerenciar_turmas")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/page_gerenciar_turmas.php'?>>Gerenciar Turmas</a>
+        </li>
+        <li class="nav-item" >
+          <a class="nav-link <?php activeTab("gerenciar_salas")?>" aria-current="page" href=<?php echo ROOT_DIR. 'pages/page_gerenciar_salas.php'?>>Gerenciar Salas</a>
+        </li>
       </ul>
     </div>
   </div>

@@ -3,7 +3,7 @@
 $(document).on('submit','#form-consultar-salas',function (e) {
     e.preventDefault()
     $('#aviso').remove()
-    atualizarTabelaSalas()
+    atualizarTabelaSalasDisponiveis()
 })
 
 $(document).on('click','.close-badge', function(){
@@ -86,7 +86,7 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
 
             console.log(form)
             
-            reqServidorPOST(form, atualizarTabelaSalas)
+            reqServidorPOST(form, atualizarTabelaSalasDisponiveis)
             
             // apaga os inputs do modal cadastrar
             $(".input-cadastrar-turma").val("")                
@@ -152,13 +152,13 @@ function tabelaBadges(tipo_reserva,turno,datas){
 
     conteudo = '<div class="collapse d-inline-flex flex-wrap" id="tabDatas" >'
     
-    conteudo += '<div class="data-badge-div"><button class="badge text-bg-primary " id="badge-tipo-reserva">'+ tipo_reserva +'</button></div>'
+    conteudo += '<div class="data-badge-div d-flex"><button class="badge text-bg-primary " id="badge-tipo-reserva">'+ tipo_reserva +'</button></div>'
     
-    conteudo += '<div class="data-badge-div"><button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button></div>'
+    conteudo += '<div class="data-badge-div d-flex"><button class="badge text-bg-primary" id="badge-turno">'+ turno +'</button></div>'
 
     
     datas.forEach( (data) =>{
-        conteudo += '<div class="data-badge-div"><button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<svg xmlns="http://www.w3.org/2000/svg" class="close-badge"  viewBox="0 0 72 72" width="14px" height="14px"><path d="M 19 15 C 17.977 15 16.951875 15.390875 16.171875 16.171875 C 14.609875 17.733875 14.609875 20.266125 16.171875 21.828125 L 30.34375 36 L 16.171875 50.171875 C 14.609875 51.733875 14.609875 54.266125 16.171875 55.828125 C 16.951875 56.608125 17.977 57 19 57 C 20.023 57 21.048125 56.609125 21.828125 55.828125 L 36 41.65625 L 50.171875 55.828125 C 51.731875 57.390125 54.267125 57.390125 55.828125 55.828125 C 57.391125 54.265125 57.391125 51.734875 55.828125 50.171875 L 41.65625 36 L 55.828125 21.828125 C 57.390125 20.266125 57.390125 17.733875 55.828125 16.171875 C 54.268125 14.610875 51.731875 14.609875 50.171875 16.171875 L 36 30.34375 L 21.828125 16.171875 C 21.048125 15.391875 20.023 15 19 15 z"/></svg></div></button></div>'
+        conteudo += '<div class="data-badge-div d-flex"><button class="badge data-badge text-bg-primary" value="'+ data + '"><div class=" d-inline-flex" data-bs-theme="dark">' + converterData(data) + '<svg xmlns="http://www.w3.org/2000/svg" class="close-badge"  viewBox="0 0 72 72" width="14px" height="14px"><path d="M 19 15 C 17.977 15 16.951875 15.390875 16.171875 16.171875 C 14.609875 17.733875 14.609875 20.266125 16.171875 21.828125 L 30.34375 36 L 16.171875 50.171875 C 14.609875 51.733875 14.609875 54.266125 16.171875 55.828125 C 16.951875 56.608125 17.977 57 19 57 C 20.023 57 21.048125 56.609125 21.828125 55.828125 L 36 41.65625 L 50.171875 55.828125 C 51.731875 57.390125 54.267125 57.390125 55.828125 55.828125 C 57.391125 54.265125 57.391125 51.734875 55.828125 50.171875 L 41.65625 36 L 55.828125 21.828125 C 57.390125 20.266125 57.390125 17.733875 55.828125 16.171875 C 54.268125 14.610875 51.731875 14.609875 50.171875 16.171875 L 36 30.34375 L 21.828125 16.171875 C 21.048125 15.391875 20.023 15 19 15 z"/></svg></div></button></div>'
     })
 
     conteudo += "</div>"
@@ -244,7 +244,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
     return tabela
 }
 
-function atualizarTabelaSalas(){
+function atualizarTabelaSalasDisponiveis(){
 
     let form = $('#form-consultar-salas').serialize()
 

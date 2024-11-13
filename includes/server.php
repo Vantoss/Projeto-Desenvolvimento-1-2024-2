@@ -497,15 +497,25 @@ if(isset($_POST["editar_reserva"])){
 // =====================================================================================================================
 
 if(isset($_GET["dados_turma"])){
+
+    if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
+        gerarTurmasJSON();
+    }
+
+    $dadosJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_turmas.json'),true);
+
+    $turmas = $dadosJSON["turmas"];
      
     $id_turma = $_GET["dados_turma"];
-    $select = "SELECT * FROM turmas WHERE id_turma = '$id_turma'";
-    
-    $stm = $conn->prepare($select);
-    $stm->execute();
-    $resposta = $stm->fetch(PDO::FETCH_ASSOC);
+    foreach ($turmas as $turma) {
+        if($turma["id_turma"] == $id_turma){
+            
+            require_once ROOT_DIR."includes/components/forms/form_editar_turma.php";
+            break;
+        }
+    }
 
-    echo json_encode($resposta);
+
 }
 
 if(isset($_GET["num_reservas_turma"])){

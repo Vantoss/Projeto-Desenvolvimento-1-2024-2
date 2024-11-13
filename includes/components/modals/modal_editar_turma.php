@@ -5,6 +5,8 @@
         <h1 class="modal-title fs-5">Editar turma</h1> 
       </div>
       <div class="modal-body">
+
+
         <form method="post" id="form-editar-turma" >
           <input type="hidden" name="id_turma" id="inp-editar-turma-id" value="">
           <div class="div-cadastrar-turma">
@@ -44,6 +46,8 @@
             </div>
           </div>
         </form>
+
+        
       </div>
       
       <div class="modal-footer">

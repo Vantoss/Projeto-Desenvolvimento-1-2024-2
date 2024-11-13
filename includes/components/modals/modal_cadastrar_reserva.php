@@ -67,10 +67,10 @@
                       <label for="inp-curso" class="form-label">Curso</label>
                     </div>
                     
-                    <!-- INPUT CODIGO TURMA -->
+                    <!-- INPUT SEMESTRE-->
                     <div class="form-floating ">
-                      <input type="text" class="form-control inp-cadastrar-turma" id="inp-cadastrar-codigo" placeholder="Codigo" name="codigo" autocomplete="off" required>
-                      <label for="inp-codigo" class="form-label">Código</label>
+                      <input type="text" class="form-control inp-cadastrar-turma" id="inp-semestre" placeholder="Semestre" name="semestre" autocomplete="off" required>
+                      <label for="inp-semestre" class="form-label">Semestre</label>
                     </div>
                 
                     <!-- INPUT QUANTIDADE PARTICIPANTES -->

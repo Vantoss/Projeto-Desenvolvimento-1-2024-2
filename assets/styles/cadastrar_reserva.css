@@ -1,10 +1,13 @@
 #tabDatas{
     justify-content: center;
-    min-height: 39px;
+    min-height: 40px;
     width: 100%;
+    border-radius: 12px;
     overflow: hidden;
     align-items: center;
-    margin-bottom: 30px;
+    border: 1px solid var(--bs-border-color);
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.05);
+    margin: 20px auto;
     transition: 300ms all;
 }
 
@@ -14,11 +17,12 @@
 }
 
 .data-badge-div{
-    text-align: center;
     width: 100px;
+    height: 37px;
+    justify-content: center;
+    align-items: center;
 }
 .badge{
-    margin: 5px 0px;
     width: 82px;
     border: none;
     height: 25px;
@@ -26,7 +30,6 @@
 
 .data-badge{
     width: 82px;
-    
     text-align: left;
     transition: 300ms all;
 }

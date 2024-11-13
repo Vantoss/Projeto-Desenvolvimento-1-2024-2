@@ -45,6 +45,13 @@ function customPageHeader($pagina_titulo){
     <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/consultar_reserva.css'?>">
     <script src="<?php echo ROOT_DIR. 'assets/js/consultar_reservas.js' ?>" defer ></script> <?php
     }
+
+    else if ($pagina_titulo == "Gerenciar Salas"){?>
+    <!-- <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/consultar_reserva.css'?>"> -->
+    <script src="<?php echo ROOT_DIR. 'assets/js/gerenciar_salas.js' ?>" defer ></script> <?php
+    }
+
+
 }
 
 function gerarTurmasJSON(){

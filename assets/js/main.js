@@ -178,20 +178,20 @@ $(document).on('submit','#form-editar-turma', function (e) {
 
 function mostrarDadosTurma(resposta){
     
-    let objTurma = JSON.parse(resposta)
-    dados = "<p> Nome: " + objTurma.nome + "</p>"
-    dados += "<p> Curso: " + objTurma.curso + "</p>"
-    dados += "<p> Docente: " + objTurma.docente + "</p>"
-    // dados += "<p> Codigo: " + objTurma.codigo + "</p>"
-    dados += "<p> Semestre: " + objTurma.semestre + "</p>"
-    dados += "<p> Participantes: " + objTurma.participantes_qtd + "</p>"
-    dados += "<p> Reservas cadastradas: " + objTurma.reservas_cadastradas +  "</p>"
-    dados += "<div class='d-grid gap-3 d-md-flex justify-content-md-center edit-del-turma'>"
-    dados += "<button type='button' class='btn btn-primary btn-editar-turma'value='"+ objTurma.id_turma +"'>Editar</button>"
-    dados += "<button type='button' class='btn btn-danger btn-deletar-turma' value='"+ objTurma.id_turma +"'>Deletar</button>"
-    dados += "</div>"
     
-    $(".turma-dados").html(dados)
+    // dados = "<p> Nome: " + objTurma.nome + "</p>"
+    // dados += "<p> Curso: " + objTurma.curso + "</p>"
+    // dados += "<p> Docente: " + objTurma.docente + "</p>"
+    // // dados += "<p> Codigo: " + objTurma.codigo + "</p>"
+    // dados += "<p> Semestre: " + objTurma.semestre + "</p>"
+    // dados += "<p> Participantes: " + objTurma.participantes_qtd + "</p>"
+    // dados += "<p> Reservas cadastradas: " + objTurma.reservas_cadastradas +  "</p>"
+    // dados += "<div class='d-grid gap-3 d-md-flex justify-content-md-center edit-del-turma'>"
+    // dados += "<button type='button' class='btn btn-primary btn-editar-turma'value='"+ objTurma.id_turma +"'>Editar</button>"
+    // dados += "<button type='button' class='btn btn-danger btn-deletar-turma' value='"+ objTurma.id_turma +"'>Deletar</button>"
+    // dados += "</div>"
+    
+    $(".turma-dados").html(resposta)
     
 }
 
