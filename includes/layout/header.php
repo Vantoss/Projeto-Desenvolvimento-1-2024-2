@@ -26,7 +26,11 @@
     <script type="text/JavaScript" src="<?php echo ROOT_DIR. 'assets/js/main.js'?>" defer ></script>
     
     <!-- global Style -->
-    <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/main.css'?>" > 
+    <link rel="stylesheet" href="<?php echo ROOT_DIR. 'assets/styles/main.css'?>" >
+
+    <!-- geradores de pdf -->
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-autotable"></script>
     
     <?php customPageHeader($pagina_titulo);?>
 
