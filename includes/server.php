@@ -13,6 +13,7 @@ require_once ROOT_DIR. 'includes/functions.php';
 
 $conn = initDB();
 
+
 if(isset($_GET["consultar"])){
     
     
@@ -48,7 +49,7 @@ if(isset($_GET["consultar"])){
         if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
         
         // filtro tipo_reserva
-        if($_GET["tipo_reserva"]) $sql[] = " r.tipo_reserva = '{$_GET["tipo_reserva"]}'"; 
+        if($_GET["tipo_reserva"]) $sql[] = " t.tipo_turma = '{$_GET["tipo_reserva"]}'"; 
         
         // filtro data inicio
         if($_GET["data_inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'"; 
@@ -59,15 +60,16 @@ if(isset($_GET["consultar"])){
         if($_GET["reserva_status"] == "Ativa"){
 
             // PESQUISA BASE CONSULTAR RESERVAS
-            $insertSQL = "SELECT r.id_sala as 'sala',
+            $selectSQL = "SELECT r.id_sala as 'sala',
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
-                        r.tipo_reserva as 'reserva',
+                        t.tipo_turma as 'reserva',
                         t.id_turma as id_turma,
                         t.nome as 'turma',
                         t.docente as 'docente', 
-                        t.turno as 'turno', 
+                        t.turno as 'turno',
+                        t.semestre as 'semestre', 
                         CONCAT(t.participantes_qtd, '/', s.lugares_qtd) as 'lugares' 
                 FROM reservas as r
                 INNER JOIN turmas as t 
@@ -77,16 +79,20 @@ if(isset($_GET["consultar"])){
                 
         } else {
 
-            $insertSQL = "SELECT r.id_sala as 'sala',
+            $selectSQL = "SELECT r.id_sala as 'sala',
                         r.id_reserva as 'id_reserva', 
                         s.tipo_sala as 'sala_tipo', 
                         r.data as 'data',
-                        r.tipo_reserva as 'reserva',
-                        r.nome_turma as 'turma',
-                        r.docente as 'docente', 
-                        r.turno as 'turno', 
+                        t.tipo_turma as 'reserva',
+                        t.nome as 'turma',
+                        r.docente as 'docente',
+                        t.id_turma as 'id_turma' 
+                        t.turno as 'turno',
+                        t.semestre as 'semestre', 
                         CONCAT(r.participantes, '/', s.lugares_qtd) as 'lugares' 
                 FROM reservas_historico as r
+                INNER JOIN turmas as t 
+                ON r.id_turma = t.id_turma
                 INNER JOIN salas as s
                 ON r.id_sala = s.id_sala";
 
@@ -94,15 +100,15 @@ if(isset($_GET["consultar"])){
         
         
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
-        if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql); 
+        if($sql) $selectSQL .= ' WHERE' .implode(' AND ',$sql); 
         
     
         
-        // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
+        // echo  "<hr>" . $selectSQL . "<hr>"; // mostra a pesquisa para teste
         
-        $insertSQL .= " ORDER BY id_reserva";
+        $selectSQL .= " ORDER BY id_reserva";
 
-        $stm = $conn->prepare($insertSQL);
+        $stm = $conn->prepare($selectSQL);
 
         if(!$stm->execute()){
 
@@ -344,7 +350,7 @@ if(isset($_POST["cadastrar-reserva"])){
     
     $turno = $_POST["turno"];
     
-    $tipo_reserva = $_POST["tipo_reserva"];
+    $tipo_turma = $_POST["tipo_reserva"];
 
     // RODA CASO FOR UM NOVO CADASTRO 
     if($_POST["cadastro-turma"] == "nova"){
@@ -355,12 +361,14 @@ if(isset($_POST["cadastrar-reserva"])){
         $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
         
         $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
+
+        $semestre = $_POST["semestre"] ? $_POST["semestre"] : exit("ERRO: O CAMPO 'SEMESTRE' ESTA VAZIO");
         
         $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
         
         
-        $insertSQL = "INSERT INTO  turmas ( nome, curso, docente, turno, tipo_reserva, participantes_qtd) 
-                VALUES ('$nome', '$curso', '$docente', '$turno','$tipo_reserva', $participantes)";
+        $insertSQL = "INSERT INTO  turmas ( nome, curso, docente, semestre, tipo_turma, turno,  participantes_qtd) 
+                VALUES ('$nome', '$curso', '$docente','$semestre', '$tipo_turma', '$turno', $participantes)";
                 
                 
         $stm = $conn->prepare($insertSQL);
@@ -384,13 +392,14 @@ if(isset($_POST["cadastrar-reserva"])){
         
         $id_sala = $_POST["id_sala"];
         
+        $responsavel_cadastro = $_POST["responsavel_cadastro"];
 
         $datas = explode(",",$_POST["datas"]);
     
-        $insertSQL = "INSERT INTO `reservas`(`data`, `tipo_reserva`, `id_sala`, `id_turma`) VALUES";    
+        $insertSQL = "INSERT INTO `reservas`(`data`, `id_sala`, `id_turma`, `responsavel_cadastro`) VALUES";    
         
         foreach ($datas as $data) {
-            $insertSQL .= "('$data','$tipo_reserva',$id_sala,$id_turma),";
+            $insertSQL .= "('$data',$id_sala,$id_turma,'$responsavel_cadastro'),";
         }
         
         $insertSQL = substr_replace($insertSQL,"",-1);

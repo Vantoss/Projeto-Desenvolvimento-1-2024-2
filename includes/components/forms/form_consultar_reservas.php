@@ -61,8 +61,9 @@
 <div class="col-md-3">
     <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
     <select id="inp-consulta-reserva-tipo" class="form-select" name="tipo_reserva">
+      <option selected="" value="">Qualquer</option>
       <option value="Avulsa">Avulsa</option>
-      <option value="Graducao">Graduação</option>
+      <option value="Graduação">Graduação</option>
       <option value="Pos-graducao" >Pós-graduação</option>
     </select>
   </div>

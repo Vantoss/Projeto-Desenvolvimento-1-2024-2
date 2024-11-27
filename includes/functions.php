@@ -87,7 +87,7 @@ function gerarTurmasJSON(){
   
 }
 
-function optionsTurmas($turno,$datas,$tipo_reserva,$id_turma=null){
+function optionsTurmas($turno,$datas, $tipo_reserva,$id_turma=null){
     if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
         gerarTurmasJSON();
     }
@@ -103,7 +103,11 @@ function optionsTurmas($turno,$datas,$tipo_reserva,$id_turma=null){
     
     $turmaEncontrada = false;
 
-    $selectSQL = "SELECT DISTINCT id_turma FROM reservas WHERE tipo_reserva = 'Semanal' AND";
+    $selectSQL = "SELECT DISTINCT r.id_turma 
+    FROM reservas as r
+    INNER JOIN turmas as t 
+    ON r.id_turma = t.id_turma
+    WHERE t.tipo_turma = 'Graduação' AND";
 
     $sql = [];
 
@@ -125,7 +129,7 @@ function optionsTurmas($turno,$datas,$tipo_reserva,$id_turma=null){
 
         $data_final = date('Y-m-d',strtotime("+6 days",strtotime($datas[$i])));
         
-        $sql[] = " DATE(data) BETWEEN '$data_inicial' AND '$data_final'";
+        $sql[] = " DATE(r.data) BETWEEN '$data_inicial' AND '$data_final'";
 
         $i++;
     }
@@ -291,6 +295,8 @@ function editarTurma($turma){
         if($turma["participantes"]) $sql[] = " participantes_qtd = {$_POST["participantes"]}";
         
         if($turma["curso"]) $sql[] = " curso = '{$_POST["curso"]}'";
+
+        if($turma["semestre"]) $sql[] = " semestre = '{$_POST["semestre"]}'";
 
 
         if($sql) $updateSQL .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";

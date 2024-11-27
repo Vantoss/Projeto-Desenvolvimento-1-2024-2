@@ -69,7 +69,6 @@ if (!$conn->query($tabela_salas)) {
 $tabela_reservas = "CREATE TABLE reservas (
   id_reserva int(11) NOT NULL,
   `data` date NOT NULL,
-  tipo_reserva varchar(10) DEFAULT NULL,
   id_sala int(11) NOT NULL,
   id_turma int(11) NOT NULL,
   observacoes text DEFAULT NULL,
@@ -85,14 +84,12 @@ if (!$conn->query($tabela_reservas)) {
 
 $tabela_historico = "CREATE TABLE reservas_historico (
   id_reserva int(11) NOT NULL,
-  tipo_reserva varchar(30) DEFAULT NULL,
   `data` date NOT NULL,
   docente varchar(80) NOT NULL,
-  nome_turma varchar(80) DEFAULT NULL,
-  curso varchar(80) DEFAULT NULL,
-  turno varchar(10) DEFAULT NULL,
   participantes int(11) NOT NULL,
-  id_sala int(11) NOT NULL
+  id_turma int(11) NOT NULL,
+  id_sala int(11) NOT NULL,
+  responsavel_cadastro varchar(80) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
 if (!$conn->query($tabela_historico)) {
@@ -129,8 +126,8 @@ if (!$conn->query($alter_tables)) {
 
 $procedures = "CREATE DEFINER=`root`@`localhost` PROCEDURE deletar_reservas_passadas ()   DELETE FROM reservas WHERE data < CURRENT_DATE;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id_reserva, tipo_reserva, data, docente, nome_turma, curso, turno, participantes, id_sala)
-SELECT r.id_reserva, r.tipo_reserva, r.data, t.docente, t.nome, t.curso, t.turno, t.participantes_qtd, r.id_sala
+CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_historico ()   INSERT INTO reservas_historico (id_reserva, data, docente, turno, participantes, id_turma, id_sala, responsavel_cadastro)
+SELECT r.id_reserva, r.data, t.docente, t.participantes_qtd, r.id_turma, r.id_sala, r.responsavel_cadastro,
 FROM reservas as r
 INNER JOIN turmas as t
 ON r.id_turma = t.id_turma
@@ -145,7 +142,7 @@ if (!$conn->query($procedures)) {
 // -----------------------------------------------------------------------------
 // 4. Insert data
 
-$insert_turmas = "INSERT INTO turmas ( nome, curso, docente, turno, tipo_turma, semestre, participantes_qtd ) VALUES
+$insert_turmas = "INSERT INTO turmas ( nome, curso, docente, turno, tipo_turma, semestre, participantes_qtd) VALUES
 ('Desenvolvimento Interface Web','SPI','Fernando','Manhã','Graduação','2-2024',20),
 ('Desenvolvimento Interface Web','SPI','Fernando','Noite','Graduação','2-2024',25),
 ('Desenvolvimento Gráfico','PM','Roberto','Manhã','Graduação','2-2024',18),
