@@ -204,6 +204,12 @@ function gerarTabelaReservas(reservas, pagina){
     tabela += '</ul>'
     tabela += '</nav>'
 
+    tabela += '<div style="margin-bottom: 20px;">'
+    tabela += '<button type="button" onclick="gerarPDF()" class="btn btn-primary btn-reservar">'
+    tabela += 'Gerar PDF'
+    tabela += '</button>'
+    tabela += '</div>'
+
     return tabela
 
 }
@@ -292,7 +298,48 @@ function mostradorTabelaReservas(dadosJSON){
 }
 
 
+function pdfBody(dados){
+    let body = [];
+    for (const i in dados){
+        //console.log(dados[i].id_sala + " " + dados[i].tipo_sala + " " + dados[i].lugares_qtd + " " + dados[i].maquinas_qtd + " " + dados[i].maquinas_tipo);
+        body.push({
+            sala: dados[i].sala,
+            sala_tipo: dados[i].sala_tipo,
+            data: dados[i].data,
+            reserva: dados[i].reserva,
+            turma: dados[i].turma,
+            docente: dados[i].docente,
+            turno: dados[i].turno,
+            lugares: dados[i].lugares,
+        });
+    }
+    return body;
+}
 
+//GERAR PDF
+function gerarPDF(){
+    $.ajax({
+        type: "GET",
+        url: "../JSON/dados_tabela_reservas.json",
+        dataType: "JSON",
+        success: function (dadosJSON) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(24);
+            let text = "Salas cadastradas";
+            let textX = (doc.internal.pageSize.getWidth() - doc.getTextWidth(text))/2
+            doc.text(text, textX, 20);
+            doc.setFontSize(12);
+
+            let head = [{sala: 'Sala', sala_tipo: "Tipo Sala", data: 'Data', turno: 'Turno', reserva: 'Tipo Reserva', turma: 'Turma', docente:'Docente', lugares: 'Lugares'}];
+            let body = pdfBody(dadosJSON.reservas);
+            doc.autoTable({head: head, body: body, startY: 25});
+            doc.save('Salas.pdf');
+        }
+    });       
+
+}
 
 
 
