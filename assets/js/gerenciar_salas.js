@@ -20,17 +20,7 @@ function getTabelaSalas(pagina=null){
     });
 }
 
-//TRAZ AS SALAS (sem criar a tabela de novo)
-function getJSON(){
-    $.ajax({
-        type: "GET",
-        url: "../JSON/dados_salas.json",
-        dataType: "JSON",
-        success: function (dadosJSON) {
-            pdfBody(dadosJSON.salas);
-        }
-    });
-}
+
 
 
 // BOTAO PAGINA
