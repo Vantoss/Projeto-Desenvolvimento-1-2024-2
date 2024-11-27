@@ -57,13 +57,13 @@
     </select>
   </div>
 
-  <!-- FILTRO TIPO DE RESERVA -->
-  <div class="col-md-3">
-    <label for="inp-consulta-sala-tipo" class="form-label">Tipo de reserva</label>
-    <select id="inp-consulta-sala-tipo" class="form-select" name="tipo_reserva">
-      <option value="" selected="">Qualquer</option>
+<!-- FILTRO TIPO DE RESERVA -->
+<div class="col-md-3">
+    <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
+    <select id="inp-consulta-reserva-tipo" class="form-select" name="tipo_reserva">
       <option value="Avulsa">Avulsa</option>
-      <option value="Semanal" >Semanal</option>
+      <option value="Graducao">Graduação</option>
+      <option value="Pos-graducao" >Pós-graduação</option>
     </select>
   </div>
 
@@ -77,11 +77,6 @@
     </select>
   </div>
   
-  <!-- FILTRO REGISTROS -->
-  <div class="col-md-3">
-    <label for="inp-consulta-registros" class="form-label" >N.&#xba; de registros</label>
-    <input type="number" id="inp-consulta-registros" class="form-control" min="1" placeholder="Todos" name="registros">
-  </div>
   <!-- BOTAO BUSCAR -->
   <div class="col-12" style="display: flex; align-items: center; gap:10px;">
     <button type="submit" class="btn btn-primary btn-buscar" value="consultar-reservas" id="btn-buscar">Buscar</button>

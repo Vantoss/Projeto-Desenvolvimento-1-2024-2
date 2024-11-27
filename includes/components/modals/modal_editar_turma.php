@@ -5,15 +5,13 @@
         <h1 class="modal-title fs-5">Editar turma</h1> 
       </div>
       <div class="modal-body">
-
-
-        <form method="post" id="form-editar-turma" >
+        <form method="post" id="form-editar-turma">
+          
           <input type="hidden" name="id_turma" id="inp-editar-turma-id" value="">
           <div class="div-cadastrar-turma">
             <div class="row text-center">
               <!-- INPUT TURMA -->
               <div class="col">
-                
                 <div class="form-floating ">
                   <input type="text" class="form-control inp-editar-turma" id="inp-turma" placeholder="Turma" name="nome" autocomplete="off" >
                   <label for="inp-turma" class="form-label">Turma</label>
@@ -30,18 +28,19 @@
                   <input type="text" class="form-control inp-editar-turma" id="inp-curso" placeholder="Curso" name="curso" autocomplete="off" >
                   <label for="inp-curso" class="form-label">Curso</label>
                 </div>
-                
-                <!-- INPUT CODIGO TURMA -->
+
+                <!-- INPUT SEMESTRE -->
                 <div class="form-floating ">
-                  <input type="text" class="form-control inp-editar-turma" id="inp-codigo" placeholder="Codigo" name="codigo" autocomplete="off" >
-                  <label for="inp-codigo" class="form-label">Código</label>
+                    <input type="text" class="form-control inp-editar-turma form-control-sm" id="inp-semestre" placeholder="Semestre" name="semestre" autocomplete="off" >
+                    <label for="inp-semestre" class="form-label">Semestre</label>
                 </div>
-                
+
                 <!-- INPUT QUANTIDADE PARTICIPANTES -->
                 <div class="form-floating ">
-                  <input type="number" class="form-control inp-editar-turma" id="inp-participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" required>
+                  <input type="number" class="form-control inp-editar-turma" id="inp-participantes" placeholder="N.&#xba; de participantes" name="participantes" min="1" >
                   <label for="inp-participantes" class="form-label">N.&#xba; de participantes</label>
                 </div>
+                
               </div>
             </div>
           </div>

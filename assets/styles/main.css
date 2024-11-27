@@ -116,20 +116,31 @@
     margin-top: 10px;
     background-color: #fff;
 }
+
+.turma-dados span {
+    font-size: 0.8rem;
+}
 .turma-dados{
+    text-align: end;
     border-radius: 0.375rem;
     border: 1px solid #dee2e6;
-    padding: 10px;
+    padding: .4rem;
+}
+.turma-dados .input-group{
+    margin-bottom: .3rem;
+}
+.turma-dados .btn-group{
+    width: 120px;
+
 }
 
-.turma-dados p{
-    margin: 0;
-    text-align: left;
+.turma-dados .form-control{
+    font-size: .9rem;
+    padding: .4rem;
 }
 
 .edit-del-turma{
-
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .col-turma-dados{

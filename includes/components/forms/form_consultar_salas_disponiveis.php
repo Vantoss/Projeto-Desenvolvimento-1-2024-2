@@ -30,7 +30,8 @@
     <label for="inp-consulta-reserva-tipo" class="form-label">Tipo de reserva</label>
     <select id="inp-consulta-reserva-tipo" class="form-select" name="tipo_reserva">
       <option value="Avulsa">Avulsa</option>
-      <option value="Semanal" >Semanal</option>
+      <option value="Graduacao">Graduação</option>
+      <option value="Pos-graducao" >Pós-graduação</option>
     </select>
   </div>
 

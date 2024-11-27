@@ -96,9 +96,7 @@ if(isset($_GET["consultar"])){
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
         if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql); 
         
-        
-        // limita a quatidade de registros que o banco de dados ira retornar
-        if ($_GET["registros"]) $insertSQL .= " LIMIT {$_GET["registros"]}";
+    
         
         // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
@@ -196,11 +194,13 @@ if(isset($_GET["consultar"])){
         // coloca na posicao correta as tags WHERE e AND (WHERE é sempre a primeira tag, seguido pelos AND)
         if($sql) $insertSQL .= ' WHERE ' .implode(' AND ',$sql) . " WHERE ";
         
-        
-        if($_GET["tipo_reserva"] == "Avulsa") {
+        $tipo_reserva = $_GET["tipo_reserva"];
+
+        if($tipo_reserva == "Avulsa") {
             $insertSQL .= " DATE(data) = '{$_GET["data_inicio"]}'";
             $dias = $_GET["data_inicio"];
-        } else {
+
+        } else if ($tipo_reserva == "Graduacao") {
 
             $dias = "";
             $data_inicial = strtotime("{$_GET['data_inicio']}");
@@ -216,7 +216,7 @@ if(isset($_GET["consultar"])){
                 
             } else {
                 
-                $econtros = $_GET["num_encontros"]; 
+                $econtros = $_GET["num_encontros"];
                 
                 for ($i=0; $i < $econtros; $i++) { 
                     $dias .=  date("'Y-m-d',", $data_inicial);
@@ -231,10 +231,6 @@ if(isset($_GET["consultar"])){
         
         // filtro turno
         $insertSQL .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
-        
-        // limita a quatidade de registros que o banco de dados ira retornar
-        if ($_GET["registros"]) $insertSQL .= " LIMIT {$_GET["registros"]}";
-        
         
             // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
         
@@ -356,8 +352,6 @@ if(isset($_POST["cadastrar-reserva"])){
         // DADOS DA TURMA NOVA 
         $nome = $_POST["turma"] ? $_POST["turma"] : exit("ERRO: O CAMPO 'TURMA' ESTA VAZIO");
         
-        $codigo = $_POST["codigo"] ? $_POST["codigo"] : exit("ERRO: O CAMPO 'CODIGO' ESTA VAZIO");
-        
         $curso = $_POST["curso"] ? $_POST["curso"] : exit("ERRO: O CAMPO 'CURSO' ESTA VAZIO");
         
         $docente = $_POST["docente"] ? $_POST["docente"] : exit("ERRO: O CAMPO 'DOCENTE' ESTA VAZIO");
@@ -365,8 +359,8 @@ if(isset($_POST["cadastrar-reserva"])){
         $participantes = $_POST["participantes"] ? $_POST["participantes"] : exit("ERRO: O CAMPO 'PARTICIPANTES' ESTA VAZIO");
         
         
-        $insertSQL = "INSERT INTO  turmas ( nome, curso, docente, turno, tipo_reserva, codigo, participantes_qtd) 
-                VALUES ('$nome', '$curso', '$docente', '$turno','$tipo_reserva', '$codigo', $participantes)";
+        $insertSQL = "INSERT INTO  turmas ( nome, curso, docente, turno, tipo_reserva, participantes_qtd) 
+                VALUES ('$nome', '$curso', '$docente', '$turno','$tipo_reserva', $participantes)";
                 
                 
         $stm = $conn->prepare($insertSQL);
@@ -427,6 +421,7 @@ if(isset($_POST["cadastrar-reserva"])){
 
 
 if(isset($_POST["editar_turma"])){
+    var_dump($_POST);
 
     $resposta = editarTurma($_POST);
 
@@ -510,7 +505,7 @@ if(isset($_GET["dados_turma"])){
     foreach ($turmas as $turma) {
         if($turma["id_turma"] == $id_turma){
             
-            require_once ROOT_DIR."includes/components/forms/form_editar_turma.php";
+            require_once ROOT_DIR."includes/components/containers/dados_turma.php";
             break;
         }
     }

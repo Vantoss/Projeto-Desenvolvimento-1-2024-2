@@ -21,12 +21,28 @@
           
               <div class="container p-0 text-center">
                
+              
                 <div class="row row-cols-2 ">
-                  <div class="col">
 
+                  <div class="col">
+                    
+                  <!-- BTN TURMA CADASTRADA -->
+                    <div class="form-btn-check row-btn-check">
+                      <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" >
+                      <label class="btn btn-outline-primary" for="btn-buscar-turma">Buscar Turma</label>
+                    </div>
+
+                    <div class="form-floating">
+                      <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
+                      </select>
+                      <label for="turma-cadastrada">Turma</label>
+                    </div>
+
+                  </div>
+                  
+                  <div class="col">
                     <!-- BTN CADASTRAR TURMA -->
                     <div class="form-btn-check row-btn-check">
-
                       <input type="radio" class="btn-check"  id="btn-cadastro-turma" name="cadastro-turma" value="nova" autocomplete="off" checked>
                       <label class="btn btn-outline-primary" for="btn-cadastro-turma">Cadastrar Turma</label>
                     </div>
@@ -35,25 +51,17 @@
                       <input type="text" class="form-control inp-cadastrar-turma" id="inp-cadastrar-turma" placeholder="Turma" name="turma" autocomplete="off" required>
                       <label for="inp-cad-turma" class="form-label">Turma</label>
                     </div>
-                  </div>
-
-                  <div class="col">
-                    <div class="form-btn-check row-btn-check">
-                      <input type="radio" class="btn-check" id="btn-buscar-turma"  name="cadastro-turma" value="cadastrada" autocomplete="off" >
-                      <label class="btn btn-outline-primary" for="btn-buscar-turma">Buscar Turma</label>
-                    </div>
-
-                    <div class="form-floating">
-                      <select id="turma-cadastrada" class="form-select" disabled="" name="id_turma" aria-label="Floating label select example"  required>
-                        
-                      </select>
-                      <label for="turma-cadastrada">Turma</label>
-                    </div>
 
                   </div>
+
                 </div>
                 
                 <div class="row row-cols-2">
+
+                  <div class="col col-turma-dados ">
+                      <div class="turma-dados" id="turma-dados-cadastrar"></div>
+                  </div>
+
                   <div class="col">
                     <!-- INPUT DOCENTE -->
                     <div class="form-floating ">
@@ -79,14 +87,17 @@
                       <label for="inp-participantes" class="form-label">N.&#xba; de participantes</label>
                     </div>
                   </div>
+
+                </div>
                 
-                  <div class="col col-turma-dados ">
-                    <div class="turma-dados" id="turma-dados-cadastrar"></div>
-                  </div>
+                <!-- INPUT RESPONSAVEL CADASTRO -->
+                <div class="form-floating mt-3 ">
+                  <input type="text" class="form-control" id="inp-responsavel-cadastro" placeholder="Responsável Cadastro" name="responsavel_cadastro" autocomplete="off" required>
+                  <label for="inp-responsavel-cadastro" class="form-label">Responsável Cadastro</label>
                 </div>
               </div>
             
-        </form>
+          </form>
       </div>
       
       <div class="modal-footer">

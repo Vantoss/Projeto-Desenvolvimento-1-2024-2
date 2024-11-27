@@ -41,8 +41,7 @@ require_once ROOT_DIR. 'includes/functions.php';
   docente varchar(50) DEFAULT NULL,
   turno varchar(10) DEFAULT NULL,
   semestre varchar(10) DEFAULT NULL,
-  tipo_reserva varchar(10) DEFAULT NULL,
-  codigo varchar(60) DEFAULT NULL,
+  tipo_turma varchar(20) DEFAULT NULL,
   participantes_qtd int(11) DEFAULT NULL,
   reservas_cadastradas int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
@@ -73,7 +72,8 @@ $tabela_reservas = "CREATE TABLE reservas (
   tipo_reserva varchar(10) DEFAULT NULL,
   id_sala int(11) NOT NULL,
   id_turma int(11) NOT NULL,
-  observacoes text DEFAULT NULL
+  observacoes text DEFAULT NULL,
+  responsavel_cadastro varchar(80) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
 
@@ -91,7 +91,6 @@ $tabela_historico = "CREATE TABLE reservas_historico (
   nome_turma varchar(80) DEFAULT NULL,
   curso varchar(80) DEFAULT NULL,
   turno varchar(10) DEFAULT NULL,
-  codigo varchar(60) DEFAULT NULL,
   participantes int(11) NOT NULL,
   id_sala int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
@@ -130,8 +129,8 @@ if (!$conn->query($alter_tables)) {
 
 $procedures = "CREATE DEFINER=`root`@`localhost` PROCEDURE deletar_reservas_passadas ()   DELETE FROM reservas WHERE data < CURRENT_DATE;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id_reserva, tipo_reserva, data, docente, nome_turma, curso, turno, codigo, participantes, id_sala)
-SELECT r.id_reserva, r.tipo_reserva, r.data, t.docente, t.nome, t.curso, t.turno, t.codigo, t.participantes_qtd, r.id_sala
+CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_histórico ()   INSERT INTO reservas_historico (id_reserva, tipo_reserva, data, docente, nome_turma, curso, turno, participantes, id_sala)
+SELECT r.id_reserva, r.tipo_reserva, r.data, t.docente, t.nome, t.curso, t.turno, t.participantes_qtd, r.id_sala
 FROM reservas as r
 INNER JOIN turmas as t
 ON r.id_turma = t.id_turma
@@ -146,15 +145,15 @@ if (!$conn->query($procedures)) {
 // -----------------------------------------------------------------------------
 // 4. Insert data
 
-$insert_turmas = "INSERT INTO turmas ( nome, curso, docente, turno, tipo_reserva, semestre , codigo, participantes_qtd) VALUES
-('Desenvolvimento Interface Web','SPI','Fernando','Manhã','Semanal','2-2024','RS-20231-FSPOA-DlW-PRE-SPI1M24-1A',20),
-('Desenvolvimento Interface Web','SPI','Fernando','Noite','Semanal','2-2024','RS-20231-FSPOA-DlW-PRE-SPI1N24-1A',25),
-('Desenvolvimento Gráfico','PM','Roberto','Manhã','Semanal','2-2024','RS-20242-FSPOA-DGR-PRE-PM1M24-2',18),
-('Desenvolvimento Gráfico','PM','Roberto','Noite','Semanal','2-2024','RS-20242-FSPOA-DGR-PRE-PM1N24-2',25),
-('Algoritmos Estruturas de Dados I','ADS','Roberto','Manhã','Semanal','2-2024','RS-20232-FSPOA-ALG1-PRE-ADS3M24-2',27),
-('Algoritmos Estruturas de Dados I','ADS','Roberto','Noite','Semanal','2-2024','RS-20232-FSPOA-ALG1-PRE-ADS3N24-2',22),
-('Fundamentos Computacionais','ADS','Ronaldo','Manhã','Semanal','2-2024','RS-20222-FSPOA-FUND-PRE-ADS1M24-2',22),
-('Fundamentos Computacionais','ADS','Ronaldo','Noite','Semanal','2-2024','RS-20222-FSPOA-FUND-PRE-ADS1N24-2',26);";
+$insert_turmas = "INSERT INTO turmas ( nome, curso, docente, turno, tipo_turma, semestre, participantes_qtd ) VALUES
+('Desenvolvimento Interface Web','SPI','Fernando','Manhã','Graduação','2-2024',20),
+('Desenvolvimento Interface Web','SPI','Fernando','Noite','Graduação','2-2024',25),
+('Desenvolvimento Gráfico','PM','Roberto','Manhã','Graduação','2-2024',18),
+('Desenvolvimento Gráfico','PM','Roberto','Noite','Graduação','2-2024',25),
+('Algoritmos Estruturas de Dados I','ADS','Roberto','Manhã','Graduação','2-2024',27),
+('Algoritmos Estruturas de Dados I','ADS','Roberto','Noite','Graduação','2-2024',22),
+('Fundamentos Computacionais','ADS','Ronaldo','Manhã','Graduação','2-2024',22),
+('Fundamentos Computacionais','ADS','Ronaldo','Noite','Graduação','2-2024',26);";
 
 if (!$conn->query($insert_turmas)) {
   $resposta["status"] = 400;

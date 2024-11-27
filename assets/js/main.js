@@ -138,26 +138,26 @@ $(document).on('submit','#form-deletar-turma', function (e) {
     
     console.log(form)
 
-    atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalas
+    atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalasDisponiveis
 
     reqServidorPOST(form, atualizarTabela)
     
 })
 
 // BOTAO EDITAR TURMA
-$(document).on('click','.btn-editar-turma',function(){
+// $(document).on('click','.btn-editar-turma',function(){
 
-    let id_turma = $(this).val()
+//     let id_turma = $(this).val()
 
-    $("#inp-editar-turma-id").val(id_turma)
+//     $("#inp-editar-turma-id").val(id_turma)
 
-    console.log(id_turma)
+//     console.log(id_turma)
 
-    reqServidorGET({dados_turma:id_turma}, mostrarModalEditarTurma)
+//     reqServidorGET({dados_turma:id_turma}, mostrarModalEditarTurma)
 
-})
+// })
 
-// SUBMIT FORM-MODAL EDITAR TURMA
+// SUBMIT FORM EDITAR TURMA
 
 $(document).on('submit','#form-editar-turma', function (e) {
     e.preventDefault()
@@ -166,7 +166,7 @@ $(document).on('submit','#form-editar-turma', function (e) {
 
     form = $(this).serialize() + '&editar_turma=true'
 
-    atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalas
+    atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalasDisponiveis
 
     reqServidorPOST(form, atualizarTabela)
 
@@ -177,19 +177,6 @@ $(document).on('submit','#form-editar-turma', function (e) {
 // MOSTRADORES DE DADOS ====================================================================================
 
 function mostrarDadosTurma(resposta){
-    
-    
-    // dados = "<p> Nome: " + objTurma.nome + "</p>"
-    // dados += "<p> Curso: " + objTurma.curso + "</p>"
-    // dados += "<p> Docente: " + objTurma.docente + "</p>"
-    // // dados += "<p> Codigo: " + objTurma.codigo + "</p>"
-    // dados += "<p> Semestre: " + objTurma.semestre + "</p>"
-    // dados += "<p> Participantes: " + objTurma.participantes_qtd + "</p>"
-    // dados += "<p> Reservas cadastradas: " + objTurma.reservas_cadastradas +  "</p>"
-    // dados += "<div class='d-grid gap-3 d-md-flex justify-content-md-center edit-del-turma'>"
-    // dados += "<button type='button' class='btn btn-primary btn-editar-turma'value='"+ objTurma.id_turma +"'>Editar</button>"
-    // dados += "<button type='button' class='btn btn-danger btn-deletar-turma' value='"+ objTurma.id_turma +"'>Deletar</button>"
-    // dados += "</div>"
     
     $(".turma-dados").html(resposta)
     
@@ -231,7 +218,6 @@ function mostrarInputDadosTurma(resposta){
     $("#inp-turma").val(objTurma.nome)
     $("#inp-docente").val(objTurma.docente)
     $("#inp-curso").val(objTurma.curso)
-    $("#inp-codigo").val(objTurma.codigo)
     $("#inp-participantes").val(objTurma.participantes_qtd)
 }
 

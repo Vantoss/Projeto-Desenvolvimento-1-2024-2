@@ -279,6 +279,7 @@ function redirectTo($href){
 function editarTurma($turma){
 
     $conn = initDB();
+    var_dump($turma);
     
     $sql = [];
         $updateSQL = "UPDATE turmas SET";
@@ -290,11 +291,11 @@ function editarTurma($turma){
         if($turma["participantes"]) $sql[] = " participantes_qtd = {$_POST["participantes"]}";
         
         if($turma["curso"]) $sql[] = " curso = '{$_POST["curso"]}'";
-        
-        if($turma["codigo"]) $sql[] = " codigo = '{$_POST["codigo"]}'";
-        
+
+
         if($sql) $updateSQL .= implode(',',$sql) . " WHERE id_turma = {$_POST["id_turma"]}";
 
+        echo $updateSQL;
 
         // EXECUTANDO SQL
         $stm = $conn->prepare($updateSQL);
