@@ -86,7 +86,7 @@ if(isset($_GET["consultar"])){
                         t.tipo_turma as 'reserva',
                         t.nome as 'turma',
                         r.docente as 'docente',
-                        t.id_turma as 'id_turma' 
+                        t.id_turma as 'id_turma',
                         t.turno as 'turno',
                         t.semestre as 'semestre', 
                         CONCAT(r.participantes, '/', s.lugares_qtd) as 'lugares' 

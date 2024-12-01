@@ -126,8 +126,8 @@ if (!$conn->query($alter_tables)) {
 
 $procedures = "CREATE DEFINER=`root`@`localhost` PROCEDURE deletar_reservas_passadas ()   DELETE FROM reservas WHERE data < CURRENT_DATE;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_historico ()   INSERT INTO reservas_historico (id_reserva, data, docente, turno, participantes, id_turma, id_sala, responsavel_cadastro)
-SELECT r.id_reserva, r.data, t.docente, t.participantes_qtd, r.id_turma, r.id_sala, r.responsavel_cadastro,
+CREATE DEFINER=`root`@`localhost` PROCEDURE inserir_reservas_historico ()   INSERT INTO reservas_historico (id_reserva, data, docente, participantes, id_turma, id_sala, responsavel_cadastro)
+SELECT r.id_reserva, r.data, t.docente, t.participantes_qtd, r.id_turma, r.id_sala, r.responsavel_cadastro
 FROM reservas as r
 INNER JOIN turmas as t
 ON r.id_turma = t.id_turma
