@@ -326,7 +326,7 @@ function gerarPDF(){
             const doc = new jsPDF();
 
             doc.setFontSize(24);
-            let text = "Salas cadastradas";
+            let text = "Reservas cadastradas";
             let textX = (doc.internal.pageSize.getWidth() - doc.getTextWidth(text))/2
             doc.text(text, textX, 20);
             doc.setFontSize(12);
@@ -334,7 +334,7 @@ function gerarPDF(){
             let head = [{sala: 'Sala', sala_tipo: "Tipo Sala", data: 'Data', turno: 'Turno', reserva: 'Tipo Reserva', turma: 'Turma', docente:'Docente', lugares: 'Lugares'}];
             let body = pdfBody(dadosJSON.reservas);
             doc.autoTable({head: head, body: body, startY: 25});
-            doc.save('Salas.pdf');
+            doc.save('Reservas.pdf');
         }
     });       
 
