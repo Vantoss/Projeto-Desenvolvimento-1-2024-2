@@ -319,8 +319,8 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "./reservas?reservas-json=true",
-        dataType: "json",
+        url: "././JSON/dados_tabela_reservas.json",
+        dataType: "JSON",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();

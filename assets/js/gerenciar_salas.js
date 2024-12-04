@@ -139,7 +139,7 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "../JSON/dados_salas.json",
+        url: "././JSON/dados_salas.json",
         dataType: "JSON",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
