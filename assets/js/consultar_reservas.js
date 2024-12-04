@@ -29,7 +29,9 @@
         e.preventDefault();
         form = $(this).serialize() 
 
-        reqServidorPOST(form, atualizarTabelaReservas)
+        console.log(form)
+        
+        reqServidorDELETE("./reservas", form, atualizarTabelaReservas)
     })
     
     
@@ -40,8 +42,9 @@
         const pagina = $(this).val()
         
         $.ajax({
-            url:"../JSON/dados_tabela_reservas.json",
+            url:"./reservas",
             type:"GET",
+            data: {'reservas-json': true},
             dataType: "json",
             success:function(dadosJSON){
                 tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
@@ -56,34 +59,32 @@
     $(document).on('click','.btn-editar-reserva', function () { 
         const reserva_dados  = this.value.split("-")
 
+        let id_reserva = reserva_dados[0]
+        let id_turma = reserva_dados[1]
 
-        id_reserva = reserva_dados[0]
-        id_turma = reserva_dados[1]
+        let sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
 
-        sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
+        reqServidorGET("./salas", {'id-sala':sala_row[0]}, mostrarSalaDados)
         
-        reqServidorGET({sala_dados:sala_row[0]}, mostarSalaDados)
+
+        let dataText = $(this).parents("tr").children("td:nth-child(3)").text()
+        let turno = $(this).parents("tr").children("td:nth-child(4)").text()
+        let tipo_reserva = $(this).parents("tr").children("td:nth-child(5)").text()
+
+        mostrarReservaDados(dataText,tipo_reserva,turno)
+
+        let data_arr = dataText.split(" - ")
         
-
-        dataText = $(this).parents("tr").children("td:nth-child(3)").text()
-        turno = $(this).parents("tr").children("td:nth-child(4)").text()
-        tipo_reserva = $(this).parents("tr").children("td:nth-child(5)").text()
-
-        mostarReservaDados(dataText,tipo_reserva,turno)
-
-        data_arr = dataText.split(" - ")
-        
-        data = data_arr[1].split("/").reverse().join("-")
+        let data = data_arr[1].split("/").reverse().join("-")
         
 
         $("#inp-edit-id_reserva").val(id_reserva)
         $("#inp-edit-id_turma").val(id_turma)
         
-        reqServidorGET({turmas_options: true, turno:turno, datas:data, id_turma:id_turma }, mostrarOptionsTurmas)
-
-        reqServidorGET({dados_turma:id_turma}, mostrarDadosTurma)
+        reqServidorGET("./turmas",{'disponiveis': true,'turno':turno, 'tipo-reserva':tipo_reserva,'datas':data, 'id-turma':id_turma }, mostrarOptionsTurmas)
         
-        reqServidorGET({dados_turma:id_turma}, mostrarInputDadosTurma)
+        reqServidorGET('./turmas',{'turma-dados':true,'id-turma': id_turma}, mostrarTurmaDados)
+        
     })
     
    
@@ -98,7 +99,7 @@
         e.preventDefault()
         let form = $(this).serialize() + "&" + $("#form-editar").serialize()
         console.log(form)
-        reqServidorPOST(form, atualizarTabelaReservas)
+        reqServidorPUT("./reservas",form, atualizarTabelaReservas)
     })
     
 
@@ -107,30 +108,24 @@
 function atualizarTabelaReservas(){
 
     let form = $("#form-consultar-reservas").serialize()
-    form += '&consultar=reservas'
+
+    console.log(form)
 
     $.ajax({
-        url:"../includes/server.php",
+        url:"./reservas",
         type:"GET",
         data: form,
+        dataType: "json",
         beforeSend:function(){
             $("#container-tabela").css("visibility","visible")
         },
         success:function(resposta){
             console.log(resposta)
-            resposta = JSON.parse(resposta)
-
-            $.ajax({
-                url:"../JSON/dados_tabela_reservas.json",
-                type:"GET",
-                dataType: "json",
-                success:function(dadosJSON){
-                    console.log(dadosJSON)
-                    mostradorTabelaReservas(dadosJSON)
-                }
-            })
+            mostradorTabelaReservas(resposta)
+            
         }
     })
+
 }
 
 
@@ -283,15 +278,19 @@ function gerarTabelaHistorico(reservas, pagina){
 }
 
 
-function mostradorTabelaReservas(dadosJSON){
+function mostradorTabelaReservas(reqRes){
 
-    if(dadosJSON.status == 200){     
+
+    if(reqRes.status == 200){     
+
+        dadosJSON = reqRes.dados
 
         gerarTabela = (dadosJSON.reserva_status == "Ativa")? gerarTabelaReservas : gerarTabelaHistorico
 
         resposta = gerarTabela(dadosJSON.reservas, getPaginaAtual())
+
     } else {
-        resposta = "<span>"+ dadosJSON.msg +"</span>"
+        resposta = "<span>"+ reqRes.msg +"</span>"
     }
     
     $("#container-tabela").html(resposta)
@@ -320,8 +319,8 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "../JSON/dados_tabela_reservas.json",
-        dataType: "JSON",
+        url: "./reservas?reservas-json=true",
+        dataType: "json",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();

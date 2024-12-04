@@ -1,20 +1,23 @@
 <?php
-    // CAMINHO RELATIVO DA PAGINA
-    define('ROOT_DIR', '');
+define('ROOT_DIR', '');
 
-    $pagina_titulo = "Pagina inicial";
+require_once ROOT_DIR. 'core/functions.php';
 
-    // HEADER
-    require_once ROOT_DIR. 'includes/layout/header.php';
-    require_once ROOT_DIR. 'includes/loader.php';
+require_once ROOT_DIR. 'core/loader.php';
+
+require_once ROOT_DIR. "Router/routes.php";
+
+$root_url = '/Projeto-Desenvolvimento-1-2024-2/';
 
 
-    // gerarTurmasJSON();
-?>
-<body>
+$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 
-    <h1>Pagina inicial</h1>
+$method = $_SERVER["REQUEST_METHOD"];
 
-</body>
 
-</html>
+$uri = str_replace($root_url,'/',$uri);
+
+
+$router->route($uri,$method);
+
+

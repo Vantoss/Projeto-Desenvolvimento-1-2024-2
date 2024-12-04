@@ -52,9 +52,9 @@
     color: black;
 }
 
-.btn:hover,.btn-danger:hover{
+/* .btn:hover,.btn-danger:hover{
     background: transparent;
-}
+} */
 
 /* MODAL ===============*/
 
@@ -102,37 +102,57 @@
 }
 
 #turma-dados-cadastrar{
-    background-color: #e9ecef;
+    /* background-color: #e9ecef; */
     height: 100%;
-
 }
 #reserva-datas{
     white-space: nowrap;
     padding: 1px;
 }
 
+/* TURMA DADOS FORM */
+
 #turmas-dados-editar{
     min-height: 200px;
     margin-top: 10px;
-    background-color: #fff;
 }
 
 .turma-dados span {
     font-size: 0.8rem;
 }
 .turma-dados{
-    text-align: end;
+    /* text-align: end; */
+    /* border-radius: 0.375rem; */
+    /* border: 1px solid #dee2e6; */
+    /* padding: .4rem; */
+    /* padding-bottom: 0 !important; */
+}
+.turma-dados .input-group{
+    margin-bottom: 0.4rem;
+}
+.turma-dados .input-group-text{
+    justify-content: center;
+    /* align-items: center; */
+    font-weight: 600;
+    /* text-transform: uppercase; */
+    min-width: 100px;
+    background-color: #e9ecef;
+}
+.input-group-turma{
     border-radius: 0.375rem;
     border: 1px solid #dee2e6;
     padding: .4rem;
 }
-.turma-dados .input-group{
-    margin-bottom: .3rem;
-}
-.turma-dados .btn-group{
-    width: 120px;
+    
 
+.turma-dados .btn-group{
+    width: 100%;
 }
+
+.turma-dados .btn-group .btn{
+    /* border: 1px solid #dee2e6; */
+}
+
 
 .turma-dados .form-control{
     font-size: .9rem;
@@ -143,8 +163,8 @@
     margin-top: 10px;
 }
 
-.col-turma-dados{
+/* .col-turma-dados{
     padding-top: 10px;
-}
+} */
 
 

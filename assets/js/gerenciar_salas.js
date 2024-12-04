@@ -5,8 +5,8 @@ $(document).ready(function () {
 function getTabelaSalas(pagina=null){
     $.ajax({
         type: "GET",
-        url: "../JSON/dados_salas.json",
-        dataType: "JSON",
+        url: "./salas",
+        dataType: "json",
         beforeSend:function(){
             $("#container-tabela").css("visibility","visible")
         },
@@ -18,6 +18,18 @@ function getTabelaSalas(pagina=null){
             $("#container-tabela").html(tabela)
         }
     });
+}
+
+$('.btn-editar').click(() => { 
+    const id_sala = $(this).val()
+    reqServidorGET({dados_sala: id_sala}, mostrarModalEditarSala)
+})
+
+
+function mostrarModalEditarSala(resposta){
+    mostrarInputDadosTurma(resposta)
+
+    $("#modal-editar-sala").modal('show')
 }
 
 
@@ -33,14 +45,18 @@ $(document).on('click','.pagina-salas', function (e) {
         
 function gerarTabelaSalas(dadosJSON, pagina){
 
-    
     salas = dadosJSON.salas
+
+    if(salas.length == 0){
+        return "<h2>Nenhuma sala cadastrada</h2>" 
+    }
+
     tabela = '<table class="table table-striped tabela-consulta">'
     tabela += '<thead>'
     tabela += '<tr>'
     tabela += '<th scope="col">Sala</th>'
     tabela += '<th scope="col">Tipo</th>'
-    tabela += '<th scope="col">N.&#xba; lugares</th>'
+    tabela += '<th scope="col">Lotação</th>'
     tabela += '<th scope="col">N.&#xba; maquinas</th>'
     tabela += '<th scope="col">Maquinas tipo</th>'
     tabela += '<th scope="col">Ação</th>'
@@ -72,7 +88,7 @@ function gerarTabelaSalas(dadosJSON, pagina){
         tabela += '<td>' + salas[i].maquinas_qtd   + '</td>' 
         tabela += '<td>' + maquinas_tipo + '</td>'
         tabela += '<td>'
-        tabela += '<button type="button" class="btn btn-primary btn-editar" data-bs-toggle="modal" value="' + salas[i].id_sala + '" data-bs-target="">Editar</button>'
+        tabela += '<button type="button" class="btn btn-primary btn-editar" data-bs-toggle="modal" value="' + salas[i].id_sala + '" data-bs-target="#modal-editar-sala">Editar</button>'
         tabela += '</td>' 
         tabela += '</tr>'
     }

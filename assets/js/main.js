@@ -16,13 +16,15 @@ $(document).on('change', '.form-consulta', function (){
 });
 
 
+
 // MODAL CADASTRAR/EDITAR RESERVA: CONTAINER INFORMACOES TURMA
 $(document).on('change','#turma-cadastrada', function(e){
-    id_turma = $(this).val()
+    const id_turma = $(this).val()
     if(!id_turma){
-        $(".turma-dados").empty()
+        $(".inp-turma-dados").val("")
     } else {
-        reqServidorGET({dados_turma : id_turma}, mostrarDadosTurma)
+        $("#btn-deletar-turma").val(id_turma)
+        reqServidorGET('./turmas',{'turma-dados':true,'id-turma': id_turma}, mostrarTurmaDados)
     }
 })
 
@@ -57,11 +59,35 @@ function modalAlerta(mesagem){
     $("#modal-alerta").modal('show')
 }
 
-function reqServidorPOST(form, atualizarTabela){
+function reqServidorPOST(url, form, atualizarTabela){
 
-    $.ajax({
+    $.ajax({    
+
         type: "POST",
-        url: "../includes/server.php",
+        url: url,
+        data: form,
+        success: function (resposta) {
+
+            console.log(resposta)
+
+            resposta = JSON.parse(resposta)
+            
+            modalAlerta(resposta.msg)
+            
+            atualizarTabela()
+
+        }
+    })
+}
+
+function reqServidorPUT(url, form, atualizarTabela){
+
+    console.log(form)
+
+    $.ajax({    
+
+        type: "PUT",
+        url: url,
         data: form,
         success: function (resposta) {
 
@@ -78,10 +104,10 @@ function reqServidorPOST(form, atualizarTabela){
 }
 
 
-function reqServidorGET(requisicao, mostrarDados){
+function reqServidorGET(url, requisicao, mostrarDados){
     $.ajax({
         type: "GET",
-        url: "../includes/server.php",
+        url: url,
         data: requisicao,
         success: function (resposta) {
             
@@ -92,6 +118,27 @@ function reqServidorGET(requisicao, mostrarDados){
     })
 }
 
+function reqServidorDELETE(url,form, atualizarTabela){
+
+    $.ajax({
+        type: "DELETE",
+        url: url,
+        data: form,
+        success: function (resposta) {
+
+            console.log(resposta)
+
+            resposta = JSON.parse(resposta)
+            
+            modalAlerta(resposta.msg)
+            
+            atualizarTabela()
+
+        }
+    })
+}
+
+
   
 $(document).on('submit','#mysql-setup',function(e){
     e.preventDefault();
@@ -100,7 +147,7 @@ $(document).on('submit','#mysql-setup',function(e){
 
     $.ajax({
         type: "POST",
-        url: "../includes/mysql_init.php",
+        url: "./core/mysql_init.php",
         data: form,
         success: function (resposta) {
 
@@ -118,7 +165,7 @@ $(document).on('submit','#mysql-setup',function(e){
 // FUNC EDITAR/DELETAR TURMA ======================================================================================
 
 // BOTAO DELETAR TURMA
-$(document).on('click','.btn-deletar-turma',function(){
+$(document).on('click','#btn-deletar-turma',function(){
 
     let id_turma = $(this).val()
     
@@ -126,7 +173,7 @@ $(document).on('click','.btn-deletar-turma',function(){
     
     console.log(id_turma)
     
-    reqServidorGET({num_reservas_turma:id_turma}, mostrarModalDelTurma)
+    reqServidorGET("./turmas",{num_reservas_turma:id_turma}, mostrarModalDelTurma)
     
 })
 
@@ -134,107 +181,77 @@ $(document).on('click','.btn-deletar-turma',function(){
 $(document).on('submit','#form-deletar-turma', function (e) {
     e.preventDefault()
 
-    form = $(this).serialize() + "&deletar_turma=true"
+    form = $(this).serialize()
     
     console.log(form)
 
     atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalasDisponiveis
 
-    reqServidorPOST(form, atualizarTabela)
+    reqServidorDELETE("./turmas",form, atualizarTabela)
     
 })
 
-// BOTAO EDITAR TURMA
-// $(document).on('click','.btn-editar-turma',function(){
-
-//     let id_turma = $(this).val()
-
-//     $("#inp-editar-turma-id").val(id_turma)
-
-//     console.log(id_turma)
-
-//     reqServidorGET({dados_turma:id_turma}, mostrarModalEditarTurma)
-
-// })
-
 // SUBMIT FORM EDITAR TURMA
-
 $(document).on('submit','#form-editar-turma', function (e) {
     e.preventDefault()
 
-    $(".turma-dados").empty()
 
-    form = $(this).serialize() + '&editar_turma=true'
+    form = $(this).serialize()
 
     atualizarTabela = (document.title == "Consultar Reserva") ? atualizarTabelaReservas : atualizarTabelaSalasDisponiveis
 
-    reqServidorPOST(form, atualizarTabela)
+    console.log(form)
 
+    reqServidorPUT('./turmas',form, atualizarTabela)
+
+    
 })
 
 
+// MOSTRADORES DE DADOS ===================================================================================
+function mostrarTurmaDados(resposta){
+    const turma = JSON.parse(resposta)
 
-// MOSTRADORES DE DADOS ====================================================================================
+    $("#inp-editar-turma-id").val(turma.id_turma)
+    $("#inp-editar-turma-nome").val(turma.nome)
+    $("#inp-editar-turma-docente").val(turma.docente)
+    $("#inp-editar-turma-curso").val(turma.curso)
+    $("#inp-editar-turma-semestre").val(turma.semestre)
+    $("#inp-editar-turma-participantes").val(turma.participantes_qtd)
 
-function mostrarDadosTurma(resposta){
-    
-    $(".turma-dados").html(resposta)
-    
 }
 
 function mostrarModalDelTurma(resposta){
+
     resposta = JSON.parse(resposta)
 
-            $("#msg-del-turma").html(resposta.msg)
-
-            $(".modal").modal('hide')
-            
-            $("#modal-deletar-turma").modal('show')
-}
-
-
-function mostrarModalEditarTurma(resposta){
-
-    mostrarInputDadosTurma(resposta)
-
+    $("#msg-del-turma").html(resposta.msg)
     $(".modal").modal('hide')
-    
-    $("#modal-editar-turma").modal('show')
-
+    $("#modal-deletar-turma").modal('show')
+    $("inp-editar-turma-nome").val("")
 }
+
+
 
 function mostrarOptionsTurmas(resposta){
-    
-    $("#turma-cadastrada").empty()
-    
     $("#turma-cadastrada").html(resposta)
-    
 }
 
-function mostrarInputDadosTurma(resposta){
-
-    let objTurma = JSON.parse(resposta)
-                
-    $("#inp-turma").val(objTurma.nome)
-    $("#inp-docente").val(objTurma.docente)
-    $("#inp-curso").val(objTurma.curso)
-    $("#inp-participantes").val(objTurma.participantes_qtd)
-}
-
-function mostarSalaDados(resposta){
+function mostrarSalaDados(resposta){
 
     objTurma = JSON.parse(resposta)
 
-        dados = '<h6>'+ objTurma.id_sala+ ' - '+ objTurma.tipo_sala + '</h6>'
-        dados +='<h6>'+objTurma.lugares_qtd +' lugares</h6>'
-        dados +='<h6> '+objTurma.maquinas_qtd +' maquinas ('+ objTurma.maquinas_tipo+ ')</h6>'
+    dados = '<h6>'+ objTurma.id_sala+ ' - '+ objTurma.tipo_sala + '</h6>'
+    dados +='<h6>'+objTurma.lugares_qtd +' lugares</h6>'
+    dados +='<h6> '+objTurma.maquinas_qtd +' maquinas ('+ objTurma.maquinas_tipo+ ')</h6>'
 
     $("#sala-dados").html(dados)
 }
 
-function mostarReservaDados(datas,tipo_reserva,turno){
+function mostrarReservaDados(datas,tipo_reserva,turno){
 
-    dados = datas 
+    dados = datas
+     
     dados += '<h6>' + tipo_reserva + '</h6>'
     dados += '<h6>' + turno + '</h6>'
 
@@ -245,6 +262,8 @@ function mostarReservaDados(datas,tipo_reserva,turno){
 $(document).on('change',".inp-data", function(){
     checkDatas()
 })
+
+
 
 
 function checkDatas(){
@@ -265,6 +284,11 @@ function getPaginaAtual(){
     }
     return pagina
 }
+
+function resetSelectTurma(){
+    $("#turma-cadastrada, #inp-turma-dados, #btn-deletar-turma").val("")
+}
+
 
 // $('#datepicker').datepicker({
 //     startDate: new Date(),

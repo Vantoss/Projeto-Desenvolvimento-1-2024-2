@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /Projeto-Desenvolvimento-1-2024-2/
+RewriteRule ^index\\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /Projeto-Desenvolvimento-1-2024-2/index.php [L]
