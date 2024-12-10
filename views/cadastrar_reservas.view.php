@@ -14,15 +14,15 @@ require_once ROOT_DIR. "views/partials/navbar.php";
 
 <!-- FILTRO DATA INICIO -->
 <div class="col-md-3">
-<label for="inp-consulta-data-inicio" class="form-label">De</label>
-<input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data-inicio" required>
+  <label for="inp-consulta-data-inicio" class="form-label">De</label>
+  <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" min="<?php echo dataAtual();?>" value="<?php echo dataAtual();?>" name="data-inicio" required>
 </div>
 
 
 <!-- FILTRO DATA FINAL -->
 <div class="col-md-3">
-<label for="inp-consulta-data-fim" class="form-label">Até</label>
-<input type="date" class="form-control inp-data" id="inp-consulta-data-fim" min="<?php echo dataAtual();?>" name="data-fim" disabled required>
+  <label for="inp-consulta-data-fim" class="form-label">Até</label>
+  <input type="date" class="form-control inp-data" id="inp-consulta-data-fim" min="<?php echo dataAtual();?>" name="data-fim" disabled required>
 <div  class="invalid-feedback">
     A data final não pode ser maior que a data inicial
   </div>
@@ -30,38 +30,38 @@ require_once ROOT_DIR. "views/partials/navbar.php";
 
 <!-- NUM ENCONTROS -->
 <div class="col-md-3">
-<label for="inp-num-encontros" class="form-label">N.&#xba; de Encontros</label>
-<input type="number" class="form-control" id="inp-num-encontros" min="1" name="num-encontros" disabled required>
+<label for="inp-semanas" class="form-label">N.&#xba; de Semanas</label>
+<input type="number" class="form-control" id="inp-semanas" min="1" name="semanas" disabled required>
 </div>
 <div class="col-md-3">
-  <label for="inp-num-encontros" class="form-label">Dias da Semana</label>
+  <label for="inp-semanas" class="form-label">Dias da Semana</label>
   <div class="d-flex" style=" flex-wrap: wrap; align-items:center; column-gap:6px;">
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="1" id="inp-segunda" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="1" id="inp-segunda" disabled>
           <label class="form-check-label" for="inp-segunda">Seg</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="2" id="inp-terca" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="2" id="inp-terca" disabled>
           <label class="form-check-label" for="inp-terca">Ter</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="3" id="inp-quarta" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="3" id="inp-quarta" disabled>
           <label class="form-check-label" for="inp-quarta">Qua</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="4" id="inp-quinta" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="4" id="inp-quinta" disabled>
           <label class="form-check-label" for="inp-quinta">Qui</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="5" id="inp-sexta" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="5" id="inp-sexta" disabled>
           <label class="form-check-label" for="inp-sexta">Sex</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="6" id="inp-sabado" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="6" id="inp-sabado" disabled>
           <label class="form-check-label" for="inp-sabado">Sáb</label>
         </div>
         <div class="form-check ">
-          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias" value="7" id="inp-domingo" disabled>
+          <input class="form-check-input inp-dia-semana" type="checkbox" name="dias-semana[]" value="0" id="inp-domingo" disabled>
           <label class="form-check-label" for="inp-domingo">Dom</label>
         </div>
     </div>

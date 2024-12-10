@@ -10,7 +10,10 @@
     require_once ROOT_DIR.'views/partials/modals/modal_editar_sala.php';
 
     // MODAL CADASTRAR SALA
-    require_once ROOT_DIR.'views/partials/modals/modal_cadastrar_sala.php'; 
+    require_once ROOT_DIR.'views/partials/modals/modal_cadastrar_sala.php';
+
+    // MODAL CADASTRAR SALA
+    require_once ROOT_DIR.'views/partials/modals/modal_alerta.php'; 
 ?>
 
 <h1 class="text-center m-5">Gerenciar Salas</h1>

@@ -17,11 +17,22 @@
 
 .form-consulta, #container-tabela{
     background-color: rgba(var(--bs-light-rgb), 1);
-    margin-top: 50px !important;
+    margin: 70px auto !important;
     width: 90%;
     margin: auto;
     border: 1px solid var(--bs-border-color);
     border-radius: 12px;
+}
+
+.alerta-Tabela{
+    display: block;
+    text-align: center;
+    margin: 1rem auto;
+    font-size: 1rem;
+    border-radius: .6rem;
+    padding: 2rem;
+    border: 1px solid var(--bs-border-color);
+    background-color: rgba(var(--bs-emphasis-color-rgb), 0.05);
 }
 
 .form-consulta{
@@ -52,9 +63,9 @@
     color: black;
 }
 
-/* .btn:hover,.btn-danger:hover{
+.btn:hover,.btn-danger:hover{
     background: transparent;
-} */
+}
 
 /* MODAL ===============*/
 
@@ -132,9 +143,7 @@
 }
 .turma-dados .input-group-text{
     justify-content: center;
-    /* align-items: center; */
     font-weight: 600;
-    /* text-transform: uppercase; */
     min-width: 100px;
     background-color: #e9ecef;
 }

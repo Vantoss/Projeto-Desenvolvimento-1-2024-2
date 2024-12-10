@@ -1,20 +1,22 @@
 <?php
 
+$conn = initDB();
+
 parse_str( file_get_contents('php://input'),$_PUT);
 
-$id_sala = $_PUT["id-sala"];
+try {
+    //code...
 
-$conn = initDB();
+$id_sala = $_PUT["id-sala"];
 
 $sql = [];
 
 $updateSQL = "UPDATE salas SET";
 
+
 if($_PUT["tipo"]) $sql[] = " tipo_sala = '{$_PUT["tipo"]}'";
 
-if($_PUT["lugares-qtd"]) $sql[] = " lugares_qtd = '{$_PUT["lugares-qtd"]}'";
-
-if($_PUT["participantes"]) $sql[] = " participantes_qtd = {$_PUT["participantes"]}";
+if($_PUT["lotacao"]) $sql[] = " lugares_qtd = '{$_PUT["lotacao"]}'";
 
 if($_PUT["maquinas-tipo"]) $sql[] = " maquinas_tipo = '{$_PUT["maquinas-tipo"]}'";
 
@@ -34,6 +36,11 @@ if($stm->execute()){
     $resposta["msg"] = "Sala editada com sucesso";
 }
 
+} catch (\Throwable $th) {
+    $resposta["status"] = 500;
+    $resposta["msg"] = "Erro ao editar sala";
+}
+
 gerarSalasJSON();
 
-echo json_encode($resposta);
+exit(json_encode($resposta));

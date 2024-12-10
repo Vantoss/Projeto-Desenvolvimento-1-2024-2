@@ -1,14 +1,7 @@
 <?php
 
-// `id_sala` int(11) NOT NULL,
-//   `tipo_sala` varchar(45) DEFAULT NULL,
-//   `lugares_qtd` int(11) DEFAULT NULL COMMENT 'capacidade das salas (lotação)',
-//   `maquinas_qtd` int(11) DEFAULT NULL,
-//   `maquinas_tipo` varchar(45) DEFAULT NULL,
-//   `descricao` text DEFAULT NULL
 try {
 
-    
     $sala_tipo = $_POST["tipo"] ? $_POST["tipo"] : new Exception("campo sala tipo vazio");
     
     $lugares_qtd = $_POST["lugares-qtd"] ? $_POST["lugares-qtd"] : new Exception("campo sala tipo vazio");

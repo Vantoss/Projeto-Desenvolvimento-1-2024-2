@@ -3,6 +3,7 @@
 if(checkDatabaseInstallation()){
     gerarHistorico();
     gerarTurmasJSON();
+    gerarSalasJSON();
 
 }
 

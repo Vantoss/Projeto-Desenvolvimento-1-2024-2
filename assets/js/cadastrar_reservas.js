@@ -24,31 +24,22 @@ $(document).on('click','.close-badge', function(){
 
 // BOTAO RESERVAR
 $(document).on('click','.btn-reservar', function () {
-
-    
-
     const id_sala = $(this).val()
+    const turno = $("#badge-turno").text()
+    const tipo_reserva = $("#badge-tipo-reserva").text()
 
     $("#inp-cadastrar-sala").val(id_sala)
 
-    const turno = $("#badge-turno").text()
-
-    const tipo_reserva = $("#badge-tipo-reserva").text()
-
-    
     let datas = $(".data-badge").map(function(){
         return this.value
     }).get()
-
 
     const str_datas = '<h6>'+ diaSemana(datas[0]) +'</h6><h6 id="reserva-datas" class="overflow-x-auto">' + " " + datas.join(" - ") +"</h6>"
 
     console.log(datas)
     
     mostrarReservaDados(str_datas, tipo_reserva, turno)
-    
     reqServidorGET("./salas", {'id-sala':id_sala}, mostrarSalaDados)
-
     reqServidorGET("./turmas",{'disponiveis': true,'turno':turno, 'tipo-reserva':tipo_reserva,'datas':datas}, mostrarOptionsTurmas)
     
 })
@@ -58,18 +49,14 @@ $(document).on('click','.btn-reservar', function () {
 $(document).on("click",".btn-check", function(){
 
     if(this.id == "btn-cadastro-turma"){ 
-        $("#turma-cadastrada").prop("disabled",true)
+        $("#turma-cadastrada, .inp-turma-dados, .btn-turma-dados").prop("disabled",true)
         $(".inp-cadastrar-turma").prop("disabled",false)
-        $(".inp-turma-dados").prop("disabled",true)
-        $(".btn-turma-dados").prop("disabled",true)
-
     } else {
-        $("#turma-cadastrada").prop("disabled",false)
+        $("#turma-cadastrada, .inp-turma-dados").prop("disabled",false)
         $(".inp-cadastrar-turma").prop("disabled",true)
-        $(".inp-turma-dados").prop("disabled",false)
-        $(".btn-turma-dados").prop("disabled",false)
+        stateBtnTurmaDados()
     }
-
+    
 })
 
         
@@ -98,24 +85,33 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
 
 // BTN CANCELAR MODAL CADASTRAR RESERVA
 $("#btn-cancelar-reserva").click(()=>{
-    $(".inp-turma-dados").val("")
+    resetSelectTurma()
 })
 
 
 // BOTAO PAGINA
-$(document).on('click','.pagina-salas', function (e) {
-    e.preventDefault()
-    
-    const pagina = $(this).val()
-    
+$(document).on('click','.btn-pagina', function (){
+    getTabelaSalasDisponiveisCached(pagina=$(this).val(),getUnidadeAtual())
+})
+
+// BOTAO UNIDADE
+$(document).on("click",".unidade-tab", function (){
+    atualizarTabelaSalasDisponiveis(unidade=$(this).val())
+    // getTabelaSalasDisponiveisCached(pagina=1,unidade=$(this).val())
+})
+
+
+function getTabelaSalasDisponiveisCached(pagina,unidade){
+
     $.ajax({
-        url:"./salas?disponiveis=true&salas-json=true",
+        url:"./salas",
         type:"GET",
-        data: {'salas-json': true},
+        data: {'disponiveis': true, 'salas-json': true},
         dataType: "json",
-        success:function(dadosJSON){
+        success:function(resposta){
             
-            tabela = gerarTabelaSalasDisponiveis(dadosJSON, pagina)
+            console.log(resposta)
+            tabela = gerarTabelaSalasDisponiveis(resposta, pagina, unidade)
 
             $("#container-tabela").html(tabela)
 
@@ -124,31 +120,32 @@ $(document).on('click','.pagina-salas', function (e) {
             }
         }
     })
-})
+}
+
 
 
 
 // DESABILITAR DATA FIM
 $(document).on('change','#inp-consulta-reserva-tipo', function(){
     
-    $("#inp-consulta-data-fim, #inp-num-encontros, .inp-dia-semana").prop("disabled",true)
-    $("#inp-consulta-data-fim, #inp-num-encontros").val('')
+    $("#inp-consulta-data-fim, #inp-semanas, .inp-dia-semana").prop("disabled",true)
+    $("#inp-consulta-data-fim, #inp-semanas").val('')
     $(".inp-dia-semana").prop("checked",false)
 
     if(this.value == "Avulsa"){
         
     } else if(this.value == "Pos-graduacao"){
         
-        $(".inp-dia-semana, #inp-num-encontros").prop("disabled",false)
+        $(".inp-dia-semana, #inp-semanas").prop("disabled",false)
         
     }
     else if(this.value == "FIC"){
         
-        $("#inp-num-encontros").prop("disabled",false)
+        $("#inp-semanas").prop("disabled",false)
     }
     else if(this.value == "Graduação"){
         
-        $("#inp-num-encontros,#inp-consulta-data-fim").prop("disabled",false)
+        $("#inp-semanas,#inp-consulta-data-fim").prop("disabled",false)
     }
 
 
@@ -156,16 +153,16 @@ $(document).on('change','#inp-consulta-reserva-tipo', function(){
 })
 
 
-$(document).on('change','#inp-num-encontros, #inp-consulta-data-fim', function(){
+$(document).on('change','#inp-semanas, #inp-consulta-data-fim', function(){
 
-    if(this.id == "inp-num-encontros" && !this.value == ''){
+    if(this.id == "inp-semanas" && !this.value == ''){
         $("#inp-consulta-data-fim").prop("disabled",true)
     }
     else if(this.id == "inp-consulta-data-fim" && !this.value == ''){
-        $("#inp-num-encontros").prop("disabled",true)
+        $("#inp-semanas").prop("disabled",true)
     } 
     else {
-        $("#inp-consulta-data-fim, #inp-num-encontros").prop("disabled",false)
+        $("#inp-consulta-data-fim, #inp-semanas").prop("disabled",false)
     }
 })
 
@@ -192,28 +189,35 @@ function tabelaBadges(tipo_reserva,turno,datas){
 }
 
 
-function gerarTabelaSalasDisponiveis(dadosJSON, pagina){
+function gerarTabelaSalasDisponiveis(resposta, pagina, unidade){
 
-    salas = dadosJSON.salas
-    
-    turno = dadosJSON.turno
-    tipo_reserva = dadosJSON.tipo_reserva
-    datas = dadosJSON.datas
+    dadosJSON = resposta.dados
+
+    const turno = dadosJSON.turno
+    const tipo_reserva = dadosJSON.tipo_reserva
+    let datas = dadosJSON.datas
     
     data = converterData(datas[0])
     dia = diaSemana(datas[0])
-
+    
     date = dia + ' - ' + data
-
+    
     tabela = '<table class="table table-striped tabela-consulta">'
     
     tabela += tabelaBadges(tipo_reserva,turno,datas)
+    
+    tabela += btnUnidade(unidade)
+    
+    if(resposta.status == 200){
 
+    const salas = dadosJSON.salas
+
+    tabela += "<br>"
     tabela += '<thead>'
     tabela += '<tr>'
     tabela += '<th scope="col">Sala</th>'
     tabela += '<th scope="col">Tipo</th>'
-    tabela += '<th scope="col">N.&#xba; lugares</th>'
+    tabela += '<th scope="col">Lotação</th>'
     tabela += '<th scope="col">N.&#xba; maquinas</th>'
     tabela += '<th scope="col">Maquinas tipo</th>'
     tabela += '<th scope="col">Ação</th>'
@@ -221,58 +225,54 @@ function gerarTabelaSalasDisponiveis(dadosJSON, pagina){
     tabela += '</tr>'
     tabela += '<tbody>'
 
-    reg_qtd = salas.length 
-    reg_pag = 20  
-    paginas = Math.ceil(reg_qtd / reg_pag);
+    let reg_qtd = salas.length
+
+    const reg_pag = 20  
+    const paginas = Math.ceil(reg_qtd / reg_pag);
+    
     if(pagina > paginas){
         pagina = paginas
     }
-    end = reg_pag * pagina; 
-    i = end - reg_pag; 
+    const end = reg_pag * pagina; 
+    let i = end - reg_pag; 
     
     for (i; i < end; i++){
-
+        
         if (i == reg_qtd){
             break;
         }
-
+        
         maquinas_tipo = (!salas[i].maquinas_tipo) ? "Nenhum" : salas[i].maquinas_tipo
-
+        
         tabela += '<tr>'
-        tabela += '<td>' + salas[i].sala + '</td>' 
-        tabela += '<td>' + salas[i].sala_tipo + '</td>' 
-        tabela += '<td>' + salas[i].lugares + '</td>'
-        tabela += '<td>' + salas[i].maquinas_qtd   + '</td>' 
+        tabela += '<td>' + salas[i].numero_sala + '</td>'
+        tabela += '<td>' + salas[i].tipo_sala + '</td>'
+        tabela += '<td>' + salas[i].lugares_qtd + '</td>'
+        tabela += '<td>' + salas[i].maquinas_qtd   + '</td>'
         tabela += '<td>' + maquinas_tipo + '</td>'
         tabela += '<td>'
-        tabela += '<button type="button" class="btn btn-primary btn-reservar" data-bs-toggle="modal" value="' + salas[i].sala + '" data-bs-target="#cadastrar-reserva-modal">Reservar</button>'
-        tabela += '</td>' 
+        tabela += '<button type="button" class="btn btn-primary btn-reservar" data-bs-toggle="modal" value="' + salas[i].id_sala + '" data-bs-target="#cadastrar-reserva-modal">Reservar</button>'
+        tabela += '</td>'
         tabela += '</tr>'
+        
     }
     tabela += '</tbody>'
     tabela +='</table>'
-
-    tabela += '<nav aria-label="...">'
-    tabela += '<ul class="pagination pagination-sm">'
-
-    for (e = 1; e < paginas + 1; e++) { 
-        if(e == pagina){
-            tabela += '<li class="page-item active" aria-current="page"><span id="current-page" class="page-link">' + e + '</span></li>'
-        } else { 
-            tabela += '<li class="page-item pagina-salas" type="button" value="' + e + '">'
-            tabela += '<a class="page-link" id="bb">' + e + '</a>'
-            tabela += '</li>'
-        }
-    } 
-    tabela += '</ul>'
-    tabela += '</nav>'
-
-    return tabela
+    
+    tabela += btnPaginas(pagina, paginas)
+} else {
+    tabela += alertaTabela(resposta.msg)
+}
+   return tabela
 }
 
-function atualizarTabelaSalasDisponiveis(){
+function atualizarTabelaSalasDisponiveis(unidade=null){
 
-    let form = $('#form-consultar-salas').serialize()
+    if(!unidade){
+        unidade = getUnidadeAtual()
+    }
+
+    let form = $('#form-consultar-salas').serialize() + "&unidade=" + unidade
 
     console.log(form)
 
@@ -287,31 +287,23 @@ function atualizarTabelaSalasDisponiveis(){
             
             console.log(resposta)
 
-            if(resposta.status == 200){
+            tabela = gerarTabelaSalasDisponiveis(resposta, pagina=getPaginaAtual(), unidade)
 
-                dadosJSON = resposta.dados
+            $("#container-tabela").html(tabela)
 
-                tabela = gerarTabelaSalasDisponiveis(dadosJSON, getPaginaAtual())
-
-                $("#container-tabela").html(tabela)
-
-                $("#tabDatas").on('mouseenter', () => {
-                    $("#tabDatas").collapse('show');
-                })
-                
-                $("#tabDatas").mouseleave(() => {
-                    $("#tabDatas").collapse('hide');
-                })
+            $("#tabDatas").on('mouseenter', () => {
+                $("#tabDatas").collapse('show');
+            })
+            
+            $("#tabDatas").mouseleave(() => {
+                $("#tabDatas").collapse('hide');
+            })
                         
-            }
+            
                 
-             else if (resposta.status == 204) {
+            
                 
-                $("#container-tabela").html("<span>" + resposta.msg + "</span>")
-                
-            } else {   
-                console.log(resposta.msg)
-            }
+            
         } 
     })
 }

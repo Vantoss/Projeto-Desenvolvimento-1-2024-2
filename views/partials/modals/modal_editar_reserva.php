@@ -23,7 +23,14 @@
           <input form="form-editar" type="hidden" name="id-turma" id="inp-edit-id_turma" value="">
           
             <div class="row text-center">
+
+
+
               <div class="col">
+                <div class="form-floating" style="margin-bottom: 10px;">
+                  <input type="text" form="cadastrar-reserva"  class="form-control" id="inp-responsavel-cadastro" placeholder="Responsável Cadastro" name="responsavel-cadastro" autocomplete="off" required>
+                  <label for="inp-responsavel-cadastro" class="form-label">Responsável Cadastro</label>
+                </div>
                 <div class="form-floating">
                   <select form="form-editar" id="turma-cadastrada" class="form-select" name="id-turma-nova" aria-label="Floating label select example"  required>
                   </select>

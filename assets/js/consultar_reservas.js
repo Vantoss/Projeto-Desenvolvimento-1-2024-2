@@ -147,14 +147,15 @@ function gerarTabelaReservas(reservas, pagina){
     tabela += '</tr>'
     tabela += '<tbody>'
     
-    reg_qtd = reservas.length 
-    reg_pag = 20  
-    paginas = Math.ceil(reg_qtd / reg_pag);
+    const reg_qtd = reservas.length 
+    const reg_pag = 20  
+    const paginas = Math.ceil(reg_qtd / reg_pag);
+
     if(pagina > paginas){
         pagina = paginas
     }
-    end = reg_pag * pagina; 
-    i = end - reg_pag; 
+    const end = reg_pag * pagina; 
+    let i = end - reg_pag; 
     
     for (i; i < end; i++){
         if (i == reg_qtd){
@@ -184,20 +185,7 @@ function gerarTabelaReservas(reservas, pagina){
     tabela += '</tbody>'
     tabela +='</table>'
 
-    tabela += '<nav aria-label="...">'
-    tabela += '<ul class="pagination pagination-sm">'
-
-    for (e = 1; e < paginas + 1; e++) { 
-        if(e == pagina){
-            tabela += '<li class="page-item active" aria-current="page"><span id="current-page" class="page-link">' + e + '</span></li>'
-        } else { 
-            tabela += '<li class="page-item pagina-reservas" type="button" value="' + e + '">'
-            tabela += '<a class="page-link">' + e + '</a>'
-            tabela += '</li>'
-        }
-    } 
-    tabela += '</ul>'
-    tabela += '</nav>'
+    tabela += btnPaginas(pagina, paginas)
 
     tabela += '<div style="margin-bottom: 20px;">'
     tabela += '<button type="button" onclick="gerarPDF()" class="btn btn-primary btn-reservar">'
@@ -227,14 +215,15 @@ function gerarTabelaHistorico(reservas, pagina){
     tabela += '</tr>'
     tabela += '<tbody>'
     
-    reg_qtd = reservas.length 
-    reg_pag = 20  
-    paginas = Math.ceil(reg_qtd / reg_pag);
+    const reg_qtd = reservas.length 
+    const reg_pag = 20  
+    const paginas = Math.ceil(reg_qtd / reg_pag);
+
     if(pagina > paginas){
         pagina = paginas
     }
-    end = reg_pag * pagina; 
-    i = end - reg_pag; 
+    const end = reg_pag * pagina; 
+    let i = end - reg_pag; 
     
     for (i; i < end; i++){
         if (i == reg_qtd){
@@ -258,20 +247,7 @@ function gerarTabelaHistorico(reservas, pagina){
     tabela += '</tbody>'
     tabela +='</table>'
 
-    tabela += '<nav aria-label="...">'
-    tabela += '<ul class="pagination pagination-sm">'
-
-    for (e = 1; e < paginas + 1; e++) { 
-        if(e == pagina){
-            tabela += '<li class="page-item active" aria-current="page"><span id="current-page" class="page-link">' + e + '</span></li>'
-        } else { 
-            tabela += '<li class="page-item pagina-reservas" type="button" value="' + e + '">'
-            tabela += '<a class="page-link">' + e + '</a>'
-            tabela += '</li>'
-        }
-    } 
-    tabela += '</ul>'
-    tabela += '</nav>'
+   tabela += btnPaginas(pagina, paginas)
 
     return tabela
 
@@ -290,7 +266,7 @@ function mostradorTabelaReservas(reqRes){
         resposta = gerarTabela(dadosJSON.reservas, getPaginaAtual())
 
     } else {
-        resposta = "<span>"+ reqRes.msg +"</span>"
+        resposta = alertaTabela(reqRes.msg)
     }
     
     $("#container-tabela").html(resposta)

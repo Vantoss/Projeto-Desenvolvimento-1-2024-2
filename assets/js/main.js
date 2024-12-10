@@ -21,11 +21,14 @@ $(document).on('change', '.form-consulta', function (){
 $(document).on('change','#turma-cadastrada', function(e){
     const id_turma = $(this).val()
     if(!id_turma){
-        $(".inp-turma-dados").val("")
+        // $(".inp-turma-dados, #btn-deletar-turma").val("")
+        resetSelectTurma()
+        
     } else {
         $("#btn-deletar-turma").val(id_turma)
         reqServidorGET('./turmas',{'turma-dados':true,'id-turma': id_turma}, mostrarTurmaDados)
     }
+    stateBtnTurmaDados()
 })
 
     
@@ -241,7 +244,7 @@ function mostrarSalaDados(resposta){
 
     objTurma = JSON.parse(resposta)
 
-    dados = '<h6>'+ objTurma.id_sala+ ' - '+ objTurma.tipo_sala + '</h6>'
+    dados = '<h6>'+ objTurma.numero_sala+ ' - '+ objTurma.tipo_sala + '</h6>'
     dados +='<h6>'+objTurma.lugares_qtd +' lugares</h6>'
     dados +='<h6> '+objTurma.maquinas_qtd +' maquinas ('+ objTurma.maquinas_tipo+ ')</h6>'
 
@@ -277,30 +280,83 @@ function checkDatas(){
 }
 
 function getPaginaAtual(){
-    if(document.getElementById("current-page")){
-        pagina = Number($("#current-page").text())
+    if(document.getElementById("pagina-atual")){
+        pagina = Number($("#pagina-atual").val())
     } else {
         pagina = 1
     }
+    console.log(pagina)
     return pagina
 }
 
+function getUnidadeAtual(){
+    if(document.getElementById("unidade-atual")){
+        unidade = Number($("#unidade-atual").val())
+    } else {
+        unidade = 1
+    }
+    console.log(unidade)
+    return unidade
+}
+
 function resetSelectTurma(){
-    $("#turma-cadastrada, #inp-turma-dados, #btn-deletar-turma").val("")
+    $("#turma-cadastrada, .inp-turma-dados, #btn-deletar-turma").val("")
+    $(".btn-turma-dados").prop("disabled",true)
+}
+
+function stateBtnTurmaDados(){
+    let turmaDados = $(".btn-turma-dados")
+
+    if(!$("#turma-cadastrada").val()){
+        turmaDados.prop("disabled",true)
+    } else {
+        turmaDados.prop("disabled",false)
+    }
 }
 
 
-// $('#datepicker').datepicker({
-//     startDate: new Date(),
-//     multidate: true,
-//     format: "dd/mm/yyyy",
-//     daysOfWeekHighlighted: "5,6",
-//     datesDisabled: ['31/08/2017'],
-//     language: 'pt-br'
-// }).on('changeDate', function(e) {
-//     // `e` here contains the extra attributes
-//     $(this).find('.input-group-addon .count').text(' ' + e.dates.length);
-// });
+function btnPaginas(pagina,paginas){
+    tabela = '<nav>'
+    tabela += '<ul class="pagination pagination-sm">'
+
+    for (e = 1; e < paginas + 1; e++) { 
+        if(e == pagina){
+            tabela += '<li class="page-item active" type="button"><button id="pagina-atual" value="'+ e +'" class="page-link">' + e + '</button></li>'
+        } else { 
+            tabela += '<li class="page-item btn-pagina" type="button" value="' + e + '">'
+            tabela += '<button class="page-link">' + e + '</button>'
+            tabela += '</li>'
+        }
+    }
+
+    tabela += '</ul>'
+    tabela += '</nav>'
+
+    return tabela
+}
+
+function btnUnidade(unidade){
+
+    const unidades = 2
+
+    tabela = '<ul class="nav nav-pills">'
+    
+    for (e = 1; e <= unidades; e++) { 
+        if(e == unidade){
+            tabela += '<li class="nav-item"><button class="nav-link active unidade-tab" value="'+ e +'" id="unidade-atual" >Unidade '+ e +'</button></li>'
+        } else { 
+            tabela += '<li class="nav-item"><button class="nav-link unidade-tab" value="'+ e +'" >Unidade '+ e +'</button></li>'
+        }
+    } 
+    tabela += '</ul>'
+
+    return tabela
+}
+
+
+function alertaTabela(msg){
+    return "<span class='alerta-Tabela'>" + msg + "</span>"
+}
 
 
 

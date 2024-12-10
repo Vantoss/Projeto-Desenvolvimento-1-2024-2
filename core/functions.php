@@ -55,7 +55,7 @@ function customPageHeader($pagina_titulo){
 
 }
 
-function gerarDatasGraducao($data_inicial,$data_final=null,$num_encontros=null){
+function gerarDatasGraducao($data_inicial,$data_final=null,$semanas=null){
     $dias = "";
 
     if($data_final){
@@ -67,7 +67,7 @@ function gerarDatasGraducao($data_inicial,$data_final=null,$num_encontros=null){
         
     } else {
 
-        for ($i=0; $i < $num_encontros; $i++) { 
+        for ($i=0; $i < $semanas; $i++) { 
             $dias .= $data_inicial->format("Y-m-d,");
             $data_inicial->modify("+1 week");
         }
@@ -75,10 +75,10 @@ function gerarDatasGraducao($data_inicial,$data_final=null,$num_encontros=null){
     return $dias = substr_replace($dias,"",-1); 
 }
 
-function gerarDatasFIC ($data_inicial,$data_final,$num_encontros){
+function gerarDatasFIC($data_inicial,$data_final,$semanas){
     $dias ="";
 
-    $num_encontros *= 5; 
+    $semanas *= 5; 
 
     $fim_semanda = ["6","0"];
 
@@ -93,7 +93,7 @@ function gerarDatasFIC ($data_inicial,$data_final,$num_encontros){
 
     } else {
         $i=0;
-        while ($i < $num_encontros) {
+        while ($i < $semanas) {
             if(!in_array($data_inicial->format('w'),$fim_semanda)){
                 $dias .= $data_inicial->format('Y-m-d,');
                 $i++;
@@ -104,6 +104,35 @@ function gerarDatasFIC ($data_inicial,$data_final,$num_encontros){
 
     return $dias = substr_replace($dias,"",-1); 
 }
+function gerarDatasPos($data_inicial,$dias_semana,$semanas){
+    $dias ="";
+
+
+
+    // if($data_final){
+
+    //     while ($data_inicial <= $data_final) {
+    //         if(!in_array($data_inicial->format('w'),$dias_semana)){
+    //             $dias .= $data_inicial->format('Y-m-d,');
+    //         }
+    //         $data_inicial->modify("+1 day");
+    //     }
+
+    // } else {
+        $i=0;
+        while ($i < $semanas * count($dias_semana)) {
+            if(in_array($data_inicial->format('w'),$dias_semana)){
+                $dias .= $data_inicial->format('Y-m-d,');
+                $i++;
+            }
+            $data_inicial->modify("+1 day");
+        }
+    // }
+
+    return $dias = substr_replace($dias,"",-1); 
+}
+
+
 
 function gerarTurmasJSON(){
 
@@ -147,31 +176,32 @@ function gerarSalasJSON(){
 
     $salas = $stm->fetchAll(PDO::FETCH_ASSOC);
 
-    if($salas){        
-        $dados = [
-            "status" => 200,
-            "salas" => $salas
-        ];
-    } else {
+    if(!$salas){
         $dados = [
             "status" => 204,
             "msg" => "Nenhuma sala cadastrada",
         ];
-    }
+    }        
 
-    touch(ROOT_DIR. 'JSON/dados_salas.json');
+    $dados = [
+        "status" => 200,
+        "salas" => $salas
+    ];
+
+        
+    touch(ROOT_DIR. 'JSON/salas.json');
     
-    file_put_contents(ROOT_DIR. 'JSON/dados_salas.json', json_encode($dados));
+    file_put_contents(ROOT_DIR. 'JSON/salas.json', json_encode($dados));
 
 }
 
 function salasOptions($opcao){
     
-    if (!file_exists(ROOT_DIR. 'JSON/dados_salas.json')) {
+    if (!file_exists(ROOT_DIR. 'JSON/salas.json')) {
         gerarSalasJSON();
     }
     
-    $salasJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/dados_salas.json'),true);
+    $salasJSON = json_decode(file_get_contents(ROOT_DIR. 'JSON/salas.json'),true);
 
     
 
@@ -189,7 +219,7 @@ function salasOptions($opcao){
     if($opcao == "id_sala"){
 
         foreach ($salas as $sala) {?>
-          <option value="<?php echo $sala["id_sala"]?>" ><?php echo $sala["id_sala"] ?></option>
+          <option value="<?php echo $sala["id_sala"]?>" ><?php echo $sala["numero_sala"] . " - Unidade " . $sala["unidade"] ?></option>
           <?php }
     } 
     else if ($opcao == "tipo_sala") {
@@ -296,6 +326,38 @@ function dd($value){
     var_dump($value);
     die();
 }
+
+
+function getRequesData(){
+    $query = parse_url($_SERVER["REQUEST_URI"])["query"] ?? null;
+
+    if($query){
+        parse_str($query,$data);
+    } else {
+        $data = json_decode(file_get_contents('php://input'),true);
+    }
+    // exit(var_dump($data));
+
+    return $data;
+}
+
+function verificarId($tabela,$arr){
+    $conn = initDB();
+
+    $id_campo = array_keys($arr)[0];
+    $id = array_values($arr)[0];
+
+    $selectSQL = "SELECT 1 FROM $tabela WHERE $id_campo = $id";
+
+    if($conn->query($selectSQL)->fetchColumn() == 0){
+        exit(json_encode([
+            "status" => 400,
+            "msg" => "Id $id nao existe"
+        ]));
+    }
+
+}
+
 
 ?>
 

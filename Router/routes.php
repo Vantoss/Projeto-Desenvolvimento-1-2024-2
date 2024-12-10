@@ -5,6 +5,7 @@ require 'Router.php';
 $router = new Router();
 
 
+
 // pagina_inicial
 $router->get('/inicial', 'controllers/paginas/pagina_inicial/index.php');
 
@@ -55,5 +56,16 @@ $router->delete('/turmas','controllers/turmas/deletar_turmas.php');
 $router->get("/test","test/test.php");
 
 
-// pagina install
+// gerenciamento de chaves
 
+$router->get("/chaves","controllers/chaves/mostrar_chaves.php");
+
+$router->put("/chaves","controllers/chaves/editar_chaves.php");
+
+$router->delete("/chaves","controllers/chaves/deletar_chaves.php");
+
+$router->post("/chaves","controllers/chaves/cadastrar_chaves.php");
+
+$router->get("/chaves/movimentacoes","controllers/movimentacoes_chaves/mostrar_movimentacoes.php");
+
+$router->post("/chaves/movimentacoes","controllers/movimentacoes_chaves/cadastrar_movimentacoes.php");

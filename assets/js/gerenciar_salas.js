@@ -1,57 +1,95 @@
 $(document).ready(function () {
-    getTabelaSalas()
+    getTabelaSalas(1,1)
 });
 
-function getTabelaSalas(pagina=null){
+// BOTAO PAGINA
+$(document).on("click",".btn-pagina",function () {
+    getTabelaSalas(pagina=$(this).val(),unidade=getUnidadeAtual())
+})
+
+// BOTAO UNIDADE
+$(document).on("click",".unidade-tab", function (){
+    getTabelaSalas(pagina=1,$(this).val())
+})
+
+
+// BTN EDITAR
+$(document).on("click",".btn-editar-sala",function () { 
+    const id_sala = $(this).val()
+    $("#inp-editar-sala-id").val(id_sala)
+    reqServidorGET("./salas", {'id-sala':id_sala}, modalEditarSalaDados)
+    
+});
+
+// SUBMIT FORM EDITAR SALA
+$(document).on("submit","#form-editar-sala", function (e) {
+    e.preventDefault()
+    form = $(this).serialize()
+    console.log(form)
+    reqServidorPUT("./salas", form, getTabelaSalas)
+}) 
+
+
+
+
+function modalEditarSalaDados(resposta){
+    sala = JSON.parse(resposta)
+
+    if(sala.unidade == 1){
+        $("#inp-editar-unidade-1").prop("checked", true)
+    } else {
+        $("#inp-editar-unidade-2").prop("checked", true)
+    }
+
+    $("#span-numero-sala").html(sala.numero_sala)
+    $("#inp-editar-tipo").val(sala.tipo_sala)
+    $("#inp-editar-maquinas-qtd").val(sala.maquinas_qtd)
+    $("#inp-editar-maquinas-tipo").val(sala.maquinas_tipo)
+    $("#inp-editar-lotacao").val(sala.lugares_qtd)
+    $("#inp-editar-descricao").val(sala.descricao)
+
+}
+
+
+function getTabelaSalas(pagina=getPaginaAtual(),unidade=getUnidadeAtual()){
+
     $.ajax({
         type: "GET",
-        url: "./salas",
+        url: "./salas?tabela-salas=true&unidade=" + unidade,
         dataType: "json",
         beforeSend:function(){
             $("#container-tabela").css("visibility","visible")
         },
-        success: function (dadosJSON) {
-            if(!pagina){
-                pagina = getPaginaAtual()
+        success: function (resposta) { 
+
+            console.log(resposta)
+            if(resposta.status != 200 ){
+
+                $("#container-tabela").html("<span>"+ resposta.msg + "</span>")
+                return
             }
-            tabela = gerarTabelaSalas(dadosJSON, pagina)
+            
+            tabela = gerarTabelaSalas(resposta.salas, pagina, unidade)
             $("#container-tabela").html(tabela)
         }
     });
 }
 
-$('.btn-editar').click(() => { 
-    const id_sala = $(this).val()
-    reqServidorGET({dados_sala: id_sala}, mostrarModalEditarSala)
-})
-
-
-function mostrarModalEditarSala(resposta){
-    mostrarInputDadosTurma(resposta)
-
-    $("#modal-editar-sala").modal('show')
-}
 
 
 
-
-// BOTAO PAGINA
-$(document).on('click','.pagina-salas', function (e) {
-    e.preventDefault()
-    const pagina = $(this).val()
-    getTabelaSalas(pagina)
-})
         
-        
-function gerarTabelaSalas(dadosJSON, pagina){
-
-    salas = dadosJSON.salas
-
+function gerarTabelaSalas(salas, pagina, unidade){
+    
     if(salas.length == 0){
-        return "<h2>Nenhuma sala cadastrada</h2>" 
+       return "<h2>Nenhuma sala cadastrada</h2>" 
     }
 
     tabela = '<table class="table table-striped tabela-consulta">'
+    tabela += '<br>'
+
+    tabela += btnUnidade(unidade)
+
     tabela += '<thead>'
     tabela += '<tr>'
     tabela += '<th scope="col">Sala</th>'
@@ -64,51 +102,44 @@ function gerarTabelaSalas(dadosJSON, pagina){
     tabela += '</tr>'
     tabela += '<tbody>'
 
-    reg_qtd = salas.length 
-    reg_pag = 20  
-    paginas = Math.ceil(reg_qtd / reg_pag);
+    const reg_qtd = salas.length 
+    const reg_pag = 20  
+    const paginas = Math.ceil(reg_qtd / reg_pag);
+
     if(pagina > paginas){
         pagina = paginas
     }
-    end = reg_pag * pagina; 
-    i = end - reg_pag; 
+    const end = reg_pag * pagina; 
+    let i = end - reg_pag; 
 
     for (i; i < end; i++){
 
-        if (i == reg_qtd){
-            break;
-        }
+        // console.log(i)
 
-        maquinas_tipo = (!salas[i].maquinas_tipo) ? "Nenhum" : salas[i].maquinas_tipo
-
-        tabela += '<tr>'
-        tabela += '<td>' + salas[i].id_sala + '</td>' 
-        tabela += '<td>' + salas[i].tipo_sala + '</td>' 
-        tabela += '<td>' + salas[i].lugares_qtd + '</td>'
-        tabela += '<td>' + salas[i].maquinas_qtd   + '</td>' 
-        tabela += '<td>' + maquinas_tipo + '</td>'
-        tabela += '<td>'
-        tabela += '<button type="button" class="btn btn-primary btn-editar" data-bs-toggle="modal" value="' + salas[i].id_sala + '" data-bs-target="#modal-editar-sala">Editar</button>'
-        tabela += '</td>' 
-        tabela += '</tr>'
+            if (i == reg_qtd){
+                break;
+            }
+            
+            maquinas_tipo = (!salas[i].maquinas_tipo) ? "Nenhum" : salas[i].maquinas_tipo
+            tabela += '<tr>'
+            tabela += '<td>' + salas[i].numero_sala + '</td>'
+            tabela += '<td>' + salas[i].tipo_sala + '</td>'
+            tabela += '<td>' + salas[i].lugares_qtd + '</td>'
+            tabela += '<td>' + salas[i].maquinas_qtd   + '</td>'
+            tabela += '<td>' + maquinas_tipo + '</td>'
+            tabela += '<td>'
+            tabela += '<div class="d-grid gap-2 d-md-flex justify-content-md-center">'
+            tabela += '<button type="button" class="btn btn-primary btn-editar-sala" data-bs-toggle="modal" value="' + salas[i].id_sala + '" data-bs-target="#modal-editar-sala">Editar</button>'
+            tabela += '<button type="button" class="btn btn-danger btn-deletar-sala" data-bs-toggle="modal" value="' + salas[i].id_sala +'" data-bs-target="#modal-deletar-sala">Deletar</button>'
+            tabela += '</div>' 
+            tabela += '</td>' 
+            tabela += '</tr>'
+        
     }
     tabela += '</tbody>'
     tabela +='</table>'
 
-    tabela += '<nav aria-label="...">'
-    tabela += '<ul class="pagination pagination-sm">'
-
-    for (e = 1; e < paginas + 1; e++) { 
-        if(e == pagina){
-            tabela += '<li class="page-item active" aria-current="page"><span id="current-page" class="page-link">' + e + '</span></li>'
-        } else { 
-            tabela += '<li class="page-item pagina-salas" type="button" value="' + e + '">'
-            tabela += '<a class="page-link" id="bb">' + e + '</a>'
-            tabela += '</li>'
-        }
-    } 
-    tabela += '</ul>'
-    tabela += '</nav>'
+    tabela += btnPaginas(pagina, paginas)
 
     tabela += '<div style="margin-bottom: 20px;">'
     tabela += '<button type="button" onclick="gerarPDF()" class="btn btn-primary btn-reservar">'
@@ -134,6 +165,8 @@ function pdfBody(dados){
     }
     return body;
 }
+
+
 
 //GERAR PDF
 function gerarPDF(){

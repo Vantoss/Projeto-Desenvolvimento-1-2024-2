@@ -10,13 +10,9 @@ if(empty($_GET)) {
 if(isset($_GET["disponiveis"])){
 
     $id_turma = $_GET["id-turma"] ?? null;
-
     $tipo_turma = $_GET["tipo-reserva"];
-
     $turno = $_GET["turno"];
-
     $datas = $_GET["datas"];
-
 
     if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
         gerarTurmasJSON();
@@ -35,10 +31,10 @@ if(isset($_GET["disponiveis"])){
     if($tipo_turma == "Graduação"){
         
         $selectSQL = "SELECT DISTINCT r.id_turma 
-                FROM reservas as r
-                INNER JOIN turmas as t 
-                ON r.id_turma = t.id_turma
-                WHERE t.tipo_turma = 'Graduação' AND";
+                      FROM reservas as r
+                      INNER JOIN turmas as t 
+                      ON r.id_turma = t.id_turma
+                      WHERE t.tipo_turma = 'Graduação' AND";
 
         $sql = [];
 
@@ -49,9 +45,7 @@ if(isset($_GET["disponiveis"])){
             $data_inicial = date('Y-m-d',strtotime("-6 days",strtotime($datas[$i])));
 
             while(isset($datas[$i+1])){
-                
                 $diff = date_diff(date_create($datas[$i]),date_create($datas[$i+1]),true);
-                
                 if((int) $diff->format("%a") > 7 ){
                     break;
                 }
@@ -70,10 +64,10 @@ if(isset($_GET["disponiveis"])){
 } elseif ($tipo_turma == "Avulsa"){
 
     $selectSQL = "SELECT DISTINCT r.id_turma 
-                FROM reservas as r
-                INNER JOIN turmas as t
-                ON r.id_turma = t.id_turma
-                WHERE t.tipo_turma = 'Avulsa' AND DATE(r.data) = '$datas[0]'";
+                  FROM reservas as r
+                  INNER JOIN turmas as t
+                  ON r.id_turma = t.id_turma
+                  WHERE t.tipo_turma = 'Avulsa' AND DATE(r.data) = '$datas[0]'";
 }
 
     
@@ -102,8 +96,8 @@ if(isset($_GET["disponiveis"])){
         }
     }
 
-    if(!$turmaEncontrada){?>
-        <option value="" selected="">Nenhuma turma cadastrada</option>
+    if(!$turmaEncontrada and !$id_turma){?>
+        <option value="" >Nenhuma turma cadastrada</option>
 <?php }
     else if(!$id_turma){?>
         <option value="" selected="">Selecione uma turma</option>
