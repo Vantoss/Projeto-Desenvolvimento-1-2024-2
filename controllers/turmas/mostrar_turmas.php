@@ -10,9 +10,27 @@ if(empty($_GET)) {
 if(isset($_GET["disponiveis"])){
 
     $id_turma = $_GET["id-turma"] ?? null;
-    $tipo_turma = $_GET["tipo-reserva"];
-    $turno = $_GET["turno"];
-    $datas = $_GET["datas"];
+
+    if($id_turma){
+        $selectSQL = "SELECT t.turno as turno,
+                             t.tipo_turma as tipo_turma,
+                             r.data as `data`
+        FROM reservas as r 
+        INNER JOIN turmas as t 
+        ON t.id_turma = r.id_turma 
+        WHERE r.id_turma = $id_turma";
+
+        $turma = $conn->query($selectSQL)->fetch(PDO::FETCH_ASSOC);
+
+        $tipo_turma = $turma["tipo_turma"];
+        $turno = $turma["turno"];
+        $datas = $turma["data"];
+
+    } else {
+        $tipo_turma = $_GET["tipo-reserva"];
+        $turno = $_GET["turno"];
+        $datas = $_GET["datas"];
+    }
 
     if (!file_exists(ROOT_DIR. 'JSON/dados_turmas.json')) {
         gerarTurmasJSON();
@@ -51,36 +69,41 @@ if(isset($_GET["disponiveis"])){
                 }
                 $i++;
             }
-            
             $data_final = date('Y-m-d',strtotime("+6 days",strtotime($datas[$i])));
-            
             $sql[] = " DATE(r.data) BETWEEN '$data_inicial' AND '$data_final'";
-            
             $i++;
         }
 
         $selectSQL .= implode(" OR ", $sql);
     
-} elseif ($tipo_turma == "Avulsa"){
+    } else if ($tipo_turma == "Avulsa"){
 
-    $selectSQL = "SELECT DISTINCT r.id_turma 
-                  FROM reservas as r
-                  INNER JOIN turmas as t
-                  ON r.id_turma = t.id_turma
-                  WHERE t.tipo_turma = 'Avulsa' AND DATE(r.data) = '$datas[0]'";
-}
+        $selectSQL = "SELECT DISTINCT r.id_turma 
+                    FROM reservas as r
+                    INNER JOIN turmas as t
+                    ON r.id_turma = t.id_turma
+                    WHERE t.tipo_turma = 'Avulsa' AND DATE(r.data) = '$datas[0]'";
 
-    
+    } else if ($tipo_turma == "FIC"){
+
+        $selectSQL = "SELECT DISTINCT r.id_turma 
+                    FROM reservas as r
+                    INNER JOIN turmas as t
+                    ON r.id_turma = t.id_turma
+                    WHERE t.tipo_turma = 'Avulsa'";
+                    
+        foreach ($variable as $key => $value) {
+            
+        }
+        
+    }
+        
     $stm = $conn->query($selectSQL);
     $arr_ids = $stm->fetchAll(PDO::FETCH_COLUMN);
 
-
-    if($dadosJSON["status"] == 200){
+    if($dadosJSON["status"] == 200) {
         
-           
-
         foreach ($turmas as $turma) {
-
 
             if($turma["turno"] == $turno and $turma["tipo_turma"] == $tipo_turma){
 
@@ -91,13 +114,22 @@ if(isset($_GET["disponiveis"])){
                 if(!in_array($turma["id_turma"],$arr_ids)){
                     $turmaEncontrada = true;?>
                     <option value="<?php echo $turma["id_turma"] ?>" id="opt-<?php echo $turma["id_turma"] ?>" >  <?php echo $turma["nome"]?> </option>
+                    <?php } 
+                    else if (in_array($turma["id_turma"],$arr_ids) && $turma["id_turma"] != $id_turma) {?>
+                    <option value="" disabled>  <?php echo $turma["nome"]?> - indisponível</option>
+
                 <?php }
             }
         }
-    }
+
+
+
+
+}
+
 
     if(!$turmaEncontrada and !$id_turma){?>
-        <option value="" >Nenhuma turma cadastrada</option>
+        <option value="" >Nenhuma turma disponível</option>
 <?php }
     else if(!$id_turma){?>
         <option value="" selected="">Selecione uma turma</option>

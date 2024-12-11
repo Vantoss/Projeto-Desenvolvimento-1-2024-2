@@ -1,8 +1,7 @@
 <?php
     // HEADER
-    require_once ROOT_DIR. "views/partials/head.php";
-
-    require_once ROOT_DIR. "views/partials/navbar.php";
+require view('partials/head.php');
+require view('partials/navbar.php');
 ?>
         
 <body>
@@ -10,9 +9,11 @@
 <!-- BOX FILTROS -->
 
 <form class="row g-3 form-consulta" id="form-consultar-reservas" method="get">
-  
-    <h2>Consultar Reservas</h2>
-
+    <div style="display: flex; justify-content: space-between; margin-top:0;">
+      <h2>Consultar Reservas</h2>
+      <h2><?php echo getDataAtual() ?></h2>
+    </div>
+      
   <!-- FILTRO turma -->
   <div class="col-md-6">
     <label for="inp-consulta-turma" class="form-label">Turma</label>
@@ -34,13 +35,13 @@
   <!-- FILTRO DATA INICIO -->
   <div class="col-md-3">
     <label for="inp-consulta-data-inicio" class="form-label">De</label>
-    <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" name="data-inicio">
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-inicio" name="data-inicio" value="<?php echo dataAtual() ?>">
   </div>
   
   <!-- FILTRO DATA FIM -->
   <div class="col-md-3">
     <label for="inp-consulta-data-fim" class="form-label">Até</label>
-    <input type="date" class="form-control inp-data" id="inp-consulta-data-fim" name="data-fim">
+    <input type="date" class="form-control inp-data" id="inp-consulta-data-fim" name="data-fim" value="<?php echo dataAtual() ?>">
     <div  class="invalid-feedback">
         A data final não pode ser maior que a data inicial
       </div>
@@ -107,16 +108,16 @@
 
 <?php
     // MODAIS DELETAR RESERVA
-    require_once ROOT_DIR.'views/partials/modals/modal_deletar_reserva.php';
+    require view('partials/modals/modal_deletar_reserva.php');
     
     // MODAL EDITAR RESERVA
-    require_once ROOT_DIR.'views/partials/modals/modal_editar_reserva.php';
+    require view('partials/modals/modal_editar_reserva.php');
 
     // MODAL ALERTA 
-    require_once ROOT_DIR.'views/partials/modals/modal_alerta.php';
+    require view('partials/modals/modal_alerta.php');
 
     //MODAL DELETAR TURMA
-    require_once ROOT_DIR.'views/partials/modals/modal_deletar_turma.php';
+    require view('partials/modals/modal_deletar_turma.php');
 ?>
 
     <div class="container-fluid" id="container-tabela"></div>

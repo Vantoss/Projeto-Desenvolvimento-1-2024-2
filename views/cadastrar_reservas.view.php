@@ -1,16 +1,18 @@
 <?php
 // HEADER
-require_once ROOT_DIR. "views/partials/head.php";
-
-require_once ROOT_DIR. "views/partials/navbar.php";
+require view('partials/head.php');
+require view('partials/navbar.php');
 
 ?>
 
 <body>
     <!-- BOX FILTROS -->
 <form class="row g-3 form-consulta " id="form-consultar-salas"  method="get" >
+<div style="display: flex; justify-content: space-between; margin-top:0;">
+      <h2>Cadastrar Reservas</h2>
+      <h2><?php echo getDataAtual() ?></h2>
+    </div>
 
-<h2>Consultar Salas Disponiveis</h2>
 
 <!-- FILTRO DATA INICIO -->
 <div class="col-md-3">
@@ -138,14 +140,14 @@ require_once ROOT_DIR. "views/partials/navbar.php";
 
 <?php 
     // MODAL CADASTRAR RESERVA 
-    require_once ROOT_DIR.'views/partials/modals/modal_cadastrar_reserva.php';
+    require view('partials/modals/modal_cadastrar_reserva.php');
 
     // MODAL ALERTA 
-    require_once ROOT_DIR.'views/partials/modals/modal_alerta.php';
+    require view('partials/modals/modal_alerta.php');
     
     
     //MODAL DELETAR TURMA
-    require_once ROOT_DIR.'views/partials/modals/modal_deletar_turma.php';
+    require view('partials/modals/modal_deletar_turma.php');
 ?>
   
   <div class="container-fluid" id="container-tabela"></div>

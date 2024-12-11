@@ -61,14 +61,14 @@ function gerarDatasGraducao($data_inicial,$data_final=null,$semanas=null){
     if($data_final){
                 
         while ($data_inicial <= $data_final) {
-            $dias .= $data_inicial->format("Y-m-d,");
+            $dias .= $data_inicial->format('\'Y-m-d\',');
             $data_inicial->modify("+1 week");
         }
         
     } else {
 
         for ($i=0; $i < $semanas; $i++) { 
-            $dias .= $data_inicial->format("Y-m-d,");
+            $dias .= $data_inicial->format('\'Y-m-d\',');
             $data_inicial->modify("+1 week");
         }
     }
@@ -86,7 +86,7 @@ function gerarDatasFIC($data_inicial,$data_final,$semanas){
 
         while ($data_inicial <= $data_final) {
             if(!in_array($data_inicial->format('w'),$fim_semanda)){
-                $dias .= $data_inicial->format('Y-m-d,');
+                $dias .= (string) $data_inicial->format('\'Y-m-d\',');
             }
             $data_inicial->modify("+1 day");
         }
@@ -95,7 +95,7 @@ function gerarDatasFIC($data_inicial,$data_final,$semanas){
         $i=0;
         while ($i < $semanas) {
             if(!in_array($data_inicial->format('w'),$fim_semanda)){
-                $dias .= $data_inicial->format('Y-m-d,');
+                $dias .=  $data_inicial->format('\'Y-m-d\',');
                 $i++;
             }
             $data_inicial->modify("+1 day");
@@ -122,7 +122,7 @@ function gerarDatasPos($data_inicial,$dias_semana,$semanas){
         $i=0;
         while ($i < $semanas * count($dias_semana)) {
             if(in_array($data_inicial->format('w'),$dias_semana)){
-                $dias .= $data_inicial->format('Y-m-d,');
+                $dias .= $data_inicial->format('\'Y-m-d\',');
                 $i++;
             }
             $data_inicial->modify("+1 day");
@@ -169,7 +169,7 @@ function gerarTurmasJSON(){
 function gerarSalasJSON(){
 
     $conn = initDB();
-    $select = "SELECT * FROM salas";
+    $select = "SELECT * FROM salas ORDER BY numero_sala";
 
     $stm = $conn->prepare($select);
     $stm->execute();
@@ -359,6 +359,27 @@ function verificarId($tabela,$arr){
 }
 
 
+function getDataAtual(){
+    $dias_semana = [
+        'Monday' => 'Segunda-feira',
+        'Tuesday' => 'Terça-feira',
+        'Wednesday' => 'Quarta-feira',
+        'Thursday' => 'Quinta-feira',
+        'Friday' => 'Sexta-feira',
+        'Saturday' => 'Sábado',
+        'Sunday' => 'Domingo'
+    ];
+    $data_atual = date('d/m/Y'); // Formato: dia/mês/ano
+    $dia = date('l');
+
+    return  $dias_semana[$dia] . ", " .$data_atual;
+}
+
+
+function view($path){
+
+    return ROOT_DIR. "views/".$path;
+}
 ?>
 
 

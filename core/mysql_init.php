@@ -51,7 +51,7 @@ require_once ROOT_DIR. 'core/functions.php';
   semestre varchar(10) DEFAULT NULL,
   tipo_turma varchar(20) DEFAULT NULL,
   participantes_qtd int(11) DEFAULT NULL,
-  reservas_cadastradas int(11) DEFAULT 0
+  `status` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 
 
@@ -149,7 +149,6 @@ if (!$stm->execute()) {
 $alter_tables = "ALTER TABLE `reservas`
   ADD KEY `id_sala` (`id_sala`),
   ADD KEY `id_turma` (`id_turma`);
-
   ALTER TABLE `reservas`
   ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id_sala`),
   ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`id_turma`) REFERENCES `turmas` (`id_turma`);
@@ -293,7 +292,7 @@ file_put_contents($configFilePath, $configDB);
 // 5. Done
 
 $resposta["status"] = 200;
-$resposta["msg"] = "<p>Banco de dados criado. Ir para: <a href='inicial'>Pagina Inicial</a></p>";
+$resposta["msg"] = "<p>Banco de dados criado. Ir para: <a href='consulta-reservas'>Pagina Inicial</a></p>";
 
 } catch (Exception $e) {
   $resposta["status"] = $e->getCode();

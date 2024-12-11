@@ -27,8 +27,17 @@ $(document).on("submit","#form-editar-sala", function (e) {
     form = $(this).serialize()
     console.log(form)
     reqServidorPUT("./salas", form, getTabelaSalas)
+    
 }) 
 
+// SUBMIT FORM CADASTRAR SALA
+$(document).on("submit","#form-cadastrar-sala", function (e) {
+    e.preventDefault()
+    form = $(this).serialize()
+    console.log(form)
+    reqServidorPOST("./salas", form, getTabelaSalas)
+    $(".inp-cadastrar-sala").val("")
+}) 
 
 
 
@@ -51,7 +60,7 @@ function modalEditarSalaDados(resposta){
 }
 
 
-function getTabelaSalas(pagina=getPaginaAtual(),unidade=getUnidadeAtual()){
+function    getTabelaSalas(pagina=getPaginaAtual(),unidade=getUnidadeAtual()){
 
     $.ajax({
         type: "GET",
@@ -87,9 +96,10 @@ function gerarTabelaSalas(salas, pagina, unidade){
 
     tabela = '<table class="table table-striped tabela-consulta">'
     tabela += '<br>'
-
+    tabela += '<div class="d-flex justify-content-between">'
     tabela += btnUnidade(unidade)
-
+    tabela += '<button class=" btn btn-primary" id="btn-cadastrar-sala" data-bs-toggle="modal" data-bs-target="#modal-cadastrar-sala">Cadastrar</button>'
+    tabela += '</div>'
     tabela += '<thead>'
     tabela += '<tr>'
     tabela += '<th scope="col">Sala</th>'
@@ -156,9 +166,10 @@ function pdfBody(dados){
     for (const i in dados){
         //console.log(dados[i].id_sala + " " + dados[i].tipo_sala + " " + dados[i].lugares_qtd + " " + dados[i].maquinas_qtd + " " + dados[i].maquinas_tipo);
         body.push({
-            id: dados[i].id_sala,
+            numero_sala: dados[i].numero_sala,
             tipo: dados[i].tipo_sala,
-            lugares: dados[i].lugares_qtd,
+            unidade: dados[i].unidade,
+            lotacao: dados[i].lugares_qtd,
             nmaq: dados[i].maquinas_qtd,
             tmaq: dados[i].maquinas_tipo
         });
@@ -172,8 +183,8 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "././JSON/dados_salas.json",
-        dataType: "JSON",
+        url: "./salas",
+        dataType: "json",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -184,7 +195,7 @@ function gerarPDF(){
             doc.text(text, textX, 20);
             doc.setFontSize(12);
 
-            let head = [{id: 'Sala', tipo: 'Tipo', lugares: 'N.º lugares', nmaq: 'N.º Maquinas', tmaq: 'Maquinas tipo'}];
+            let head = [{numero_sala: 'Sala', tipo: 'Tipo', unidade: 'Unidade', lotacao: 'Lotação', nmaq: 'N.º Maquinas', tmaq: 'Maquinas tipo'}];
             let body = pdfBody(dadosJSON.salas);
             doc.autoTable({head: head, body: body, startY: 25});
             doc.save('Salas.pdf');

@@ -28,7 +28,7 @@
 
               <div class="col">
                 <div class="form-floating" style="margin-bottom: 10px;">
-                  <input type="text" form="cadastrar-reserva"  class="form-control" id="inp-responsavel-cadastro" placeholder="Responsável Cadastro" name="responsavel-cadastro" autocomplete="off" required>
+                  <input type="text" form="form-editar"  class="form-control" id="inp-responsavel-cadastro" placeholder="Responsável Cadastro" name="responsavel-cadastro" autocomplete="off">
                   <label for="inp-responsavel-cadastro" class="form-label">Responsável Cadastro</label>
                 </div>
                 <div class="form-floating">

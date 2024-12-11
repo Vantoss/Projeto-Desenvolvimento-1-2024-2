@@ -20,10 +20,12 @@ $(document).on('click','.close-badge', function(){
         $(this).closest('.data-badge-div').remove()
     }
 
+
 })
 
 // BOTAO RESERVAR
 $(document).on('click','.btn-reservar', function () {
+    resetInpCadastrarReserva()
     const id_sala = $(this).val()
     const turno = $("#badge-turno").text()
     const tipo_reserva = $("#badge-tipo-reserva").text()
@@ -68,7 +70,6 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
                 return this.value
             }).get()
             
-
             // COMBINA OS DADOS DA RESERVA COM OS DADOS DA TURMA
             form = $(this).serialize()
             form += '&' + $("#form-consultar-salas").serialize()
@@ -77,16 +78,15 @@ $(document).on('submit','#cadastrar-reserva', function (e) {
             console.log(form)
             
             reqServidorPOST("./reservas",form, atualizarTabelaSalasDisponiveis)
-            
-            // apaga os inputs do modal cadastrar
-            $(".input-cadastrar-turma").val("")                
-            $(".inp-turma-dados").val("")
 })
 
-// BTN CANCELAR MODAL CADASTRAR RESERVA
-$("#btn-cancelar-reserva").click(()=>{
+function resetInpCadastrarReserva(){
     resetSelectTurma()
-})
+    $(".inp-cadastrar-turma").val("")                
+    $(".inp-turma-dados").val("")
+    $("#inp-responsavel-cadastro").val("")
+}
+
 
 
 // BOTAO PAGINA
@@ -299,11 +299,7 @@ function atualizarTabelaSalasDisponiveis(unidade=null){
                 $("#tabDatas").collapse('hide');
             })
                         
-            
-                
-            
-                
-            
+              
         } 
     })
 }

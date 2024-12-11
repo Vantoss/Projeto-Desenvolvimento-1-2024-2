@@ -1,91 +1,107 @@
+$(document).ready(function () {
+    $("#form-consultar-reservas").submit()
+});
 
 
-    $(document).on('submit','#form-consultar-reservas', function (e) {
-        e.preventDefault()
-        $('#aviso').remove()
-        atualizarTabelaReservas()
-    })
+$(document).on('submit','#form-consultar-reservas', function (e) {
+    e.preventDefault()
+    $('#aviso').remove()
+    atualizarTabelaReservas()
+})
 
 
 
-    // BOTAO DELETAR
-    $(document).on('click','.btn-deletar-reserva', function () {  
-        const reserva_dados = $(this).val().split("-")
-        $("#del-reserva-id-reserva").val(reserva_dados[0])
-        $("#del-reserva-id-turma").val(reserva_dados[1])
+// BOTAO DELETAR
+$(document).on('click','.btn-deletar-reserva', function () {  
+    const reserva_dados = $(this).val().split("-")
+    $("#del-reserva-id-reserva").val(reserva_dados[0])
+    $("#del-reserva-id-turma").val(reserva_dados[1])
 
-        const tipo_reserva = $(this).parents("tr").children("td:nth-child(5)")
+    const tipo_reserva = $(this).parents("tr").children("td:nth-child(5)")
 
-        // desabilita as opcoes (radio) de deletar todos os registros e apartir no modal deletar reservas 
-        if(tipo_reserva.text() == "Avulsa"){
-            $("#radio-del-apartir, #radio-del-todos").prop("disabled",true)
-        } else {
-            $("#radio-del-apartir, #radio-del-todos").prop("disabled",false)
+    // desabilita as opcoes (radio) de deletar todos os registros e apartir no modal deletar reservas 
+    if(tipo_reserva.text() == "Avulsa"){
+        $("#radio-del-apartir, #radio-del-todos").prop("disabled",true)
+    } else {
+        $("#radio-del-apartir, #radio-del-todos").prop("disabled",false)
+    }
+})
+    
+// MODAL-FORM DELETAR RESERVAS
+$(document).on('submit', '#form-del-reserva', function (e) { 
+    e.preventDefault();
+    form = $(this).serialize() 
+
+    console.log(form)
+    
+    reqServidorDELETE("./reservas", form, atualizarTabelaReservas)
+})
+
+
+// PAGINACAO
+$(document).on('click','.btn-pagina', function (e) {
+    e.preventDefault()
+    
+    const pagina = $(this).val()
+    
+    $.ajax({
+        url:"./reservas",
+        type:"GET",
+        data: {'reservas-json': true},
+        dataType: "json",
+        success:function(dadosJSON){
+            console.log(dadosJSON)
+            tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
+            $("#container-tabela").html(tabela)
         }
     })
-        
-    // MODAL-FORM DELETAR RESERVAS
-    $(document).on('submit', '#form-del-reserva', function (e) { 
-        e.preventDefault();
-        form = $(this).serialize() 
+})
 
-        console.log(form)
-        
-        reqServidorDELETE("./reservas", form, atualizarTabelaReservas)
-    })
-    
-    
-    // PAGINACAO
-    $(document).on('click','.pagina-reservas', function (e) {
-        e.preventDefault()
-        
-        const pagina = $(this).val()
-        
-        $.ajax({
-            url:"./reservas",
-            type:"GET",
-            data: {'reservas-json': true},
-            dataType: "json",
-            success:function(dadosJSON){
-                tabela = gerarTabelaReservas(dadosJSON.reservas, pagina)
-                $("#container-tabela").html(tabela)
-            }
-        })
-    })
-    
     
     // BOTAO EDITAR
     
     $(document).on('click','.btn-editar-reserva', function () { 
         const reserva_dados  = this.value.split("-")
 
-        let id_reserva = reserva_dados[0]
-        let id_turma = reserva_dados[1]
+        const id_reserva = reserva_dados[0]
+        const id_turma = reserva_dados[1]
+        const id_sala = reserva_dados[2]
 
-        let sala_row = $(this).parents("tr").children("td:nth-child(2)").text().split(" - ")
-
-        reqServidorGET("./salas", {'id-sala':sala_row[0]}, mostrarSalaDados)
+        reqServidorGET("./salas", {'id-sala':id_sala}, mostrarSalaDados)
         
-
-        let dataText = $(this).parents("tr").children("td:nth-child(3)").text()
+        // let dataText = $(this).parents("tr").children("td:nth-child(3)").text()
+        
         let turno = $(this).parents("tr").children("td:nth-child(4)").text()
         let tipo_reserva = $(this).parents("tr").children("td:nth-child(5)").text()
 
-        mostrarReservaDados(dataText,tipo_reserva,turno)
-
-        let data_arr = dataText.split(" - ")
+        mostrarReservaDados(data, tipo_reserva, turno)
         
-        let data = data_arr[1].split("/").reverse().join("-")
+
+        // let data_arr = dataText.split(" - ")
+        
+        // let data = data_arr[1].split("/").reverse().join("-")
         
 
         $("#inp-edit-id_reserva").val(id_reserva)
         $("#inp-edit-id_turma").val(id_turma)
+
+        reqServidorGET("./reservas",{"id-reserva": id_reserva}, dadosReservaModalEditarReserva)
         
-        reqServidorGET("./turmas",{'disponiveis': true,'turno':turno, 'tipo-reserva':tipo_reserva,'datas':data, 'id-turma':id_turma }, mostrarOptionsTurmas)
+        reqServidorGET("./turmas",{'disponiveis': true, 'id-turma':id_turma }, mostrarOptionsTurmas)
         
         reqServidorGET('./turmas',{'turma-dados':true,'id-turma': id_turma}, mostrarTurmaDados)
         
     })
+
+function dadosReservaModalEditarReserva(resposta){
+
+    const reserva = JSON.parse(resposta).reserva
+
+    console.log(reserva)
+
+    $("#inp-responsavel-cadastro").val(reserva.responsavel_cadastro)
+    
+}
     
    
     $(document).on('submit','#form-editar', function (e) {
@@ -112,7 +128,7 @@ function atualizarTabelaReservas(){
     console.log(form)
 
     $.ajax({
-        url:"./reservas",
+        url:"./reservas?tabela-reservas=true",
         type:"GET",
         data: form,
         dataType: "json",
@@ -176,7 +192,7 @@ function gerarTabelaReservas(reservas, pagina){
         tabela += '<td>' + reservas[i].lugares + '</td>'
         tabela += '<td>'
         tabela += '<div class="d-grid gap-2 d-md-flex justify-content-md-center">'
-        tabela += '<button type="button" class="btn-editar-reserva btn btn-primary" data-bs-toggle="modal" value="' + reservas[i].id_reserva + '-' + reservas[i].id_turma +'" data-bs-target="#modal-editar">Editar</button>'
+        tabela += '<button type="button" class="btn-editar-reserva btn btn-primary" data-bs-toggle="modal" value="' + reservas[i].id_reserva + '-' + reservas[i].id_turma + '-' + reservas[i].id_sala +'" data-bs-target="#modal-editar">Editar</button>'
         tabela += '<button type="button" class="btn-deletar-reserva btn btn-danger" data-bs-toggle="modal" value="' + reservas[i].id_reserva + '-' + reservas[i].id_turma +'" data-bs-target="#deletar-reserva-modal">Deletar</button>'
         tabela += '</div>'
         tabela += '</td>' 
@@ -278,9 +294,10 @@ function pdfBody(dados){
     for (const i in dados){
         //console.log(dados[i].id_sala + " " + dados[i].tipo_sala + " " + dados[i].lugares_qtd + " " + dados[i].maquinas_qtd + " " + dados[i].maquinas_tipo);
         body.push({
-            sala: dados[i].sala,
+            sala: dados[i].sala, 
             sala_tipo: dados[i].sala_tipo,
-            data: dados[i].data,
+            unidade : dados[i].unidade,
+            data: diaSemana(dados[i].data) +" - " + converterData(dados[i].data),
             reserva: dados[i].reserva,
             turma: dados[i].turma,
             docente: dados[i].docente,
@@ -295,8 +312,9 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "././JSON/dados_tabela_reservas.json",
-        dataType: "JSON",
+        url: "./reservas",
+        data:{"reservas-json":true},
+        dataType: "json",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -307,7 +325,7 @@ function gerarPDF(){
             doc.text(text, textX, 20);
             doc.setFontSize(12);
 
-            let head = [{sala: 'Sala', sala_tipo: "Tipo Sala", data: 'Data', turno: 'Turno', reserva: 'Tipo Reserva', turma: 'Turma', docente:'Docente', lugares: 'Lugares'}];
+            let head = [{sala: 'Sala', sala_tipo: "Tipo Sala", unidade: 'Unidade' ,data: 'Data', turno: 'Turno', reserva: 'Tipo Reserva', turma: 'Turma', docente:'Docente', lugares: 'Lotação'}];
             let body = pdfBody(dadosJSON.reservas);
             doc.autoTable({head: head, body: body, startY: 25});
             doc.save('Reservas.pdf');

@@ -1,9 +1,8 @@
 <?php
 
     // HEADER
-    require ROOT_DIR. "views/partials/head.php";
-    
-    require ROOT_DIR. "views/partials/navbar.php";
+    require view("partials/head.php");
+    require view("partials/navbar.php");
 
 ?>
 <body>

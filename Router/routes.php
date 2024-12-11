@@ -7,9 +7,9 @@ $router = new Router();
 
 
 // pagina_inicial
-$router->get('/inicial', 'controllers/paginas/pagina_inicial/index.php');
+// $router->get('/inicial', 'controllers/paginas/pagina_inicial/index.php');
 
-$router->get('/', 'controllers/paginas/pagina_inicial/index.php');
+$router->get('/', 'controllers/paginas/consultar_reservas/index.php');
 
 
 // pagina gerenciamento salas
@@ -21,6 +21,8 @@ $router->get('/salas','controllers/salas/mostrar_salas.php');
 $router->delete('/salas','controllers/salas/deletar_salas.php');
 
 $router->put('/salas','controllers/salas/editar_salas.php');
+
+$router->post('/salas','controllers/salas/cadastrar_salas.php');
 
 
 

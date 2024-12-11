@@ -2,13 +2,24 @@
 
 $conn = initDB();
 
-if(isset($GET["reservas-json"])){
-    
+if(isset($_GET["reservas-json"])){
+    // header("Content-Type: application/json");
     exit(file_get_contents(ROOT_DIR.'JSON/dados_tabela_reservas.json'));
 
 } 
 
+if(isset($_GET["id-reserva"])){
+    $selectSQL = "SELECT * FROM reservas WHERE id_reserva = {$_GET['id-reserva']}";
+    $reserva = $conn->query($selectSQL)->fetch(PDO::FETCH_ASSOC);
+    
+    exit(json_encode([
+        "status" => 200,
+        "reserva" => $reserva
+    ]));
+}
 
+
+if(isset($_GET["tabela-reservas"])){
 
 $dados_tabela["reserva_status"] = $_GET["reserva-status"];
 
@@ -42,22 +53,25 @@ if($_GET["semestre"]) $sql[] = " t.semestre = '{$_GET["semestre"]}'";
 if($_GET["turno"]) $sql[] = " t.turno = '{$_GET["turno"]}'";
 
 // filtro tipo_reserva
-if($_GET["tipo-reserva"]) $sql[] = " t.tipo_turma = '{$_GET["tipo_reserva"]}'";
+if($_GET["tipo-reserva"]) $sql[] = " t.tipo_turma = '{$_GET["tipo-reserva"]}'";
 
 // filtro data inicio
-if($_GET["data-inicio"]) $sql[] = " DATE(data) >= '{$_GET["data_inicio"]}'";
+if($_GET["data-inicio"]) $sql[] = " DATE(data) >= '{$_GET["data-inicio"]}'";
 
 // filtro data fim
-if($_GET["data-fim"]) $sql[] = " DATE(data) <= '{$_GET["data_fim"]}'";
+if($_GET["data-fim"]) $sql[] = " DATE(data) <= '{$_GET["data-fim"]}'";
 
 if($_GET["reserva-status"] == "Ativa"){
 
     // PESQUISA BASE CONSULTAR RESERVAS
-    $selectSQL = "SELECT r.id_sala as 'sala',
+    $selectSQL = "SELECT
+                r.id_sala as id_sala,
+                s.numero_sala as 'sala',
                 r.id_reserva as 'id_reserva', 
                 s.tipo_sala as 'sala_tipo', 
                 r.data as 'data',
                 t.tipo_turma as 'reserva',
+                s.unidade as 'unidade',
                 t.id_turma as id_turma,
                 t.nome as 'turma',
                 t.docente as 'docente', 
@@ -72,11 +86,13 @@ if($_GET["reserva-status"] == "Ativa"){
         
 } else {
 
-    $selectSQL = "SELECT r.id_sala as 'sala',
+    $selectSQL = "SELECT r.id_sala as id_sala,
+                s.numero_sala as 'sala',
                 r.id_reserva as 'id_reserva', 
                 s.tipo_sala as 'sala_tipo', 
                 r.data as 'data',
                 t.tipo_turma as 'reserva',
+                s.unidade as 'unidade',
                 t.nome as 'turma',
                 r.docente as 'docente',
                 t.id_turma as 'id_turma' 
@@ -99,7 +115,7 @@ if($sql) $selectSQL .= ' WHERE' .implode(' AND ',$sql);
 
 // echo  "<hr>" . $selectSQL . "<hr>"; // mostra a pesquisa para teste
 
-$selectSQL .= " ORDER BY id_reserva";
+$selectSQL .= " ORDER BY data";
 
 $stm = $conn->prepare($selectSQL);
 
@@ -141,7 +157,7 @@ if(!$stm->execute()){
     
 }
 
-echo json_encode($resposta);
-
+exit (json_encode($resposta));
+}
 
 

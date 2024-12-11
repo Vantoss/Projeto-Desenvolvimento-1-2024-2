@@ -52,10 +52,6 @@ if(isset($_GET["tabela-salas"])){
 }
 
 
-
-
-
-
 if(isset($_GET["id-sala"])){
 
     $id_sala = $_GET["id-sala"];
@@ -138,7 +134,7 @@ if(isset($_GET["disponiveis"])){
 
     switch ($tipo_reserva) {
         case "Avulsa":
-            $dias = $_GET["data-inicio"];
+            $dias = $data_inicial->format('\'Y-m-d\'');
             break;
 
         case "Graduação":
@@ -160,6 +156,11 @@ if(isset($_GET["disponiveis"])){
     
     // filtro turno
     $selectSQL .= $_GET["turno"] ? " AND t.turno = '{$_GET["turno"]}')": ")";
+    
+
+
+    // echo $selectSQL;
+    // exit();
     
     // echo  "<hr>" . $query . "<hr>"; // mostra a pesquisa para teste
     

@@ -1,5 +1,6 @@
 <?php
-define('ROOT_DIR', '');
+
+const ROOT_DIR = '';
 
 require_once ROOT_DIR. 'core/functions.php';
 

@@ -108,6 +108,7 @@ function reqServidorPUT(url, form, atualizarTabela){
 
 
 function reqServidorGET(url, requisicao, mostrarDados){
+    
     $.ajax({
         type: "GET",
         url: url,
@@ -115,7 +116,7 @@ function reqServidorGET(url, requisicao, mostrarDados){
         success: function (resposta) {
             
             console.log(resposta)
-
+            
             mostrarDados(resposta)
         }
     })
@@ -253,7 +254,7 @@ function mostrarSalaDados(resposta){
 
 function mostrarReservaDados(datas,tipo_reserva,turno){
 
-    dados = datas
+    dados = '<h6>' + datas +'</h6>'
      
     dados += '<h6>' + tipo_reserva + '</h6>'
     dados += '<h6>' + turno + '</h6>'
