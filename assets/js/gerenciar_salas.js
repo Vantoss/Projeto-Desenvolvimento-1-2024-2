@@ -166,8 +166,7 @@ function pdfBody(dados){
     for (const i in dados){
         //console.log(dados[i].id_sala + " " + dados[i].tipo_sala + " " + dados[i].lugares_qtd + " " + dados[i].maquinas_qtd + " " + dados[i].maquinas_tipo);
         body.push({
-            id: dados[i].numero_sala,
-            unidade: dados[i].unidade,
+            numero_sala: dados[i].numero_sala,
             tipo: dados[i].tipo_sala,
             unidade: dados[i].unidade,
             lotacao: dados[i].lugares_qtd,
@@ -184,8 +183,8 @@ function pdfBody(dados){
 function gerarPDF(){
     $.ajax({
         type: "GET",
-        url: "././JSON/salas.json",
-        dataType: "JSON",
+        url: "./salas",
+        dataType: "json",
         success: function (dadosJSON) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -196,7 +195,7 @@ function gerarPDF(){
             doc.text(text, textX, 20);
             doc.setFontSize(12);
 
-            let head = [{id: 'Sala', unidade: 'Unidade', tipo: 'Tipo', lugares: 'N.º lugares', nmaq: 'N.º Maquinas', tmaq: 'Maquinas tipo'}];
+            let head = [{numero_sala: 'Sala', tipo: 'Tipo', unidade: 'Unidade', lotacao: 'Lotação', nmaq: 'N.º Maquinas', tmaq: 'Maquinas tipo'}];
             let body = pdfBody(dadosJSON.salas);
             doc.autoTable({head: head, body: body, startY: 25});
             doc.save('Salas.pdf');
